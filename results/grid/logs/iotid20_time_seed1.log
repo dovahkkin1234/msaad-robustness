@@ -1,0 +1,19 @@
+[loaders] time order: 334,569 rows pass the filter, sorted by Timestamp (2019-05-20 -> 2019-07-25); replaying 50,000 evenly spaced
+[loaders] skipping non-numeric or NaN/inf values in 2 column(s), e.g. ['Flow_Byts/s', 'Flow_Pkts/s']
+
+=== MABTSE reproduction (clean) ===
+           dataset: iotid20_time
+              seed: 1
+                 n: 50000
+          accuracy: 99.99
+         precision: 100.0
+            recall: 99.99
+                f1: 100.0
+     false-alarm %: 0.0
+      false alarms: 0
+    missed attacks: 3
+  majority guess %: 88.02
+    throughput_sps: 84.6
+         elapsed_s: 591.31
+
+  wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\grid\iotid20_time_seed1.json

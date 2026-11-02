@@ -1,0 +1,19 @@
+[loaders] file order, stride sampling: 625,783 rows pass the filter; taking 50,000 evenly spaced (about 1 in 12.5)
+[loaders] skipping non-numeric or NaN/inf values in 2 column(s), e.g. ['Flow_Byts/s', 'Flow_Pkts/s']
+
+=== MABTSE reproduction (clean) ===
+           dataset: iotid20_all
+              seed: 3
+                 n: 50000
+          accuracy: 98.92
+         precision: 98.93
+            recall: 99.94
+                f1: 99.43
+     false-alarm %: 15.86
+      false alarms: 508
+    missed attacks: 30
+  majority guess %: 93.59
+    throughput_sps: 154.6
+         elapsed_s: 323.51
+
+  wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\grid\iotid20_all_seed3.json

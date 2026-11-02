@@ -1,0 +1,23 @@
+# Datasets are never committed (size and licences); their SHA-256 hashes go in results/provenance.
+data/
+
+# Python caches
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Archives, editor and OS files
+*.zip
+*.7z
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Private keys must never land here (the deploy key lives in your user folder, ~/.ssh)
+*_deploy
+id_rsa
+id_ed25519
+*.pem
+*.ppk

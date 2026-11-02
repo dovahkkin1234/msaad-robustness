@@ -1,0 +1,105 @@
+file: part-00000.csv
+size_on_disk_MB: 348.0
+columns: 47
+
+COLUMNS  (name : dtype : distinct values in first 200,000 rows)
+  flow_duration : float64 : 91324
+  Header_Length : float64 : 48926
+  Protocol Type : float64 : 1542
+  Duration : float64 : 3580
+  Rate : float64 : 186917
+  Srate : float64 : 186917
+  Drate : float64 : 10
+  fin_flag_number : float64 : 2
+  syn_flag_number : float64 : 2
+  rst_flag_number : float64 : 2
+  psh_flag_number : float64 : 2
+  ack_flag_number : float64 : 2
+  ece_flag_number : float64 : 1
+  cwr_flag_number : float64 : 1
+  ack_count : float64 : 151
+  syn_count : float64 : 512
+  fin_count : float64 : 254
+  urg_count : float64 : 3711
+  rst_count : float64 : 6867
+  HTTP : float64 : 2
+  HTTPS : float64 : 2
+  DNS : float64 : 2
+  Telnet : float64 : 1
+  SMTP : float64 : 1
+  SSH : float64 : 2
+  IRC : float64 : 1
+  TCP : float64 : 2
+  UDP : float64 : 2
+  DHCP : float64 : 1
+  ARP : float64 : 2
+  ICMP : float64 : 2
+  IPv : float64 : 2
+  LLC : float64 : 2
+  Tot sum : float64 : 25656
+  Min : float64 : 9521
+  Max : float64 : 11803
+  AVG : float64 : 38896
+  Std : float64 : 36074
+  Tot size : float64 : 12848
+  IAT : float64 : 199711
+  Number : float64 : 84
+  Magnitue : float64 : 37878
+  Radius : float64 : 34879
+  Covariance : float64 : 35083
+  Variance : float64 : 176
+  Weight : float64 : 88
+  label : object : 34
+
+TOTAL ROWS IN FILE: 1,176,851
+
+LABEL-LIKE COLUMNS  (full-file value counts)
+--- label ---
+  'DDoS-ICMP_Flood': 180,447
+  'DDoS-UDP_Flood': 136,717
+  'DDoS-TCP_Flood': 113,735
+  'DDoS-PSHACK_Flood': 103,326
+  'DDoS-SYN_Flood': 102,208
+  'DDoS-RSTFINFlood': 101,819
+  'DDoS-SynonymousIP_Flood': 90,480
+  'DoS-UDP_Flood': 83,627
+  'DoS-TCP_Flood': 67,697
+  'DoS-SYN_Flood': 51,116
+  'BenignTraffic': 27,709
+  'Mirai-greeth_flood': 24,934
+  'Mirai-udpplain': 22,536
+  'Mirai-greip_flood': 19,279
+  'DDoS-ICMP_Fragmentation': 11,402
+  'MITM-ArpSpoofing': 7,840
+  'DDoS-ACK_Fragmentation': 7,292
+  'DDoS-UDP_Fragmentation': 7,224
+  'DNS_Spoofing': 4,570
+  'Recon-HostDiscovery': 3,331
+  'Recon-OSScan': 2,433
+  'Recon-PortScan': 2,082
+  'DoS-HTTP_Flood': 1,805
+  'VulnerabilityScan': 913
+  'DDoS-HTTP_Flood': 709
+  'DDoS-SlowLoris': 622
+  'DictionaryBruteForce': 319
+  'SqlInjection': 148
+  'BrowserHijacking': 134
+  'CommandInjection': 119
+  'XSS': 103
+  'Backdoor_Malware': 89
+  'Recon-PingSweep': 53
+  'Uploading_Attack': 33
+
+ORDER CHECK  (is the file in time order? are the classes mixed along it?)
+  no timestamp column (file order is the only order available)
+  class mix of 'label' in 10 consecutive blocks of the FILE:
+    block  1 (rows 0-117,684): DDoS-ICMP_Flood 15%, DDoS-UDP_Flood 12%, DDoS-TCP_Flood 10%
+    block  2 (rows 117,685-235,369): DDoS-ICMP_Flood 15%, DDoS-UDP_Flood 12%, DDoS-TCP_Flood 10%
+    block  3 (rows 235,370-353,054): DDoS-ICMP_Flood 15%, DDoS-UDP_Flood 12%, DDoS-TCP_Flood 10%
+    block  4 (rows 353,055-470,739): DDoS-ICMP_Flood 15%, DDoS-UDP_Flood 12%, DDoS-TCP_Flood 10%
+    block  5 (rows 470,740-588,424): DDoS-ICMP_Flood 15%, DDoS-UDP_Flood 12%, DDoS-TCP_Flood 10%
+    block  6 (rows 588,425-706,109): DDoS-ICMP_Flood 15%, DDoS-UDP_Flood 12%, DDoS-TCP_Flood 10%
+    block  7 (rows 706,110-823,794): DDoS-ICMP_Flood 15%, DDoS-UDP_Flood 11%, DDoS-TCP_Flood 10%
+    block  8 (rows 823,795-941,479): DDoS-ICMP_Flood 15%, DDoS-UDP_Flood 12%, DDoS-TCP_Flood 10%
+    block  9 (rows 941,480-1,059,164): DDoS-ICMP_Flood 15%, DDoS-UDP_Flood 12%, DDoS-TCP_Flood 10%
+    block 10 (rows 1,059,165-1,176,850): DDoS-ICMP_Flood 15%, DDoS-UDP_Flood 12%, DDoS-TCP_Flood 10%

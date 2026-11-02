@@ -1,0 +1,40 @@
+[loaders] file order, stride sampling: 883,690 rows pass the filter; taking 30,000 evenly spaced (about 1 in 29.5)
+[attack] ciciot2023: 30,000 rows x 46 features; train 20,100 / test 9,900 (test DDoS share 96.6%), seed 2
+[attack] surrogate mlp: train acc 100.0%, clean test acc 99.96%
+[attack] constraints: 10 constant, 11 binary, 1 categorical, 0 integer, 36 non-negative, 1 equality groups, 3 orderings
+[attack] fgsm/attack_only: surrogate fooled on 3.19% of perturbed rows; infeasible 100.0%
+[attack] fgsm/all: surrogate fooled on 6.22% of perturbed rows; infeasible 100.0%
+[attack] bim/attack_only: surrogate fooled on 3.5% of perturbed rows; infeasible 100.0%
+[attack] bim/all: surrogate fooled on 6.59% of perturbed rows; infeasible 100.0%
+[attack] pgd/attack_only: surrogate fooled on 3.5% of perturbed rows; infeasible 100.0%
+[attack] pgd/all: surrogate fooled on 6.59% of perturbed rows; infeasible 100.0%
+[attack] cw/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 99.96%
+[attack] cw/all: surrogate fooled on 100.0% of perturbed rows; infeasible 99.96%
+[attack] clean                      online     acc  99.69  rec  99.89  f1  99.84  fpr   6.01  asr      -  drifts   2  (38.5s)
+[attack] clean                      frozen     acc  99.77  rec  99.95  f1  99.88  fpr   5.41  asr      -  drifts   0  (2.7s)
+[attack] fgsm/attack_only           online     acc  99.86  rec  99.95  f1  99.93  fpr   2.70  asr   0.05  drifts   6  (38.0s)
+[attack] fgsm/attack_only           frozen     acc  12.20  rec   9.33  f1  17.05  fpr   5.41  asr  90.67  drifts   0  (3.4s)
+[attack] fgsm/attack_only/feasible  online     acc  99.86  rec  99.87  f1  99.93  fpr   0.60  asr   0.13  drifts   5  (38.2s)
+[attack] fgsm/attack_only/feasible  frozen     acc   4.10  rec   0.95  f1   1.88  fpr   5.41  asr  99.05  drifts   0  (2.9s)
+[attack] fgsm/all                   online     acc  99.81  rec  99.95  f1  99.90  fpr   4.20  asr   0.05  drifts  14  (97.8s)
+[attack] fgsm/all                   frozen     acc   9.65  rec   9.33  f1  16.64  fpr  81.38  asr  90.67  drifts   0  (14.9s)
+[attack] bim/attack_only            online     acc  99.82  rec  99.95  f1  99.91  fpr   3.90  asr   0.05  drifts   7  (107.3s)
+[attack] bim/attack_only            frozen     acc  11.93  rec   9.05  f1  16.57  fpr   5.41  asr  90.95  drifts   0  (3.4s)
+[attack] bim/attack_only/feasible   online     acc  99.82  rec  99.85  f1  99.91  fpr   1.20  asr   0.15  drifts   5  (49.1s)
+[attack] bim/attack_only/feasible   frozen     acc   4.15  rec   1.00  f1   1.98  fpr   5.41  asr   99.0  drifts   0  (2.9s)
+[attack] bim/all                    online     acc  99.78  rec  99.94  f1  99.89  fpr   4.80  asr   0.06  drifts  21  (67.9s)
+[attack] bim/all                    frozen     acc   9.41  rec   9.05  f1  16.19  fpr  80.18  asr  90.95  drifts   0  (14.8s)
+[attack] pgd/attack_only            online     acc  99.80  rec  99.94  f1  99.90  fpr   4.20  asr   0.06  drifts   6  (156.3s)
+[attack] pgd/attack_only            frozen     acc  29.18  rec  26.90  f1  42.34  fpr   5.41  asr   73.1  drifts   0  (14.6s)
+[attack] pgd/attack_only/feasible   online     acc  99.85  rec  99.89  f1  99.92  fpr   1.20  asr   0.11  drifts   3  (156.6s)
+[attack] pgd/attack_only/feasible   frozen     acc   6.11  rec   3.03  f1   5.87  fpr   5.41  asr  96.97  drifts   0  (12.8s)
+[attack] pgd/all                    online     acc  99.79  rec  99.93  f1  99.89  fpr   4.20  asr   0.07  drifts  25  (146.6s)
+[attack] pgd/all                    frozen     acc  26.68  rec  26.90  f1  41.49  fpr  79.88  asr   73.1  drifts   0  (14.9s)
+[attack] cw/attack_only             online     acc  99.74  rec  99.89  f1  99.86  fpr   4.50  asr   0.11  drifts   9  (156.3s)
+[attack] cw/attack_only             frozen     acc   4.23  rec   1.09  f1   2.15  fpr   5.41  asr  98.91  drifts   0  (13.4s)
+[attack] cw/attack_only/feasible    online     acc  99.72  rec  99.87  f1  99.85  fpr   4.80  asr   0.13  drifts   4  (158.2s)
+[attack] cw/attack_only/feasible    frozen     acc   4.20  rec   1.06  f1   2.09  fpr   5.41  asr  98.94  drifts   0  (12.7s)
+[attack] cw/all                     online     acc  99.81  rec  99.91  f1  99.90  fpr   3.00  asr   0.09  drifts  11  (144.9s)
+[attack] cw/all                     frozen     acc   2.13  rec   1.09  f1   2.10  fpr  67.87  asr  98.91  drifts   0  (13.5s)
+
+[attack] done in 27.9 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\attack_grid\ciciot2023_seed2.json and ciciot2023_seed2.csv

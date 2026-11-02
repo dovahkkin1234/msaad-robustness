@@ -1,0 +1,19 @@
+[loaders] campaign order: 334,569 rows pass the filter; attack rows in capture-time order (attacks 2019-07-25 -> 2019-07-25) with benign rows spread evenly; replaying 50,000 evenly spaced
+[loaders] skipping non-numeric or NaN/inf values in 2 column(s), e.g. ['Flow_Byts/s', 'Flow_Pkts/s']
+
+=== MABTSE reproduction (clean) ===
+           dataset: iotid20_campaign
+              seed: 3
+                 n: 50000
+          accuracy: 99.43
+         precision: 99.53
+            recall: 99.82
+                f1: 99.68
+     false-alarm %: 3.44
+      false alarms: 206
+    missed attacks: 80
+  majority guess %: 88.02
+    throughput_sps: 153.8
+         elapsed_s: 325.04
+
+  wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\grid\iotid20_campaign_seed3.json

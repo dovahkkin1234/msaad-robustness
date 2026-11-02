@@ -1,0 +1,18 @@
+[loaders] file order, stride sampling: 883,690 rows pass the filter; taking 50,000 evenly spaced (about 1 in 17.7)
+
+=== MABTSE reproduction (clean) ===
+           dataset: ciciot2023
+              seed: 1
+                 n: 50000
+          accuracy: 99.66
+         precision: 99.72
+            recall: 99.93
+                f1: 99.82
+     false-alarm %: 8.72
+      false alarms: 138
+    missed attacks: 33
+  majority guess %: 96.83
+    throughput_sps: 249.2
+         elapsed_s: 200.68
+
+  wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\grid\ciciot2023_seed1.json

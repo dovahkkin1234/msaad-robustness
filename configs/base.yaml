@@ -1,0 +1,108 @@
+# Run scripts/inspect_dataset.py on each CSV first; it prints the exact column names,
+# label values and whether the file is in time order. Paths are relative to the repo root.
+
+seed: 42
+top_k: 3            # Thompson Sampling keeps the top-3 arms per sample (paper)
+mse_window: 500     # rolling window for the AUWPAE 1/(MSE+eps) weight
+eps: 0.0001
+warmup: 0           # 0 = pure prequential (honest). Try 1000 to mirror a warm start.
+log_every: 500      # learning-curve sampling cadence
+
+datasets:
+  # ---- IoTID20, protocol P1 (paper reproduction): file order -------------------------
+  # Confirmed on the real file: 625,783 rows, 86 columns; Label = Normal / Anomaly.
+  # The public CSV is randomly shuffled w.r.t. time (only 50.0% of consecutive rows are in
+  # time order), so file order is a STATIONARY stream: this mirrors the base paper's setup.
+  iotid20: &iotid20
+    path: data/iotid20/IoT_Network_Intrusion_Dataset.csv
+    label_col: Label
+    benign_values: ["Normal"]
+    drop_cols: ["Flow_ID", "Src_IP", "Dst_IP", "Timestamp", "Cat", "Sub_Cat"]
+    class_col: Sub_Cat            # fine-grained class, used only for per-class reporting
+    # DDoS vs benign, consistent with the CICIoT2023 subset: Normal + the three Mirai
+    # flooding classes (334,569 rows). Excluded: brute force, scans, ARP spoofing, and
+    # single-source DoS-Synflooding.
+    filter_col: Sub_Cat
+    include_prefixes: ["Normal", "Mirai-UDP", "Mirai-HTTP", "Mirai-Ack"]
+    order: file
+    time_col: Timestamp
+    time_format: "%d/%m/%Y %I:%M:%S %p"   # detected by the inspector (CICFlowMeter style)
+    subsample: stride             # evenly spaced across the whole stream
+    limit: 50000
+
+  # ---- IoTID20, protocol P2 (our temporal evaluation): attack campaigns in time order ----
+  # Same rows as P1. Attack flows arrive in capture-time order (UDP flood first, then mixed
+  # UDP/ACK/HTTP floods); benign flows are spread evenly through the stream as background.
+  iotid20_campaign:
+    <<: *iotid20
+    order: campaign
+
+  # ---- IoTID20, naive time order: DEGENERATE (documented finding) ---------------------
+  # All 40,073 benign flows were captured in the first week (20-26 May 2019), so a plain
+  # time sort gives all-benign then all-attack: a single class flip, not realistic drift.
+  iotid20_time:
+    <<: *iotid20
+    order: time
+
+  # ---- IoTID20 sensitivity: the paper's listed "DDoS types" ------------------------------
+  # The paper names Mirai ACK, brute force, HTTP and UDP flooding as IoTID20's DDoS types,
+  # so this keeps Normal + every Mirai sub-category (455,750 rows), brute force included.
+  iotid20_mirai: &iotid20_mirai
+    <<: *iotid20
+    filter_col: Cat
+    include_prefixes: ["Normal", "Mirai"]
+
+  iotid20_mirai_campaign:         # + brute force adds a third campaign (Jul 25 -> Sep 10)
+    <<: *iotid20_mirai
+    order: campaign
+
+  # ---- IoTID20 sensitivity: Normal vs every attack (no filter, 625,783 rows) ------------
+  iotid20_all:
+    <<: *iotid20
+    include_prefixes: null
+
+  # ---- CICIoT2023 (CSV has no timestamp column: file order only) ----------------------
+  ciciot2023:
+    path: data/ciciot2023/part-00000.csv
+    label_col: label              # e.g. BenignTraffic, DDoS-SYN_Flood, DoS-UDP_Flood, ...
+    benign_values: ["BenignTraffic"]
+    drop_cols: []
+    class_col: label              # fine-grained class, used only for per-class reporting
+    filter_col: null              # null = filter on label_col
+    include_prefixes: ["DDoS", "Benign"]   # the paper used only DDoS + benign rows
+    order: file
+    subsample: stride
+    limit: 50000
+
+# ---- Defaults for experiments/under_attack.py (the paper's Scenario 2, re-done properly) ----
+attack:
+  limit: 30000              # rows per run, from the dataset's ordered stream
+  train_frac: 0.67          # Algorithm 1: the first part trains MABTSE, the rest is the test stream
+  eps: 0.1                  # L-inf budget in the min-max-scaled feature space (the paper's 0.1)
+  attacks: [fgsm, bim, pgd, cw]
+  perturb: [attack_only, all]  # attacker perturbs only DDoS flows (realistic) or every flow (paper-style)
+  surrogate: mlp            # attacker's differentiable stand-in: mlp (64-32 ReLU) or lr
+  feasible: true            # audit domain constraints and also run the repaired (feasible) attacks
+  learning: [online, frozen]  # label feedback during the test stream: online (true label at once,
+                            # the paper's Algorithm 1), frozen (no labels), self (own predictions),
+                            # delay:D (true label D flows later). delay/self cover clean + attack_only.
+  frozen: true              # v7 switch: false drops "frozen" from the modes above
+  bim: {step: 0.025, iters: 20}
+  pgd: {step: 0.025, iters: 20, random_start: true}
+  cw:  {confidence: 0.0, lr: 0.01, iters: 100, search_steps: 6, c_init: 1.0}
+
+# ---- Defaults for experiments/radp_defense.py (the paper's Layer 1, RADP: Scenario 3) ------
+radp:
+  rows: 4000                # clean training flows the defender uses (MSAPG source + RAD negatives)
+  gan_share: 0.5            # share of RAD's "adversarial" half that comes from the GAN
+  gan: {steps: 3000, batch: 128, lr: 0.0002}
+  holdout: 0.2              # part of RAD's training mix kept aside to report its own accuracy
+  defender_seed_offset: 1000  # the defender's surrogate/GAN/RAD use seeds different from the attacker's
+  variants: [rad, rad_nogan, loao]   # paper design, no-GAN ablation, leave-one-attack-out
+
+# ---- Defaults for experiments/adaptation_loop.py (S4: label poisoning, selector steering) --
+loop:
+  attacks: [pgd]            # attacker's perturbation (crafted exactly as in under_attack.py)
+  variants: [feasible]      # raw and/or feasible (repaired, valid traffic: the realistic attacker)
+  labels: ["true", "poison:0.5", "poison:1.0"]       # share q of attacker flows labelled benign
+  policies: ["vanilla", "audit:0.1", "guard:0.1", "strict:0.1"]   # a = audited share

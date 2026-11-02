@@ -1,0 +1,54 @@
+[loaders] file order, stride sampling: 883,690 rows pass the filter; taking 30,000 evenly spaced (about 1 in 29.5)
+[radp] ciciot2023: 30,000 rows x 46 features; train 20,100 / test 9,900 (test DDoS share 96.6%), seed 3
+[attack] fgsm/attack_only: surrogate fooled on 3.97% of perturbed rows; infeasible 100.0%
+[attack] bim/attack_only: surrogate fooled on 4.07% of perturbed rows; infeasible 100.0%
+[attack] pgd/attack_only: surrogate fooled on 4.07% of perturbed rows; infeasible 100.0%
+[attack] cw/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 99.99%
+[radp] MSAPG: 4,000 clean training flows x 4 attacks on the defender's surrogate (45.9s)
+[radp] rad         clean                      frozen  flag DDoS   0.25  benign deleted  38.44  ASR    0.1 ->   0.06  recovered acc 99.88  blocked acc 98.59
+[radp] rad         clean                      online  e2e ASR   0.09  recovered acc 99.89  blocked acc 98.6
+[radp] rad         fgsm/attack_only           frozen  flag DDoS  100.0  benign deleted  38.44  ASR   3.08 ->    0.0  recovered acc 97.07  blocked acc 98.65
+[radp] rad         fgsm/attack_only           online  e2e ASR    0.0  recovered acc 99.02  blocked acc 98.69
+[radp] rad         fgsm/attack_only/feasible  frozen  flag DDoS  100.0  benign deleted  38.44  ASR  61.62 ->    0.0  recovered acc 97.07  blocked acc 98.65
+[radp] rad         fgsm/attack_only/feasible  online  e2e ASR    0.0  recovered acc 99.02  blocked acc 98.69
+[radp] rad         bim/attack_only            frozen  flag DDoS  100.0  benign deleted  38.44  ASR   3.07 ->    0.0  recovered acc 97.07  blocked acc 98.65
+[radp] rad         bim/attack_only            online  e2e ASR    0.0  recovered acc 99.02  blocked acc 98.69
+[radp] rad         bim/attack_only/feasible   frozen  flag DDoS  99.99  benign deleted  38.44  ASR  76.98 ->   0.01  recovered acc 96.6  blocked acc 98.64
+[radp] rad         bim/attack_only/feasible   online  e2e ASR   0.01  recovered acc 98.06  blocked acc 98.67
+[radp] rad         pgd/attack_only            frozen  flag DDoS  100.0  benign deleted  38.44  ASR   2.98 ->    0.0  recovered acc 97.07  blocked acc 98.65
+[radp] rad         pgd/attack_only            online  e2e ASR    0.0  recovered acc 99.02  blocked acc 98.69
+[radp] rad         pgd/attack_only/feasible   frozen  flag DDoS  99.99  benign deleted  38.44  ASR  76.15 ->   0.01  recovered acc 96.6  blocked acc 98.64
+[radp] rad         pgd/attack_only/feasible   online  e2e ASR   0.01  recovered acc 98.06  blocked acc 98.67
+[radp] rad         cw/attack_only             frozen  flag DDoS  99.95  benign deleted  38.44  ASR   70.0 ->   0.04  recovered acc 95.24  blocked acc 98.61
+[radp] rad         cw/attack_only             online  e2e ASR   0.02  recovered acc 97.62  blocked acc 98.66
+[radp] rad         cw/attack_only/feasible    frozen  flag DDoS  99.93  benign deleted  38.44  ASR  83.31 ->   0.06  recovered acc 94.34  blocked acc 98.59
+[radp] rad         cw/attack_only/feasible    online  e2e ASR   0.04  recovered acc 97.17  blocked acc 98.65
+[radp] rad: RAD hold-out accuracy 99.44%; GAN two-sample AUC 1.0 (421.5s)
+[radp] rad_nogan   clean                      frozen  flag DDoS    0.0  benign deleted    2.4  ASR    0.1 ->    0.1  recovered acc 99.8  blocked acc 99.72
+[radp] rad_nogan   fgsm/attack_only           frozen  flag DDoS  100.0  benign deleted    2.4  ASR   3.08 ->    0.0  recovered acc 96.92  blocked acc 99.82
+[radp] rad_nogan   fgsm/attack_only/feasible  frozen  flag DDoS  99.93  benign deleted    2.4  ASR  61.62 ->   0.05  recovered acc 95.48  blocked acc 99.77
+[radp] rad_nogan   bim/attack_only            frozen  flag DDoS  100.0  benign deleted    2.4  ASR   3.07 ->    0.0  recovered acc 96.92  blocked acc 99.82
+[radp] rad_nogan   bim/attack_only/feasible   frozen  flag DDoS  99.91  benign deleted    2.4  ASR  76.98 ->   0.06  recovered acc 95.21  blocked acc 99.76
+[radp] rad_nogan   pgd/attack_only            frozen  flag DDoS  100.0  benign deleted    2.4  ASR   2.98 ->    0.0  recovered acc 96.92  blocked acc 99.82
+[radp] rad_nogan   pgd/attack_only/feasible   frozen  flag DDoS  99.91  benign deleted    2.4  ASR  76.15 ->   0.07  recovered acc 94.91  blocked acc 99.75
+[radp] rad_nogan   cw/attack_only             frozen  flag DDoS  99.72  benign deleted    2.4  ASR   70.0 ->   0.17  recovered acc 92.61  blocked acc 99.66
+[radp] rad_nogan   cw/attack_only/feasible    frozen  flag DDoS  99.55  benign deleted    2.4  ASR  83.31 ->    0.3  recovered acc 89.4  blocked acc 99.53
+[radp] rad_nogan: RAD hold-out accuracy 99.75% (212.1s)
+[radp] loao_fgsm   clean                      frozen  flag DDoS   0.01  benign deleted  21.32  ASR    0.1 ->   0.09  recovered acc 99.81  blocked acc 99.09
+[radp] loao_fgsm   fgsm/attack_only           frozen  flag DDoS  100.0  benign deleted  21.32  ASR   3.08 ->    0.0  recovered acc 96.18  blocked acc 99.18
+[radp] loao_fgsm   fgsm/attack_only/feasible  frozen  flag DDoS  100.0  benign deleted  21.32  ASR  61.62 ->    0.0  recovered acc 96.18  blocked acc 99.18
+[radp] loao_fgsm: RAD hold-out accuracy 99.81%; GAN two-sample AUC 1.0 (181.2s)
+[radp] loao_bim    clean                      frozen  flag DDoS   0.03  benign deleted    1.2  ASR    0.1 ->    0.1  recovered acc 99.81  blocked acc 99.77
+[radp] loao_bim    bim/attack_only            frozen  flag DDoS  100.0  benign deleted    1.2  ASR   3.07 ->    0.0  recovered acc 97.26  blocked acc 99.87
+[radp] loao_bim    bim/attack_only/feasible   frozen  flag DDoS   99.8  benign deleted    1.2  ASR  76.98 ->   0.16  recovered acc 93.1  blocked acc 99.72
+[radp] loao_bim: RAD hold-out accuracy 99.62%; GAN two-sample AUC 1.0 (180.8s)
+[radp] loao_pgd    clean                      frozen  flag DDoS   0.11  benign deleted   8.11  ASR    0.1 ->   0.08  recovered acc 99.83  blocked acc 99.56
+[radp] loao_pgd    pgd/attack_only            frozen  flag DDoS  100.0  benign deleted   8.11  ASR   2.98 ->    0.0  recovered acc 97.06  blocked acc 99.64
+[radp] loao_pgd    pgd/attack_only/feasible   frozen  flag DDoS  99.14  benign deleted   8.11  ASR  76.15 ->   0.85  recovered acc 76.8  blocked acc 98.82
+[radp] loao_pgd: RAD hold-out accuracy 99.69%; GAN two-sample AUC 1.0 (183.5s)
+[radp] loao_cw     clean                      frozen  flag DDoS   0.01  benign deleted    0.0  ASR    0.1 ->    0.1  recovered acc 99.8  blocked acc 99.8
+[radp] loao_cw     cw/attack_only             frozen  flag DDoS   0.01  benign deleted    0.0  ASR   70.0 ->  69.99  recovered acc 32.26  blocked acc 32.26
+[radp] loao_cw     cw/attack_only/feasible    frozen  flag DDoS   0.01  benign deleted    0.0  ASR  83.31 ->   83.3  recovered acc 19.4  blocked acc 19.4
+[radp] loao_cw: RAD hold-out accuracy 100.0%; GAN two-sample AUC 1.0 (104.9s)
+
+[radp] done in 32.9 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\radp_grid\ciciot2023_seed3.json and ciciot2023_seed3.csv

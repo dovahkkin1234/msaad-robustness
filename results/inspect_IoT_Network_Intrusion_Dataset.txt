@@ -1,0 +1,141 @@
+file: IoT_Network_Intrusion_Dataset.csv
+size_on_disk_MB: 308.5
+columns: 86
+
+COLUMNS  (name : dtype : distinct values in first 200,000 rows)
+  Flow_ID : object : 22343
+  Src_IP : object : 18552
+  Src_Port : int64 : 9683
+  Dst_IP : object : 388
+  Dst_Port : int64 : 655
+  Protocol : int64 : 3
+  Timestamp : object : 3942
+  Flow_Duration : int64 : 8356
+  Tot_Fwd_Pkts : int64 : 103
+  Tot_Bwd_Pkts : int64 : 23
+  TotLen_Fwd_Pkts : float64 : 1957
+  TotLen_Bwd_Pkts : float64 : 1776
+  Fwd_Pkt_Len_Max : float64 : 947
+  Fwd_Pkt_Len_Min : float64 : 970
+  Fwd_Pkt_Len_Mean : float64 : 1648
+  Fwd_Pkt_Len_Std : float64 : 1188
+  Bwd_Pkt_Len_Max : float64 : 908
+  Bwd_Pkt_Len_Min : float64 : 976
+  Bwd_Pkt_Len_Mean : float64 : 1746
+  Bwd_Pkt_Len_Std : float64 : 1318
+  Flow_Byts/s : float64 : 19462
+  Flow_Pkts/s : float64 : 12543
+  Flow_IAT_Mean : float64 : 13214
+  Flow_IAT_Std : float64 : 12922
+  Flow_IAT_Max : float64 : 8230
+  Flow_IAT_Min : float64 : 7684
+  Fwd_IAT_Tot : float64 : 975
+  Fwd_IAT_Mean : float64 : 4510
+  Fwd_IAT_Std : float64 : 7436
+  Fwd_IAT_Max : float64 : 897
+  Fwd_IAT_Min : float64 : 714
+  Bwd_IAT_Tot : float64 : 8210
+  Bwd_IAT_Mean : float64 : 8818
+  Bwd_IAT_Std : float64 : 2013
+  Bwd_IAT_Max : float64 : 8164
+  Bwd_IAT_Min : float64 : 7888
+  Fwd_PSH_Flags : int64 : 1
+  Bwd_PSH_Flags : int64 : 2
+  Fwd_URG_Flags : int64 : 1
+  Bwd_URG_Flags : int64 : 2
+  Fwd_Header_Len : int64 : 129
+  Bwd_Header_Len : int64 : 68
+  Fwd_Pkts/s : float64 : 5375
+  Bwd_Pkts/s : float64 : 9171
+  Pkt_Len_Min : float64 : 1029
+  Pkt_Len_Max : float64 : 881
+  Pkt_Len_Mean : float64 : 3679
+  Pkt_Len_Std : float64 : 3174
+  Pkt_Len_Var : float64 : 3258
+  FIN_Flag_Cnt : int64 : 2
+  SYN_Flag_Cnt : int64 : 2
+  RST_Flag_Cnt : int64 : 2
+  PSH_Flag_Cnt : int64 : 2
+  ACK_Flag_Cnt : int64 : 2
+  URG_Flag_Cnt : int64 : 2
+  CWE_Flag_Count : int64 : 2
+  ECE_Flag_Cnt : int64 : 2
+  Down/Up_Ratio : float64 : 11
+  Pkt_Size_Avg : float64 : 3758
+  Fwd_Seg_Size_Avg : float64 : 1632
+  Bwd_Seg_Size_Avg : float64 : 1730
+  Fwd_Byts/b_Avg : int64 : 1
+  Fwd_Pkts/b_Avg : int64 : 1
+  Fwd_Blk_Rate_Avg : int64 : 1
+  Bwd_Byts/b_Avg : int64 : 1
+  Bwd_Pkts/b_Avg : int64 : 1
+  Bwd_Blk_Rate_Avg : int64 : 1
+  Subflow_Fwd_Pkts : int64 : 103
+  Subflow_Fwd_Byts : int64 : 1957
+  Subflow_Bwd_Pkts : int64 : 23
+  Subflow_Bwd_Byts : int64 : 1776
+  Init_Fwd_Win_Byts : int64 : 1
+  Init_Bwd_Win_Byts : int64 : 2255
+  Fwd_Act_Data_Pkts : int64 : 102
+  Fwd_Seg_Size_Min : int64 : 1
+  Active_Mean : float64 : 997
+  Active_Std : float64 : 561
+  Active_Max : float64 : 720
+  Active_Min : float64 : 666
+  Idle_Mean : float64 : 11364
+  Idle_Std : float64 : 10411
+  Idle_Max : float64 : 7885
+  Idle_Min : float64 : 7467
+  Label : object : 2
+  Cat : object : 5
+  Sub_Cat : object : 9
+
+TOTAL ROWS IN FILE: 625,783
+
+LABEL-LIKE COLUMNS  (full-file value counts)
+--- Label ---
+  'Anomaly': 585,710
+  'Normal': 40,073
+--- Cat ---
+  'Mirai': 415,677
+  'Scan': 75,265
+  'DoS': 59,391
+  'Normal': 40,073
+  'MITM ARP Spoofing': 35,377
+--- Sub_Cat ---
+  'Mirai-UDP Flooding': 183,554
+  'Mirai-Hostbruteforceg': 121,181
+  'DoS-Synflooding': 59,391
+  'Mirai-HTTP Flooding': 55,818
+  'Mirai-Ackflooding': 55,124
+  'Scan Port OS': 53,073
+  'Normal': 40,073
+  'MITM ARP Spoofing': 35,377
+  'Scan Hostport': 22,192
+
+ORDER CHECK  (is the file in time order? are the classes mixed along it?)
+  timestamp column: Timestamp   format: %d/%m/%Y %I:%M:%S %p   parsed: 100.0%
+  time range: 2019-05-20 04:56:14  ->  2019-09-10 01:54:23
+  consecutive rows in time order: 50.0%   (100% = sorted by time; ~50% = randomly shuffled)
+  class mix of 'Sub_Cat' in 10 consecutive blocks of the FILE:
+    block  1 (rows 0-62,577): Mirai-UDP Flooding 30%, Mirai-Hostbruteforceg 19%, DoS-Synflooding 10%
+    block  2 (rows 62,578-125,155): Mirai-UDP Flooding 29%, Mirai-Hostbruteforceg 20%, DoS-Synflooding 9%
+    block  3 (rows 125,156-187,733): Mirai-UDP Flooding 30%, Mirai-Hostbruteforceg 19%, DoS-Synflooding 9%
+    block  4 (rows 187,734-250,312): Mirai-UDP Flooding 29%, Mirai-Hostbruteforceg 19%, DoS-Synflooding 10%
+    block  5 (rows 250,313-312,890): Mirai-UDP Flooding 30%, Mirai-Hostbruteforceg 19%, DoS-Synflooding 9%
+    block  6 (rows 312,891-375,468): Mirai-UDP Flooding 29%, Mirai-Hostbruteforceg 19%, DoS-Synflooding 9%
+    block  7 (rows 375,469-438,047): Mirai-UDP Flooding 29%, Mirai-Hostbruteforceg 19%, DoS-Synflooding 9%
+    block  8 (rows 438,048-500,625): Mirai-UDP Flooding 29%, Mirai-Hostbruteforceg 20%, DoS-Synflooding 9%
+    block  9 (rows 500,626-563,203): Mirai-UDP Flooding 29%, Mirai-Hostbruteforceg 19%, DoS-Synflooding 10%
+    block 10 (rows 563,204-625,782): Mirai-UDP Flooding 29%, Mirai-Hostbruteforceg 19%, DoS-Synflooding 10%
+  the same rows in TIME order (10 blocks; what a time-sorted replay contains):
+    block  1 [2019-05-20 04:56 -> 2019-05-26 22:11]: Normal 64%, Anomaly 36% | Normal 64%, DoS-Synflooding 36%
+    block  2 [2019-05-26 22:11 -> 2019-06-04 23:44]: Anomaly 100% | MITM ARP Spoofing 57%, DoS-Synflooding 43%
+    block  3 [2019-06-04 23:44 -> 2019-07-11 01:27]: Anomaly 100% | Scan Port OS 53%, Scan Hostport 31%, DoS-Synflooding 15%
+    block  4 [2019-07-11 01:27 -> 2019-07-25 03:20]: Anomaly 100% | Mirai-UDP Flooding 58%, Scan Port OS 32%, Scan Hostport 4%
+    block  5 [2019-07-25 03:20 -> 2019-07-25 03:21]: Anomaly 100% | Mirai-UDP Flooding 96%, Mirai-Ackflooding 2%, Mirai-HTTP Flooding 2%
+    block  6 [2019-07-25 03:21 -> 2019-07-25 03:23]: Anomaly 100% | Mirai-UDP Flooding 56%, Mirai-Ackflooding 22%, Mirai-HTTP Flooding 22%
+    block  7 [2019-07-25 03:23 -> 2019-07-25 03:25]: Anomaly 100% | Mirai-UDP Flooding 41%, Mirai-HTTP Flooding 30%, Mirai-Ackflooding 29%
+    block  8 [2019-07-25 03:25 -> 2019-07-25 03:27]: Anomaly 100% | Mirai-UDP Flooding 40%, Mirai-HTTP Flooding 30%, Mirai-Ackflooding 29%
+    block  9 [2019-07-25 03:27 -> 2019-09-10 01:38]: Anomaly 100% | Mirai-Hostbruteforceg 94%, Mirai-Ackflooding 2%, Mirai-HTTP Flooding 2%
+    block 10 [2019-09-10 01:38 -> 2019-09-10 01:54]: Anomaly 100% | Mirai-Hostbruteforceg 100%
