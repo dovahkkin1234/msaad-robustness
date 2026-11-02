@@ -46,6 +46,12 @@ Reconstructed from the result files and the project notes; times are when the ru
 - **Results:**
   - `results/paper`: fig_attack_asr.pdf (new), fig_attack_asr.png (new), fig_audit_tradeoff.pdf (new), fig_audit_tradeoff.png (new), fig_label_delay.pdf (new), fig_label_delay.png (new), fig_loop_poison.pdf (new), fig_loop_poison.png (new), fig_loop_time.pdf (new), fig_loop_time.png (new), fig_radp_detect.pdf (new), fig_radp_detect.png (new) and 7 more
 
+### 2026-11-02 13:08 (UTC+05:30) - Provenance: environment, package versions, dataset SHA-256
+
+- **Code version:** 14dc769
+- **Results:**
+  - `results/provenance`: data_sha256.csv (new), environment.yml (new), pip_freeze.txt (new)
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->
