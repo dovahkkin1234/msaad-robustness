@@ -61,6 +61,12 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results`: grid_runs.jsonl (new)
   - `results/advtrain_grid`: 6 new CSV; 6 new JSON; 6 new log; summary_advtrain.csv (new)
 
+### 2026-11-02 16:40 (UTC+05:30) - Figures with the adversarial-training baseline
+
+- **Code version:** 984122b
+- **Results:**
+  - `results/paper`: fig_attack_asr.pdf (changed), fig_audit_tradeoff.pdf (changed), fig_label_delay.pdf (changed), fig_loop_poison.pdf (changed), fig_loop_time.pdf (changed), fig_radp_detect.pdf (changed), fig_radp_e2e.pdf (changed), fig_advtrain.pdf (new), fig_advtrain.png (new), tab_advtrain.tex (new)
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->
