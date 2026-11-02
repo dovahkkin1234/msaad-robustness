@@ -18,7 +18,7 @@
 
 ```powershell
 New-Item -ItemType Directory -Force -Path "$HOME\Projects\CNS-Project" | Out-Null
-Expand-Archive "$HOME\Downloads\msaad-robustness-v12.zip" -DestinationPath "$HOME\Projects\CNS-Project" -Force
+Expand-Archive "$HOME\Downloads\msaad-robustness-v13.zip" -DestinationPath "$HOME\Projects\CNS-Project" -Force
 Set-Location "$HOME\Projects\CNS-Project\msaad-robustness"
 Get-ChildItem
 ```
@@ -26,7 +26,7 @@ Get-ChildItem
 You should see `configs`, `experiments`, `scripts`, `src`, `tests` and the `.md` files.
 (If you prefer another location, change `$HOME\Projects\CNS-Project` everywhere.)
 
-**Updating an existing copy (e.g. v10 → v12):** run the same `Expand-Archive` line. The zip
+**Updating an existing copy (e.g. v12 → v13):** run the same `Expand-Archive` line. The zip
 holds only code and documents, so your `data` and `results` folders are kept as they are.
 Once Step 15 is done, push each new version: `python scripts\push_run.py "Code v13: ..."`; git
 then shows exactly what changed. From v13 on the packages leave out `RUNS.md`, so extracting one
@@ -573,6 +573,48 @@ python scripts\push_run.py -m "IW-strict halves the false alarms on CICIoT2023"
   a private key, and it never rewrites history.
 - Offline? The commit stays on the laptop; the next `push_run.py` sends it.
 
+# Step 16 — Adversarial-training baseline (the defence reviewers ask about first)
+
+**Goal.** Without labels, repaired attacks get 80–87% of DDoS flows past MABTSE on CICIoT2023
+(F10). The standard fix is adversarial training: the defender crafts adversarial copies of its
+own DDoS training flows (on its own surrogate, a different seed from the attacker's), repairs
+them to valid traffic, and trains MABTSE on them labelled DDoS. `experiments\adv_training.py`
+trains three detectors per run and attacks each with the same perturbations as Step 10:
+
+| Variant | Trained on | Question it answers |
+|---|---|---|
+| `none` | clean flows only (reproduces Step 10's numbers exactly) | the baseline |
+| `at:pgd` | + one repaired PGD copy per DDoS flow | does it carry over to attacks it never saw (FGSM, C&W; BIM is a near-copy of PGD)? |
+| `at:fgsm+bim+pgd+cw` | + one copy per DDoS flow, the four attacks in turn | best case: every attack seen |
+
+Each detector is tested with no labels (all four attacks, raw and repaired) and with labels
+1,000 flows late (clean, repaired PGD and C&W), reporting the evasion rate and the false-alarm
+rate on clean traffic: the price of adversarial training.
+
+**1. Self-check (about 1 min). PowerShell (Windows), `(msaad)` active, inside `msaad-robustness`:**
+
+```powershell
+python tests\advtrain_smoke_test.py
+```
+
+It must end with `[advtrain-smoke] PASS`.
+
+**2. The grid: both datasets, 3 seeds, pushed when it ends. Same terminal:**
+
+```powershell
+python experiments\run_grid.py --exp advtrain --data iotid20 ciciot2023 --jobs 3 --push
+```
+
+- About 2.5–3.5 hours with `--jobs 3` (IoTID20 runs take about twice as long as CICIoT2023).
+  Keep the laptop plugged in and stop it from sleeping (Settings → System → Power).
+- Interrupted? Run the same line again: finished runs are skipped.
+- Results go to `results\advtrain_grid` (one JSON + CSV per run, logs in `logs`), the summary to
+  `summary_advtrain.csv`. Then `python scripts\make_figures.py` adds `fig_advtrain` and
+  `tab_advtrain` to `results\paper`.
+
+**3. Send me** `results\advtrain_grid\summary_advtrain.csv` and the terminal output (or just
+say it is pushed).
+
 # Troubleshooting
 
 | Symptom | Fix |
@@ -588,6 +630,7 @@ python scripts\push_run.py -m "IW-strict halves the false alarms on CICIoT2023"
 | `options [...] are not used by the repro experiment` | `--learning`, `--attacks`, `--labels` etc. only apply with `--exp attack`, `--exp radp` or `--exp loop`. |
 | `unknown --learning mode` | Use `online`, `frozen`, `self` or `delay:D` with a whole number, e.g. `delay:1000`. |
 | `unknown --labels value` / `unknown --policies value` | Use `true` or `poison:q`, and `vanilla`, `audit:a`, `guard:a`, `strict:a` or `iwstrict:a`, with q and a between 0 and 1 (e.g. `poison:0.5`, `strict:0.1`). `iwstrict` needs v10. |
+| `unknown variant` (adv_training.py) | Use `none` or `at:` followed by attacks joined with `+`, e.g. `at:pgd`, `at:fgsm+bim+pgd+cw`. |
 | `ModuleNotFoundError: No module named 'matplotlib'` | Run the one-time install in Step 14. |
 | `[push] git is not installed or not on PATH` | Step 15, part 1. |
 | `Permission denied (publickey)` on push | The deploy key is not on the repository, or `core.sshCommand` points elsewhere: check Step 15, parts 3–4. |

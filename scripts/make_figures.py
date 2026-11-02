@@ -12,8 +12,10 @@ exists:
     fig_loop_poison     S4: evasion rate vs label poisoning q for each update policy
     fig_loop_time       S4: evasion rate over the test stream under full poisoning
     fig_audit_tradeoff  S4: what strict (and IW-strict) buy and cost per verified-label budget
+    fig_advtrain        adversarial-training baseline: evasion (repaired attacks, no labels) and
+                        false alarms on clean traffic, per training variant
   tables (booktabs; add \\usepackage{booktabs} to the paper):
-    tab_repro, tab_attack, tab_radp, tab_loop, tab_audit
+    tab_repro, tab_attack, tab_radp, tab_loop, tab_audit, tab_advtrain
 
 Bars and lines show the mean over seeds. Every seed is drawn as a small dot when its JSON is
 present; where it is not, an error bar shows +/- one standard deviation instead. Tables give
@@ -593,6 +595,72 @@ def audit_tradeoff(res: Path, out: Path):
               body, "lllcccc")
 
 
+def at_label(v: str) -> str:
+    if v == "none":
+        return "no adv. training"
+    atks = v[3:].split("+")
+    return "adv. training, all four" if len(atks) == 4 else "adv. training, " + "+".join(ATK.get(a, a) for a in atks)
+
+
+def advtrain_fig_and_table(res: Path, out: Path):
+    rows = read(res / "advtrain_grid" / "summary_advtrain.csv")
+    if not rows:
+        return
+    runs = seed_runs(res / "advtrain_grid")
+    ds = datasets_in(rows)
+    variants = []
+    for r in rows:
+        if r["at"] not in variants:
+            variants.append(r["at"])
+    delay = next((r["learning"] for r in rows if r["learning"].startswith("delay:")), None)
+    fig, axes = panels(len(ds))
+    body = []
+    for ax, d in zip(axes, ds):
+        atks = [a for a in ATK if pick(rows, dataset=d, scenario=f"{a}/attack_only/feasible", learning="frozen")]
+        # one group per attack (evasion), then one for the price: false alarms on clean traffic
+        x = np.append(np.arange(len(atks)), len(atks) + 0.4)
+        w = 0.8 / max(1, len(variants))
+        for k, v in enumerate(variants):
+            pts = [stat(pick(rows, dataset=d, at=v, scenario=f"{a}/attack_only/feasible", learning="frozen"),
+                        runs, "asr", dataset=d, at=v, scenario=f"{a}/attack_only/feasible", learning="frozen")
+                   for a in atks]
+            pts.append(stat(pick(rows, dataset=d, at=v, scenario="clean", learning="frozen"), runs, "fpr",
+                            dataset=d, at=v, scenario="clean", learning="frozen"))
+            xs = x + (k - (len(variants) - 1) / 2) * w
+            means = bar_group(ax, xs, pts, w * 0.92, k, at_label(v))
+            seen = v[3:].split("+") if v != "none" else []
+            for xi, mi, a in zip(xs, means, atks):
+                if seen and a not in seen and mi == mi:   # attacks this detector never trained on
+                    ax.annotate("unseen", (xi, mi), xytext=(0, 3), textcoords="offset points", ha="center",
+                                va="bottom", fontsize=5.5, color=INK2, rotation=90)
+        ax.axvline(len(atks) - 0.3, color=GREY, linewidth=0.6, linestyle=":")
+        ax.set_xticks(x, [ATK[a] for a in atks] + ["false alarms\n(clean)"])
+        ax.set_title(NAMES.get(d, d))
+        for v in variants:
+            cells = [esc(NAMES.get(d, d)), esc(at_label(v))]
+            cells.append(fmt(*ms(pick(rows, dataset=d, at=v, scenario="clean", learning="frozen"), "fpr")))
+            if delay:
+                cells.append(fmt(*ms(pick(rows, dataset=d, at=v, scenario="clean", learning=delay), "fpr")))
+            cells += [fmt(*ms(pick(rows, dataset=d, at=v, scenario=f"{a}/attack_only/feasible", learning="frozen"),
+                              "asr")) for a in atks]
+            if delay:
+                cells += [fmt(*ms(pick(rows, dataset=d, at=v, scenario=f"{a}/attack_only/feasible", learning=delay),
+                                  "asr")) for a in ("pgd", "cw")]
+            body.append(cells)
+    axes[0].set_ylabel("Evading DDoS / flagged benign (%)")
+    top_legend(fig, axes)
+    save(fig, out, "fig_advtrain")
+    dl = delay.split(":")[1] if delay else ""
+    header = ["Dataset", "Detector", "FPR, no labels"] + ([f"FPR, delay {dl}"] if delay else []) \
+        + [f"{esc(ATK[a])}" for a in ATK] + ([f"PGD, delay {dl}", f"C\\&W, delay {dl}"] if delay else [])
+    write_tex(out, "tab_advtrain", "Adversarial-training baseline: false-positive rate on clean traffic and "
+              "evasion rate (\\% of perturbed DDoS flows classified benign) of the repaired attacks, with no "
+              f"labels during the test{' and with labels ' + dl + ' flows late' if delay else ''}; mean "
+              "$\\pm$ std over seeds. The detector trains on one repaired adversarial copy of each DDoS "
+              "training flow, crafted on the defender's own surrogate.", "tab:advtrain",
+              header, body, "ll" + "c" * (len(header) - 2))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Paper figures and tables from the grid results.")
     ap.add_argument("--results", default=str(ROOT / "results"))
@@ -601,7 +669,7 @@ def main() -> int:
     res = Path(args.results)
     out = Path(args.out) if args.out else res / "paper"
     for step in (repro_table, attack_fig_and_table, label_delay_fig, radp_fig_and_table, loop_figs_and_table,
-                 audit_tradeoff):
+                 audit_tradeoff, advtrain_fig_and_table):
         try:
             step(res, out)
         except Exception as exc:  # one broken input must not stop the others

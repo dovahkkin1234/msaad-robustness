@@ -1,0 +1,48 @@
+[loaders] file order, stride sampling: 334,569 rows pass the filter; taking 30,000 evenly spaced (about 1 in 11.2)
+[loaders] skipping non-numeric or NaN/inf values in 2 column(s), e.g. ['Flow_Byts/s', 'Flow_Pkts/s']
+[advtrain] iotid20: 30,000 rows x 79 features; train 20,100 (17,662 DDoS) / test 9,900; seed 1; copies feasible
+[attack] fgsm/attack_only: surrogate fooled on 78.05% of perturbed rows; infeasible 99.94%
+[attack] bim/attack_only: surrogate fooled on 80.85% of perturbed rows; infeasible 99.94%
+[attack] pgd/attack_only: surrogate fooled on 80.89% of perturbed rows; infeasible 100.0%
+[attack] cw/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 99.55%
+[advtrain] none: trained on 20,100 flows (0 adversarial copies) in 420.1s
+[advtrain] none                 clean                      frozen      acc  99.48  fpr   3.67  rec  99.93  asr      -  (7.7s)
+[advtrain] none                 clean                      delay:1000  acc  99.48  fpr   3.34  rec  99.88  asr      -  (63.8s)
+[advtrain] none                 fgsm/attack_only           frozen      acc  82.19  fpr   3.67  rec  80.19  asr  19.81  (8.3s)
+[advtrain] none                 fgsm/attack_only/feasible  frozen      acc  85.12  fpr   3.67  rec  83.54  asr  16.46  (8.4s)
+[advtrain] none                 bim/attack_only            frozen      acc  82.52  fpr   3.67  rec  80.56  asr  19.44  (8.4s)
+[advtrain] none                 bim/attack_only/feasible   frozen      acc  82.76  fpr   3.67  rec  80.84  asr  19.16  (8.5s)
+[advtrain] none                 pgd/attack_only            frozen      acc  82.96  fpr   3.67  rec  81.07  asr  18.93  (8.5s)
+[advtrain] none                 pgd/attack_only/feasible   frozen      acc  82.37  fpr   3.67  rec  80.40  asr   19.6  (8.7s)
+[advtrain] none                 pgd/attack_only/feasible   delay:1000  acc  97.72  fpr   2.77  rec  97.79  asr   2.21  (64.6s)
+[advtrain] none                 cw/attack_only             frozen      acc  93.27  fpr   3.67  rec  92.84  asr   7.16  (8.4s)
+[advtrain] none                 cw/attack_only/feasible    frozen      acc  95.35  fpr   3.67  rec  95.22  asr   4.78  (8.3s)
+[advtrain] none                 cw/attack_only/feasible    delay:1000  acc  98.83  fpr   4.07  rec  99.24  asr   0.76  (65.8s)
+[advtrain] at:pgd: trained on 37,762 flows (17,662 adversarial copies) in 228.5s; pgd: fools own surrogate 33.52%
+[advtrain] at:pgd               clean                      frozen      acc  99.48  fpr   4.16  rec 100.00  asr      -  (6.2s)
+[advtrain] at:pgd               clean                      delay:1000  acc  99.42  fpr   4.56  rec  99.99  asr      -  (61.0s)
+[advtrain] at:pgd               fgsm/attack_only           frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (6.6s)
+[advtrain] at:pgd               fgsm/attack_only/feasible  frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (6.7s)
+[advtrain] at:pgd               bim/attack_only            frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (6.8s)
+[advtrain] at:pgd               bim/attack_only/feasible   frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (6.8s)
+[advtrain] at:pgd               pgd/attack_only            frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (6.8s)
+[advtrain] at:pgd               pgd/attack_only/feasible   frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (6.8s)
+[advtrain] at:pgd               pgd/attack_only/feasible   delay:1000  acc  99.47  fpr   4.24  rec 100.00  asr    0.0  (61.5s)
+[advtrain] at:pgd               cw/attack_only             frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (7.1s)
+[advtrain] at:pgd               cw/attack_only/feasible    frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (7.0s)
+[advtrain] at:pgd               cw/attack_only/feasible    delay:1000  acc  99.44  fpr   4.24  rec  99.97  asr   0.03  (63.0s)
+[advtrain] at:fgsm+bim+pgd+cw: trained on 37,762 flows (17,662 adversarial copies) in 260.7s; fgsm: fools own surrogate 32.99%; bim: fools own surrogate 33.81%; pgd: fools own surrogate 33.18%; cw: fools own surrogate 0.29%
+[advtrain] at:fgsm+bim+pgd+cw   clean                      frozen      acc  99.23  fpr   6.03  rec  99.98  asr      -  (9.4s)
+[advtrain] at:fgsm+bim+pgd+cw   clean                      delay:1000  acc  99.46  fpr   4.16  rec  99.98  asr      -  (207.1s)
+[advtrain] at:fgsm+bim+pgd+cw   fgsm/attack_only           frozen      acc  99.22  fpr   6.03  rec  99.97  asr   0.03  (43.0s)
+[advtrain] at:fgsm+bim+pgd+cw   fgsm/attack_only/feasible  frozen      acc  99.22  fpr   6.03  rec  99.97  asr   0.03  (43.6s)
+[advtrain] at:fgsm+bim+pgd+cw   bim/attack_only            frozen      acc  99.17  fpr   6.03  rec  99.91  asr   0.09  (43.5s)
+[advtrain] at:fgsm+bim+pgd+cw   bim/attack_only/feasible   frozen      acc  99.21  fpr   6.03  rec  99.95  asr   0.05  (45.1s)
+[advtrain] at:fgsm+bim+pgd+cw   pgd/attack_only            frozen      acc  98.86  fpr   6.03  rec  99.55  asr   0.45  (43.6s)
+[advtrain] at:fgsm+bim+pgd+cw   pgd/attack_only/feasible   frozen      acc  99.09  fpr   6.03  rec  99.82  asr   0.18  (42.6s)
+[advtrain] at:fgsm+bim+pgd+cw   pgd/attack_only/feasible   delay:1000  acc  99.53  fpr   3.59  rec  99.97  asr   0.03  (284.4s)
+[advtrain] at:fgsm+bim+pgd+cw   cw/attack_only             frozen      acc  99.24  fpr   6.03  rec  99.99  asr   0.01  (44.1s)
+[advtrain] at:fgsm+bim+pgd+cw   cw/attack_only/feasible    frozen      acc  99.24  fpr   6.03  rec  99.99  asr   0.01  (44.6s)
+[advtrain] at:fgsm+bim+pgd+cw   cw/attack_only/feasible    delay:1000  acc  99.48  fpr   3.75  rec  99.94  asr   0.06  (292.0s)
+
+[advtrain] done in 45.2 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\advtrain_grid\iotid20_seed1.json and iotid20_seed1.csv

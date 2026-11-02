@@ -5,7 +5,7 @@ time (one CPU core each), saves every result as JSON plus a log, and finally pri
 mean +/- std over seeds and writes a summary CSV. Finished runs are skipped when you start
 it again, so an interrupted overnight grid simply resumes.
 
-Four experiments:
+Five experiments:
   --exp repro   (default) experiments/repro_baseline.py — clean prequential reproduction;
                 results in results\\grid, summary per dataset.
   --exp attack  experiments/under_attack.py — the under-attack scenarios; results in
@@ -15,6 +15,9 @@ Four experiments:
   --exp loop    experiments/adaptation_loop.py — S4: label poisoning, selector steering and
                 the audited / guarded defence; results in results\\loop_grid, summary per
                 policy x scenario x label source.
+  --exp advtrain  experiments/adv_training.py — adversarial-training baseline: MABTSE trained
+                with adversarial copies of its DDoS training flows, under the same attacks;
+                results in results\\advtrain_grid, summary per variant x scenario x label mode.
 
 Usage (from the repo root, msaad environment active):
     python experiments\\run_grid.py --data iotid20 iotid20_campaign ciciot2023 --seeds 1 2 3 --jobs 4
@@ -22,6 +25,7 @@ Usage (from the repo root, msaad environment active):
     python experiments\\run_grid.py --exp attack --data iotid20 --seeds 1 2 3 --jobs 3 --tag labels --learning delay:100 delay:1000 self
     python experiments\\run_grid.py --exp radp --data iotid20 --seeds 1 2 3 --jobs 3
     python experiments\\run_grid.py --exp loop --data iotid20 ciciot2023 --jobs 3
+    python experiments\\run_grid.py --exp advtrain --data iotid20 ciciot2023 --jobs 3
     python experiments\\run_grid.py --exp loop --data iotid20 ciciot2023 --jobs 3 --tag iw --policies iwstrict:0.05 iwstrict:0.1 iwstrict:0.2
 Options:
     --limit N    rows per run (default: the config's limit for that experiment)
@@ -56,9 +60,11 @@ ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = {"repro": ROOT / "experiments" / "repro_baseline.py",
            "attack": ROOT / "experiments" / "under_attack.py",
            "radp": ROOT / "experiments" / "radp_defense.py",
-           "loop": ROOT / "experiments" / "adaptation_loop.py"}
+           "loop": ROOT / "experiments" / "adaptation_loop.py",
+           "advtrain": ROOT / "experiments" / "adv_training.py"}
 OUTDIRS = {"repro": ROOT / "results" / "grid", "attack": ROOT / "results" / "attack_grid",
-           "radp": ROOT / "results" / "radp_grid", "loop": ROOT / "results" / "loop_grid"}
+           "radp": ROOT / "results" / "radp_grid", "loop": ROOT / "results" / "loop_grid",
+           "advtrain": ROOT / "results" / "advtrain_grid"}
 REPRO_METRICS = ["accuracy", "precision", "recall", "f1", "fpr", "throughput_sps"]
 ATTACK_METRICS = ["accuracy", "recall", "f1", "fpr", "asr", "evasion_gain", "drifts_total"]
 RADP_METRICS = ["rad_flag_ddos", "benign_deleted", "asr_no_radp", "e2e_asr", "recovered_acc",
@@ -66,6 +72,7 @@ RADP_METRICS = ["rad_flag_ddos", "benign_deleted", "asr_no_radp", "e2e_asr", "re
 ARMS = ["ARF-ADWIN", "ARF-DDM", "SRP-ADWIN", "SRP-DDM", "KNN-ADWIN"]
 LOOP_METRICS = (["accuracy", "fpr", "asr", "poison_gain", "evasion_gain", "n_skipped"]
                 + [f"sel_{a}" for a in ARMS])
+ADV_METRICS = ["accuracy", "fpr", "recall", "asr", "clean_miss", "evasion_gain"]
 PRINTED = {"loop": 6}   # the loop summary prints its first metrics; the CSV has all of them
 
 
@@ -133,12 +140,13 @@ def _summarise_repro(datasets, seeds, outdir: Path, tag: str) -> None:
 def _summarise_scenarios(datasets, seeds, outdir: Path, tag: str, exp: str) -> None:
     """Attack, RADP and loop grids: mean +/- std over seeds per
     (dataset, [RAD | policy,] scenario, learning)."""
-    metrics = {"attack": ATTACK_METRICS, "radp": RADP_METRICS, "loop": LOOP_METRICS}[exp]
-    key = {"radp": "rad", "loop": "policy"}.get(exp, "")
+    metrics = {"attack": ATTACK_METRICS, "radp": RADP_METRICS, "loop": LOOP_METRICS,
+               "advtrain": ADV_METRICS}[exp]
+    key = {"radp": "rad", "loop": "policy", "advtrain": "at"}.get(exp, "")
     shown = PRINTED.get(exp, len(metrics))
     rows = []
     print(f"\n=== {exp} grid summary (mean +/- std over seeds) ===")
-    print(f"  {'dataset':<16} {key:<14} {'scenario':<28} {'learning':<11} "
+    print(f"  {'dataset':<16} {key:<20} {'scenario':<28} {'learning':<11} "
           f"{'seeds':>5}  " + "  ".join(f"{m[:15]:>15}" for m in metrics[:shown]))
     for d in datasets:
         groups = defaultdict(list)
@@ -157,7 +165,7 @@ def _summarise_scenarios(datasets, seeds, outdir: Path, tag: str, exp: str) -> N
                 row[f"{m}_std"] = None if std is None else round(std, 3)
                 cells.append("-" if mean is None else f"{mean:7.2f} +/- {std:5.2f}")
             rows.append(row)
-            print(f"  {d:<16} {k0:<14} {scenario:<28} {learning:<11} {len(res):>5}  "
+            print(f"  {d:<16} {k0:<20} {scenario:<28} {learning:<11} {len(res):>5}  "
                   + "  ".join(f"{c:>15}" for c in cells[:shown]))
     _write_csv(rows, outdir / (f"summary_{exp}" + (f"_{tag}" if tag else "") + ".csv"))
 

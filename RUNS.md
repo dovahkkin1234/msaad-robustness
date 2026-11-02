@@ -52,6 +52,15 @@ Reconstructed from the result files and the project notes; times are when the ru
 - **Results:**
   - `results/provenance`: data_sha256.csv (new), environment.yml (new), pip_freeze.txt (new)
 
+### 2026-11-02 14:53 (UTC+05:30) - advtrain grid: iotid20, ciciot2023 x seeds 1, 2, 3
+
+- **Command:** `python experiments\run_grid.py --exp advtrain --data iotid20 ciciot2023 --jobs 3 --push`
+- **Runs:** 6 ok, 0 failed; 78.2 min (2026-11-02 13:35:44 to 2026-11-02 14:53:58)
+- **Code version:** c46009e; this commit also changes 15 code/document file(s): `.gitignore`, `PLAN.md`, `PLAN.pdf`, `README.md`, `SETUP.md`, `SETUP.pdf`, `configs/base.yaml`, `experiments/run_grid.py` ...
+- **Results:**
+  - `results`: grid_runs.jsonl (new)
+  - `results/advtrain_grid`: 6 new CSV; 6 new JSON; 6 new log; summary_advtrain.csv (new)
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->
@@ -114,6 +123,12 @@ Reconstructed from the result files and the project notes; times are when the ru
 | 2026-11-02 00:14:38 | loop grid | ciciot2023 | 2 | iw | 30,000 | 13.0 | `results/loop_grid/ciciot2023_seed2_iw.json` |
 | 2026-11-02 00:14:55 | loop grid | ciciot2023 | 1 | iw | 30,000 | 13.3 | `results/loop_grid/ciciot2023_seed1_iw.json` |
 | 2026-11-02 00:17:18 | loop grid | ciciot2023 | 3 | iw | 30,000 | 15.4 | `results/loop_grid/ciciot2023_seed3_iw.json` |
+| 2026-11-02 14:18:59 | advtrain_grid | iotid20 | 3 |  | 30,000 | 43.2 | `results/advtrain_grid/iotid20_seed3.json` |
+| 2026-11-02 14:20:21 | advtrain_grid | iotid20 | 2 |  | 30,000 | 44.6 | `results/advtrain_grid/iotid20_seed2.json` |
+| 2026-11-02 14:20:57 | advtrain_grid | iotid20 | 1 |  | 30,000 | 45.2 | `results/advtrain_grid/iotid20_seed1.json` |
+| 2026-11-02 14:53:38 | advtrain_grid | ciciot2023 | 1 |  | 30,000 | 34.6 | `results/advtrain_grid/ciciot2023_seed1.json` |
+| 2026-11-02 14:53:38 | advtrain_grid | ciciot2023 | 2 |  | 30,000 | 33.3 | `results/advtrain_grid/ciciot2023_seed2.json` |
+| 2026-11-02 14:53:58 | advtrain_grid | ciciot2023 | 3 |  | 30,000 | 33.0 | `results/advtrain_grid/ciciot2023_seed3.json` |
 
 Dataset reports: `results/inspect_IoT_Network_Intrusion_Dataset.txt`, `results/inspect_part-00000.txt`
 <!-- history:end -->

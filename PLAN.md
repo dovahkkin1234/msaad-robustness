@@ -21,6 +21,7 @@ Research notes for the paper — facts and numbers to build on, not paper text.
 | S3 RADP (Layer 1): MSAPG + GAN + RAD + purification | **done, 3 seeds, both datasets** (F12) |
 | S4 adaptation-loop study + defence | **done, 3 seeds, both datasets (F9) + sweep (F9b)** |
 | S4 importance-weighted strict (IW-strict) | **done, 3 seeds, both datasets (F14)** |
+| Adversarial-training baseline (v13) | **running (2 Nov)**: code tested, grid on the laptop |
 | Figures and tables | generated from the real results; IW-strict included automatically |
 
 **Where we stand (2 Nov).** Every planned experiment has run on both datasets with three
@@ -42,10 +43,22 @@ in `RUNS.md` and pushed to the private repository (Step 15).
 | 4 | Attack grid CICIoT2023, then label grid on both datasets | Steps 10, 11 | `summary_attack.csv`, `summary_attack_labels.csv` | done (F10, F11) |
 | 5 | RADP grid, both datasets | Step 12 | `results\radp_grid\summary_radp.csv` | done (F12) |
 | 6 | Adaptation-loop grid (S4), both datasets | Step 13 | `results\loop_grid\summary_loop.csv` | done (F9) |
-| 8 | S4 sweep: smaller q, other audit rates | Step 13 part 4, `--tag sweep` | `results\loop_grid` (zip) | done (F9b); per-seed JSONs still to send |
+| 8 | S4 sweep: smaller q, other audit rates | Step 13 part 4, `--tag sweep` | `results\loop_grid` (zip) | done (F9b); per-seed JSONs in the repository |
 | 9 | IW-strict grid (v10), both datasets, 57 min | Step 13 part 5, `--tag iw` | `results\loop_grid\summary_loop_iw.csv` | done (F14) |
-| 10 | Private GitHub repository; push after every run (`--push`) | Step 15 | the pushed repository (zips until Claude can read it) | set up before #9 |
-| 7 | Figures and tables | Step 14 | the `results\paper` folder (zip it) | done on current results; re-run after #9 |
+| 10 | Private GitHub repository; push after every run (`--push`) | Step 15 | the pushed repository | done (2 Nov) |
+| 7 | Figures and tables | Step 14 | the `results\paper` folder (zip it) | done on current results; re-run after #11 |
+| 11 | Adversarial-training baseline (v13), both datasets, ~3 h | Step 16, `--exp advtrain` | `results\advtrain_grid\summary_advtrain.csv` | running (2 Nov) |
+
+**Why #11.** The first question a reviewer asks of an evasion result is "why not adversarial
+training?". Three detectors per run, identical attacker: no adversarial training, trained on
+repaired PGD copies only (FGSM, BIM and C&W unseen; BIM is a near-copy of PGD), and trained on all four attacks. Expected
+outcomes and what each means for the paper: (a) it stops evasion without labels at little
+false-alarm cost → a strong second baseline, and the paper compares it with the label-channel
+defence; (b) it helps on seen attacks only, or costs many false alarms → evidence that the
+label channel, not the detector's training data, is where robustness has to come from. Either
+outcome goes in the paper. Limitation to state: the attacker is not adaptive (it does not
+re-train against the hardened detector), so the numbers are an upper bound on what adversarial
+training buys.
 
 **F1 — The clean result reproduces.** IoTID20, P1 (file order), 50,000 flows, 3 seeds,
 mean ± std. The seeds vary only the models' randomness; every seed sees the same flows.

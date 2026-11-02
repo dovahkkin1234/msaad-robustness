@@ -1,5 +1,5 @@
 # Datasets are never committed (size and licences); their SHA-256 hashes go in results/provenance.
-data/
+/data/
 
 # Python caches
 __pycache__/

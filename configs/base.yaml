@@ -106,3 +106,11 @@ loop:
   variants: [feasible]      # raw and/or feasible (repaired, valid traffic: the realistic attacker)
   labels: ["true", "poison:0.5", "poison:1.0"]       # share q of attacker flows labelled benign
   policies: ["vanilla", "audit:0.1", "guard:0.1", "strict:0.1"]   # a = audited share
+
+# ---- Defaults for experiments/adv_training.py (adversarial-training baseline) -------------
+advtrain:
+  variants: ["none", "at:pgd", "at:fgsm+bim+pgd+cw"]  # none = baseline; at:<attacks> = one adversarial
+                            # copy (labelled DDoS) per DDoS training flow, made with those attacks in turn
+  copies: feasible          # repair the copies to valid traffic (feasible) or keep them raw
+  learning: [frozen, "delay:1000"]   # test-stream label modes (delay covers clean + repaired attacks)
+  defender_seed_offset: 1000  # the defender's surrogate uses a different seed from the attacker's

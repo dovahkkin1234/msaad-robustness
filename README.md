@@ -13,7 +13,7 @@ nothing here generates traffic or runs against any live system.
 
 ---
 
-## What is here (stages S0–S4, v12)
+## What is here (stages S0–S4 + adversarial-training baseline, v13)
 
 ```
 msaad-robustness/
@@ -54,12 +54,14 @@ msaad-robustness/
 │   ├── under_attack.py       # S3: the paper's Scenario 2 + label modes (online/frozen/delay/self)
 │   ├── radp_defense.py       # S3: the paper's Scenario 3 — RADP vs raw and realistic attacks
 │   ├── adaptation_loop.py    # S4: label poisoning, selector steering; audit/guard/strict/IW-strict policies
+│   ├── adv_training.py       # baseline defence: MABTSE trained on repaired adversarial copies
 │   └── run_grid.py           # many runs in parallel (datasets x seeds) + mean/std summary
 └── tests/
     ├── smoke_test.py         # pipeline self-check (no data needed)
     ├── attack_smoke_test.py  # attack-stack self-check (no data needed)
     ├── radp_smoke_test.py    # RADP + label-mode self-check (no data needed)
-    └── loop_smoke_test.py    # S4 self-check (no data needed)
+    ├── loop_smoke_test.py    # S4 self-check (no data needed)
+    └── advtrain_smoke_test.py  # adversarial-training self-check (no data needed)
 ```
 
 ## Quick start
@@ -75,6 +77,7 @@ python tests\smoke_test.py                                   # expect [smoke] PA
 python tests\attack_smoke_test.py                            # expect [attack-smoke] PASS
 python tests\radp_smoke_test.py                              # expect [radp-smoke] PASS
 python tests\loop_smoke_test.py                              # expect [loop-smoke] PASS
+python tests\advtrain_smoke_test.py                          # expect [advtrain-smoke] PASS
 python scripts\inspect_dataset.py ".\data\iotid20\IoT_Network_Intrusion_Dataset.csv"
 python experiments\repro_baseline.py --data iotid20          # P1: file order (paper setup)
 python experiments\repro_baseline.py --data iotid20_campaign # P2: attack campaigns in time order
