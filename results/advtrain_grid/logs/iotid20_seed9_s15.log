@@ -1,0 +1,35 @@
+[loaders] file order, stride sampling: 334,569 rows pass the filter; taking 30,000 evenly spaced (about 1 in 11.2)
+[loaders] skipping non-numeric or NaN/inf values in 2 column(s), e.g. ['Flow_Byts/s', 'Flow_Pkts/s']
+[advtrain] iotid20: 30,000 rows x 79 features; train 20,100 (17,662 DDoS) / test 9,900; seed 9; copies feasible
+[attack] fgsm/attack_only: surrogate fooled on 57.33% of perturbed rows; infeasible 99.99%
+[attack] bim/attack_only: surrogate fooled on 62.34% of perturbed rows; infeasible 99.99%
+[attack] pgd/attack_only: surrogate fooled on 62.29% of perturbed rows; infeasible 100.0%
+[attack] cw/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 99.54%
+[advtrain] none: trained on 20,100 flows (0 adversarial copies) in 125.5s
+[advtrain] none                 clean                      frozen      acc  99.45  fpr   3.59  rec  99.88  asr      -  (7.5s)
+[advtrain] none                 clean                      delay:1000  acc  99.55  fpr   3.26  rec  99.94  asr      -  (65.0s)
+[advtrain] none                 fgsm/attack_only           frozen      acc  83.04  fpr   3.59  rec  81.15  asr  18.85  (8.5s)
+[advtrain] none                 fgsm/attack_only/feasible  frozen      acc  84.17  fpr   3.59  rec  82.44  asr  17.56  (8.7s)
+[advtrain] none                 bim/attack_only            frozen      acc  83.93  fpr   3.59  rec  82.16  asr  17.84  (8.4s)
+[advtrain] none                 bim/attack_only/feasible   frozen      acc  85.20  fpr   3.59  rec  83.62  asr  16.38  (8.7s)
+[advtrain] none                 pgd/attack_only            frozen      acc  83.58  fpr   3.59  rec  81.76  asr  18.24  (8.6s)
+[advtrain] none                 pgd/attack_only/feasible   frozen      acc  85.09  fpr   3.59  rec  83.49  asr  16.51  (8.7s)
+[advtrain] none                 pgd/attack_only/feasible   delay:1000  acc  98.04  fpr   2.44  rec  98.11  asr   1.89  (66.3s)
+[advtrain] none                 cw/attack_only             frozen      acc  89.54  fpr   3.59  rec  88.56  asr  11.44  (8.8s)
+[advtrain] none                 cw/attack_only/feasible    frozen      acc  89.95  fpr   3.59  rec  89.03  asr  10.97  (9.1s)
+[advtrain] none                 cw/attack_only/feasible    delay:1000  acc  98.20  fpr   4.16  rec  98.54  asr   1.46  (68.3s)
+[advtrain] at:pgd: trained on 37,762 flows (17,662 adversarial copies) in 243.9s; pgd: fools own surrogate 39.13%
+[advtrain] at:pgd               clean                      frozen      acc  99.26  fpr   5.87  rec  99.99  asr      -  (8.6s)
+[advtrain] at:pgd               clean                      delay:1000  acc  99.29  fpr   5.54  rec  99.98  asr      -  (67.6s)
+[advtrain] at:pgd               fgsm/attack_only           frozen      acc  99.27  fpr   5.87  rec 100.00  asr    0.0  (8.5s)
+[advtrain] at:pgd               fgsm/attack_only/feasible  frozen      acc  99.27  fpr   5.87  rec 100.00  asr    0.0  (8.5s)
+[advtrain] at:pgd               bim/attack_only            frozen      acc  99.27  fpr   5.87  rec 100.00  asr    0.0  (8.5s)
+[advtrain] at:pgd               bim/attack_only/feasible   frozen      acc  99.27  fpr   5.87  rec 100.00  asr    0.0  (8.4s)
+[advtrain] at:pgd               pgd/attack_only            frozen      acc  99.27  fpr   5.87  rec 100.00  asr    0.0  (8.4s)
+[advtrain] at:pgd               pgd/attack_only/feasible   frozen      acc  99.27  fpr   5.87  rec 100.00  asr    0.0  (8.6s)
+[advtrain] at:pgd               pgd/attack_only/feasible   delay:1000  acc  99.47  fpr   4.24  rec 100.00  asr    0.0  (66.3s)
+[advtrain] at:pgd               cw/attack_only             frozen      acc  99.25  fpr   5.87  rec  99.98  asr   0.02  (8.8s)
+[advtrain] at:pgd               cw/attack_only/feasible    frozen      acc  99.25  fpr   5.87  rec  99.98  asr   0.02  (8.7s)
+[advtrain] at:pgd               cw/attack_only/feasible    delay:1000  acc  99.25  fpr   5.95  rec  99.99  asr   0.01  (73.8s)
+
+[advtrain] done in 17.7 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\advtrain_grid\iotid20_seed9_s15.json and iotid20_seed9_s15.csv
