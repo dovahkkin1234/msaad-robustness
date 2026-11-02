@@ -1,0 +1,17 @@
+scenario,attack,perturb,variant,learning,n,accuracy,precision,recall,f1,fpr,tp,fp,tn,fn,attack_share,majority_accuracy,asr,clean_miss,evasion_gain,benign_flip,clean_fpr_same_rows,drifts_total,seconds
+clean,,,clean,online,9900,99.54,99.51,99.97,99.74,3.5,8670,43,1184,3,87.61,87.61,,,,,,10,68.0
+clean,,,clean,frozen,9900,99.54,99.55,99.92,99.74,3.18,8666,39,1188,7,87.61,87.61,,,,,,0,7.5
+clean,,,clean,delay:1000,9900,99.54,99.55,99.92,99.74,3.18,8666,39,1188,7,87.61,87.61,,,,,,10,65.6
+clean,,,clean,delay:5000,9900,99.55,99.55,99.93,99.74,3.18,8667,39,1188,6,87.61,87.61,,,,,,6,38.9
+pgd/attack_only,pgd,attack_only,raw,online,9900,99.77,99.76,99.98,99.87,1.71,8671,21,1206,2,87.61,87.61,0.02,0.03,-0.01,,,10,67.7
+pgd/attack_only,pgd,attack_only,raw,frozen,9900,91.72,99.51,91.0,95.06,3.18,7892,39,1188,781,87.61,87.61,9.0,0.08,8.92,,,0,8.4
+pgd/attack_only,pgd,attack_only,raw,delay:1000,9900,98.84,99.67,99.0,99.33,2.28,8586,28,1199,87,87.61,87.61,1.0,0.08,0.92,,,10,65.3
+pgd/attack_only,pgd,attack_only,raw,delay:5000,9900,95.45,99.57,95.23,97.35,2.93,8259,36,1191,414,87.61,87.61,4.77,0.07,4.7,,,8,39.9
+pgd/attack_only/feasible,pgd,attack_only,feasible,online,9900,99.65,99.7,99.9,99.8,2.12,8664,26,1201,9,87.61,87.61,0.1,0.03,0.07,,,21,68.3
+pgd/attack_only/feasible,pgd,attack_only,feasible,frozen,9900,84.92,99.46,83.24,90.63,3.18,7219,39,1188,1454,87.61,87.61,16.76,0.08,16.68,,,0,8.7
+cw/attack_only,cw,attack_only,raw,online,9900,99.47,99.46,99.94,99.7,3.83,8668,47,1180,5,87.61,87.61,0.06,0.03,0.03,,,11,70.8
+cw/attack_only,cw,attack_only,raw,frozen,9900,88.85,99.49,87.72,93.24,3.18,7608,39,1188,1065,87.61,87.61,12.28,0.08,12.2,,,0,8.1
+cw/attack_only,cw,attack_only,raw,delay:1000,9900,97.86,99.38,98.17,98.77,4.32,8514,53,1174,159,87.61,87.61,1.83,0.08,1.75,,,10,69.0
+cw/attack_only,cw,attack_only,raw,delay:5000,9900,93.27,99.42,92.86,96.03,3.83,8054,47,1180,619,87.61,87.61,7.14,0.07,7.07,,,5,40.6
+cw/attack_only/feasible,cw,attack_only,feasible,online,9900,99.44,99.47,99.9,99.68,3.75,8664,46,1181,9,87.61,87.61,0.1,0.03,0.07,,,14,71.0
+cw/attack_only/feasible,cw,attack_only,feasible,frozen,9900,88.98,99.49,87.87,93.32,3.18,7621,39,1188,1052,87.61,87.61,12.13,0.08,12.05,,,0,8.3

@@ -1,0 +1,24 @@
+[loaders] file order, stride sampling: 883,690 rows pass the filter; taking 30,000 evenly spaced (about 1 in 29.5)
+[attack] ciciot2023: 30,000 rows x 46 features; train 20,100 / test 9,900 (test DDoS share 96.6%), seed 6
+[attack] surrogate mlp: train acc 99.99%, clean test acc 99.97%
+[attack] constraints: 10 constant, 11 binary, 1 categorical, 0 integer, 36 non-negative, 1 equality groups, 3 orderings
+[attack] pgd/attack_only: surrogate fooled on 4.87% of perturbed rows; infeasible 100.0%
+[attack] cw/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 99.94%
+[attack] clean                      online     acc  99.72  rec  99.91  f1  99.85  fpr   5.71  asr      -  drifts   0  (39.5s)
+[attack] clean                      frozen     acc  99.69  rec  99.93  f1  99.84  fpr   7.21  asr      -  drifts   0  (2.4s)
+[attack] clean                      delay:1000 acc  99.82  rec  99.96  f1  99.91  fpr   4.20  asr      -  drifts   0  (37.5s)
+[attack] clean                      delay:5000 acc  99.76  rec  99.95  f1  99.87  fpr   5.71  asr      -  drifts   0  (21.4s)
+[attack] pgd/attack_only            online     acc  99.91  rec  99.99  f1  99.95  fpr   2.40  asr   0.01  drifts   5  (41.5s)
+[attack] pgd/attack_only            frozen     acc  76.18  rec  75.60  f1  85.98  fpr   7.21  asr   24.4  drifts   0  (3.0s)
+[attack] pgd/attack_only            delay:1000 acc  97.71  rec  97.71  f1  98.80  fpr   2.40  asr   2.29  drifts   5  (39.2s)
+[attack] pgd/attack_only            delay:5000 acc  88.36  rec  88.12  f1  93.60  fpr   4.50  asr  11.88  drifts   3  (23.7s)
+[attack] pgd/attack_only/feasible   online     acc  99.89  rec  99.97  f1  99.94  fpr   2.40  asr   0.03  drifts  11  (40.1s)
+[attack] pgd/attack_only/feasible   frozen     acc  89.58  rec  89.46  f1  94.31  fpr   7.21  asr  10.54  drifts   0  (2.7s)
+[attack] cw/attack_only             online     acc  99.83  rec  99.94  f1  99.91  fpr   3.30  asr   0.06  drifts  10  (42.6s)
+[attack] cw/attack_only             frozen     acc  94.70  rec  94.76  f1  97.19  fpr   7.21  asr   5.24  drifts   0  (3.2s)
+[attack] cw/attack_only             delay:1000 acc  99.36  rec  99.48  f1  99.67  fpr   3.90  asr   0.52  drifts   9  (43.0s)
+[attack] cw/attack_only             delay:5000 acc  97.31  rec  97.41  f1  98.59  fpr   5.41  asr   2.59  drifts   8  (23.7s)
+[attack] cw/attack_only/feasible    online     acc  99.79  rec  99.95  f1  99.89  fpr   4.80  asr   0.05  drifts   7  (41.3s)
+[attack] cw/attack_only/feasible    frozen     acc  95.12  rec  95.20  f1  97.42  fpr   7.21  asr    4.8  drifts   0  (3.0s)
+
+[attack] done in 9.0 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\attack_grid\ciciot2023_seed6_s15.json and ciciot2023_seed6_s15.csv

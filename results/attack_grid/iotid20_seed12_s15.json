@@ -1,0 +1,851 @@
+{
+  "dataset": "iotid20",
+  "seed": 12,
+  "n": 30000,
+  "n_train": 20100,
+  "n_test": 9900,
+  "n_features": 79,
+  "test_ddos_share": 87.61,
+  "settings": {
+    "limit": 30000,
+    "train_frac": 0.67,
+    "eps": 0.1,
+    "attacks": [
+      "pgd",
+      "cw"
+    ],
+    "perturb": [
+      "attack_only"
+    ],
+    "surrogate": "mlp",
+    "feasible": true,
+    "learning": [
+      "online",
+      "frozen",
+      "delay:1000",
+      "delay:5000"
+    ],
+    "attack_params": {
+      "pgd": {
+        "step": 0.025,
+        "iters": 20,
+        "random_start": true
+      },
+      "cw": {
+        "confidence": 0.0,
+        "lr": 0.01,
+        "iters": 100,
+        "search_steps": 6,
+        "c_init": 1.0
+      }
+    }
+  },
+  "surrogate": {
+    "kind": "mlp",
+    "train_acc": 99.33,
+    "test_acc": 99.18
+  },
+  "constraints": {
+    "constant": 12,
+    "binary": 8,
+    "categorical": 4,
+    "integer": 31,
+    "nonneg": 66,
+    "equality_groups": [
+      [
+        "Tot_Fwd_Pkts",
+        "Subflow_Fwd_Pkts"
+      ],
+      [
+        "Tot_Bwd_Pkts",
+        "Subflow_Bwd_Pkts"
+      ],
+      [
+        "TotLen_Fwd_Pkts",
+        "Subflow_Fwd_Byts"
+      ],
+      [
+        "TotLen_Bwd_Pkts",
+        "Subflow_Bwd_Byts"
+      ],
+      [
+        "Fwd_Pkt_Len_Mean",
+        "Fwd_Seg_Size_Avg"
+      ],
+      [
+        "Bwd_Pkt_Len_Mean",
+        "Bwd_Seg_Size_Avg"
+      ],
+      [
+        "Bwd_PSH_Flags",
+        "PSH_Flag_Cnt"
+      ]
+    ],
+    "orderings": [
+      "Fwd_Pkt_Len_Min <= Fwd_Pkt_Len_Mean",
+      "Fwd_Pkt_Len_Min <= Fwd_Pkt_Len_Max",
+      "Fwd_Pkt_Len_Mean <= Fwd_Pkt_Len_Max",
+      "Bwd_Pkt_Len_Min <= Bwd_Pkt_Len_Mean",
+      "Bwd_Pkt_Len_Min <= Bwd_Pkt_Len_Max",
+      "Bwd_Pkt_Len_Mean <= Bwd_Pkt_Len_Max",
+      "Flow_IAT_Min <= Flow_IAT_Mean",
+      "Flow_IAT_Min <= Flow_IAT_Max",
+      "Flow_IAT_Mean <= Flow_IAT_Max",
+      "Fwd_IAT_Min <= Fwd_IAT_Mean",
+      "Fwd_IAT_Min <= Fwd_IAT_Max",
+      "Fwd_IAT_Mean <= Fwd_IAT_Max",
+      "Bwd_IAT_Min <= Bwd_IAT_Mean",
+      "Bwd_IAT_Min <= Bwd_IAT_Max",
+      "Bwd_IAT_Mean <= Bwd_IAT_Max",
+      "Pkt_Len_Min <= Pkt_Len_Mean",
+      "Pkt_Len_Min <= Pkt_Len_Max",
+      "Pkt_Len_Mean <= Pkt_Len_Max",
+      "Active_Min <= Active_Mean",
+      "Active_Min <= Active_Max",
+      "Active_Mean <= Active_Max",
+      "Idle_Min <= Idle_Mean",
+      "Idle_Min <= Idle_Max",
+      "Idle_Mean <= Idle_Max"
+    ]
+  },
+  "attacks": {
+    "pgd/attack_only": {
+      "seconds": 2.12,
+      "sur_success": 50.07,
+      "linf_mean": 0.1,
+      "linf_max": 0.1,
+      "l2_mean": 0.6528,
+      "changed_feats_mean": 56.5,
+      "infeasible": {
+        "constant": 70.91,
+        "binary": 100.0,
+        "categorical": 99.97,
+        "integer": 100.0,
+        "nonneg": 0.0,
+        "equality": 99.39,
+        "ordering": 92.64,
+        "any": 100.0,
+        "unproducible": 100.0
+      },
+      "feasible": {
+        "residual_infeasible": 0.0,
+        "sur_success": 37.4,
+        "linf_mean": 0.1,
+        "linf_max": 0.1,
+        "l2_mean": 0.496,
+        "changed_feats_mean": 36.71
+      }
+    },
+    "cw/attack_only": {
+      "seconds": 84.98,
+      "sur_success": 100.0,
+      "linf_mean": 0.1938,
+      "linf_max": 0.5732,
+      "l2_mean": 0.3665,
+      "changed_feats_mean": 46.12,
+      "infeasible": {
+        "constant": 0.0,
+        "binary": 84.88,
+        "categorical": 99.47,
+        "integer": 99.48,
+        "nonneg": 0.0,
+        "equality": 99.48,
+        "ordering": 99.04,
+        "any": 99.48,
+        "unproducible": 0.0
+      },
+      "feasible": {
+        "residual_infeasible": 0.0,
+        "sur_success": 1.14,
+        "linf_mean": 0.1937,
+        "linf_max": 0.5693,
+        "l2_mean": 0.3235,
+        "changed_feats_mean": 29.86
+      }
+    }
+  },
+  "scenarios": [
+    {
+      "scenario": "clean",
+      "attack": null,
+      "perturb": null,
+      "variant": "clean",
+      "learning": "online",
+      "n": 9900,
+      "accuracy": 99.55,
+      "precision": 99.52,
+      "recall": 99.97,
+      "f1": 99.74,
+      "fpr": 3.42,
+      "tp": 8670,
+      "fp": 42,
+      "tn": 1185,
+      "fn": 3,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": null,
+      "clean_miss": null,
+      "evasion_gain": null,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "drifts_total": 8,
+      "drifts": {
+        "ARF-ADWIN": 8,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 0,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 66.3
+    },
+    {
+      "scenario": "clean",
+      "attack": null,
+      "perturb": null,
+      "variant": "clean",
+      "learning": "frozen",
+      "n": 9900,
+      "accuracy": 99.53,
+      "precision": 99.48,
+      "recall": 99.98,
+      "f1": 99.73,
+      "fpr": 3.67,
+      "tp": 8671,
+      "fp": 45,
+      "tn": 1182,
+      "fn": 2,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": null,
+      "clean_miss": null,
+      "evasion_gain": null,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "drifts_total": 0,
+      "drifts": {
+        "ARF-ADWIN": 0,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 0,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 6.0
+    },
+    {
+      "scenario": "clean",
+      "attack": null,
+      "perturb": null,
+      "variant": "clean",
+      "learning": "delay:1000",
+      "n": 9900,
+      "accuracy": 99.54,
+      "precision": 99.55,
+      "recall": 99.92,
+      "f1": 99.74,
+      "fpr": 3.18,
+      "tp": 8666,
+      "fp": 39,
+      "tn": 1188,
+      "fn": 7,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": null,
+      "clean_miss": null,
+      "evasion_gain": null,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "drifts_total": 6,
+      "drifts": {
+        "ARF-ADWIN": 6,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 0,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 63.0
+    },
+    {
+      "scenario": "clean",
+      "attack": null,
+      "perturb": null,
+      "variant": "clean",
+      "learning": "delay:5000",
+      "n": 9900,
+      "accuracy": 99.52,
+      "precision": 99.48,
+      "recall": 99.97,
+      "f1": 99.72,
+      "fpr": 3.67,
+      "tp": 8670,
+      "fp": 45,
+      "tn": 1182,
+      "fn": 3,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": null,
+      "clean_miss": null,
+      "evasion_gain": null,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "drifts_total": 3,
+      "drifts": {
+        "ARF-ADWIN": 3,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 0,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 37.2
+    },
+    {
+      "scenario": "pgd/attack_only",
+      "attack": "pgd",
+      "perturb": "attack_only",
+      "variant": "raw",
+      "learning": "online",
+      "n": 9900,
+      "accuracy": 99.81,
+      "precision": 99.83,
+      "recall": 99.95,
+      "f1": 99.89,
+      "fpr": 1.22,
+      "tp": 8669,
+      "fp": 15,
+      "tn": 1212,
+      "fn": 4,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": 0.05,
+      "clean_miss": 0.03,
+      "evasion_gain": 0.02,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "asr_by_class": {
+        "Mirai-Ackflooding": 0.13,
+        "Mirai-HTTP Flooding": 0.06,
+        "Mirai-UDP Flooding": 0.02
+      },
+      "drifts_total": 15,
+      "drifts": {
+        "ARF-ADWIN": 12,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 3,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 65.6
+    },
+    {
+      "scenario": "pgd/attack_only",
+      "attack": "pgd",
+      "perturb": "attack_only",
+      "variant": "raw",
+      "learning": "frozen",
+      "n": 9900,
+      "accuracy": 83.91,
+      "precision": 99.37,
+      "recall": 82.15,
+      "f1": 89.95,
+      "fpr": 3.67,
+      "tp": 7125,
+      "fp": 45,
+      "tn": 1182,
+      "fn": 1548,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": 17.85,
+      "clean_miss": 0.02,
+      "evasion_gain": 17.83,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "asr_by_class": {
+        "Mirai-Ackflooding": 30.96,
+        "Mirai-HTTP Flooding": 31.12,
+        "Mirai-UDP Flooding": 10.09
+      },
+      "drifts_total": 0,
+      "drifts": {
+        "ARF-ADWIN": 0,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 0,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 6.4
+    },
+    {
+      "scenario": "pgd/attack_only",
+      "attack": "pgd",
+      "perturb": "attack_only",
+      "variant": "raw",
+      "learning": "delay:1000",
+      "n": 9900,
+      "accuracy": 98.14,
+      "precision": 99.8,
+      "recall": 98.07,
+      "f1": 98.93,
+      "fpr": 1.39,
+      "tp": 8506,
+      "fp": 17,
+      "tn": 1210,
+      "fn": 167,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": 1.93,
+      "clean_miss": 0.08,
+      "evasion_gain": 1.85,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "asr_by_class": {
+        "Mirai-Ackflooding": 3.59,
+        "Mirai-HTTP Flooding": 3.08,
+        "Mirai-UDP Flooding": 1.1
+      },
+      "drifts_total": 14,
+      "drifts": {
+        "ARF-ADWIN": 11,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 3,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 64.8
+    },
+    {
+      "scenario": "pgd/attack_only",
+      "attack": "pgd",
+      "perturb": "attack_only",
+      "variant": "raw",
+      "learning": "delay:5000",
+      "n": 9900,
+      "accuracy": 91.46,
+      "precision": 99.62,
+      "recall": 90.6,
+      "f1": 94.9,
+      "fpr": 2.44,
+      "tp": 7858,
+      "fp": 30,
+      "tn": 1197,
+      "fn": 815,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": 9.4,
+      "clean_miss": 0.03,
+      "evasion_gain": 9.37,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "asr_by_class": {
+        "Mirai-Ackflooding": 16.52,
+        "Mirai-HTTP Flooding": 16.36,
+        "Mirai-UDP Flooding": 5.26
+      },
+      "drifts_total": 6,
+      "drifts": {
+        "ARF-ADWIN": 4,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 2,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 37.9
+    },
+    {
+      "scenario": "pgd/attack_only/feasible",
+      "attack": "pgd",
+      "perturb": "attack_only",
+      "variant": "feasible",
+      "learning": "online",
+      "n": 9900,
+      "accuracy": 99.72,
+      "precision": 99.75,
+      "recall": 99.93,
+      "f1": 99.84,
+      "fpr": 1.79,
+      "tp": 8667,
+      "fp": 22,
+      "tn": 1205,
+      "fn": 6,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": 0.07,
+      "clean_miss": 0.03,
+      "evasion_gain": 0.04,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "asr_by_class": {
+        "Mirai-Ackflooding": 0.13,
+        "Mirai-HTTP Flooding": 0.18,
+        "Mirai-UDP Flooding": 0.02
+      },
+      "drifts_total": 10,
+      "drifts": {
+        "ARF-ADWIN": 8,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 2,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 67.2
+    },
+    {
+      "scenario": "pgd/attack_only/feasible",
+      "attack": "pgd",
+      "perturb": "attack_only",
+      "variant": "feasible",
+      "learning": "frozen",
+      "n": 9900,
+      "accuracy": 83.78,
+      "precision": 99.37,
+      "recall": 82.0,
+      "f1": 89.85,
+      "fpr": 3.67,
+      "tp": 7112,
+      "fp": 45,
+      "tn": 1182,
+      "fn": 1561,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": 18.0,
+      "clean_miss": 0.02,
+      "evasion_gain": 17.98,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "asr_by_class": {
+        "Mirai-Ackflooding": 31.59,
+        "Mirai-HTTP Flooding": 31.37,
+        "Mirai-UDP Flooding": 10.07
+      },
+      "drifts_total": 0,
+      "drifts": {
+        "ARF-ADWIN": 0,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 0,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 6.4
+    },
+    {
+      "scenario": "cw/attack_only",
+      "attack": "cw",
+      "perturb": "attack_only",
+      "variant": "raw",
+      "learning": "online",
+      "n": 9900,
+      "accuracy": 99.4,
+      "precision": 99.37,
+      "recall": 99.95,
+      "f1": 99.66,
+      "fpr": 4.48,
+      "tp": 8669,
+      "fp": 55,
+      "tn": 1172,
+      "fn": 4,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": 0.05,
+      "clean_miss": 0.03,
+      "evasion_gain": 0.02,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "asr_by_class": {
+        "Mirai-Ackflooding": 0.13,
+        "Mirai-HTTP Flooding": 0.06,
+        "Mirai-UDP Flooding": 0.02
+      },
+      "drifts_total": 8,
+      "drifts": {
+        "ARF-ADWIN": 6,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 2,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 70.0
+    },
+    {
+      "scenario": "cw/attack_only",
+      "attack": "cw",
+      "perturb": "attack_only",
+      "variant": "raw",
+      "learning": "frozen",
+      "n": 9900,
+      "accuracy": 97.29,
+      "precision": 99.47,
+      "recall": 97.43,
+      "f1": 98.44,
+      "fpr": 3.67,
+      "tp": 8450,
+      "fp": 45,
+      "tn": 1182,
+      "fn": 223,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": 2.57,
+      "clean_miss": 0.02,
+      "evasion_gain": 2.55,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "asr_by_class": {
+        "Mirai-Ackflooding": 3.47,
+        "Mirai-HTTP Flooding": 3.57,
+        "Mirai-UDP Flooding": 2.01
+      },
+      "drifts_total": 0,
+      "drifts": {
+        "ARF-ADWIN": 0,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 0,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 6.3
+    },
+    {
+      "scenario": "cw/attack_only",
+      "attack": "cw",
+      "perturb": "attack_only",
+      "variant": "raw",
+      "learning": "delay:1000",
+      "n": 9900,
+      "accuracy": 99.01,
+      "precision": 99.33,
+      "recall": 99.54,
+      "f1": 99.44,
+      "fpr": 4.73,
+      "tp": 8633,
+      "fp": 58,
+      "tn": 1169,
+      "fn": 40,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": 0.46,
+      "clean_miss": 0.08,
+      "evasion_gain": 0.38,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "asr_by_class": {
+        "Mirai-Ackflooding": 0.82,
+        "Mirai-HTTP Flooding": 0.62,
+        "Mirai-UDP Flooding": 0.31
+      },
+      "drifts_total": 7,
+      "drifts": {
+        "ARF-ADWIN": 5,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 2,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 67.6
+    },
+    {
+      "scenario": "cw/attack_only",
+      "attack": "cw",
+      "perturb": "attack_only",
+      "variant": "raw",
+      "learning": "delay:5000",
+      "n": 9900,
+      "accuracy": 98.22,
+      "precision": 99.4,
+      "recall": 98.57,
+      "f1": 98.98,
+      "fpr": 4.24,
+      "tp": 8549,
+      "fp": 52,
+      "tn": 1175,
+      "fn": 124,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": 1.43,
+      "clean_miss": 0.03,
+      "evasion_gain": 1.4,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "asr_by_class": {
+        "Mirai-Ackflooding": 2.02,
+        "Mirai-HTTP Flooding": 1.85,
+        "Mirai-UDP Flooding": 1.14
+      },
+      "drifts_total": 3,
+      "drifts": {
+        "ARF-ADWIN": 2,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 1,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 39.7
+    },
+    {
+      "scenario": "cw/attack_only/feasible",
+      "attack": "cw",
+      "perturb": "attack_only",
+      "variant": "feasible",
+      "learning": "online",
+      "n": 9900,
+      "accuracy": 99.36,
+      "precision": 99.35,
+      "recall": 99.93,
+      "f1": 99.64,
+      "fpr": 4.65,
+      "tp": 8667,
+      "fp": 57,
+      "tn": 1170,
+      "fn": 6,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": 0.07,
+      "clean_miss": 0.03,
+      "evasion_gain": 0.04,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "asr_by_class": {
+        "Mirai-Ackflooding": 0.13,
+        "Mirai-HTTP Flooding": 0.06,
+        "Mirai-UDP Flooding": 0.05
+      },
+      "drifts_total": 9,
+      "drifts": {
+        "ARF-ADWIN": 7,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 2,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 69.6
+    },
+    {
+      "scenario": "cw/attack_only/feasible",
+      "attack": "cw",
+      "perturb": "attack_only",
+      "variant": "feasible",
+      "learning": "frozen",
+      "n": 9900,
+      "accuracy": 97.26,
+      "precision": 99.47,
+      "recall": 97.39,
+      "f1": 98.42,
+      "fpr": 3.67,
+      "tp": 8447,
+      "fp": 45,
+      "tn": 1182,
+      "fn": 226,
+      "attack_share": 87.61,
+      "majority_accuracy": 87.61,
+      "asr": 2.61,
+      "clean_miss": 0.02,
+      "evasion_gain": 2.59,
+      "benign_flip": null,
+      "clean_fpr_same_rows": null,
+      "asr_by_class": {
+        "Mirai-Ackflooding": 3.47,
+        "Mirai-HTTP Flooding": 3.69,
+        "Mirai-UDP Flooding": 2.03
+      },
+      "drifts_total": 0,
+      "drifts": {
+        "ARF-ADWIN": 0,
+        "ARF-DDM": 0,
+        "SRP-ADWIN": 0,
+        "SRP-DDM": 0,
+        "KNN-ADWIN": 0
+      },
+      "seconds": 7.1
+    }
+  ],
+  "config": {
+    "seed": 12,
+    "top_k": 3,
+    "mse_window": 500,
+    "eps": 0.0001,
+    "warmup": 0,
+    "log_every": 500,
+    "radp": {
+      "rows": 4000,
+      "gan_share": 0.5,
+      "gan": {
+        "steps": 3000,
+        "batch": 128,
+        "lr": 0.0002
+      },
+      "holdout": 0.2,
+      "defender_seed_offset": 1000,
+      "variants": [
+        "rad",
+        "rad_nogan",
+        "loao"
+      ]
+    },
+    "loop": {
+      "attacks": [
+        "pgd"
+      ],
+      "variants": [
+        "feasible"
+      ],
+      "labels": [
+        "true",
+        "poison:0.5",
+        "poison:1.0"
+      ],
+      "policies": [
+        "vanilla",
+        "audit:0.1",
+        "guard:0.1",
+        "strict:0.1"
+      ]
+    },
+    "advtrain": {
+      "variants": [
+        "none",
+        "at:pgd",
+        "at:fgsm+bim+pgd+cw"
+      ],
+      "copies": "feasible",
+      "learning": [
+        "frozen",
+        "delay:1000"
+      ],
+      "defender_seed_offset": 1000
+    },
+    "dataset_settings": {
+      "path": "data/iotid20/IoT_Network_Intrusion_Dataset.csv",
+      "label_col": "Label",
+      "benign_values": [
+        "Normal"
+      ],
+      "drop_cols": [
+        "Flow_ID",
+        "Src_IP",
+        "Dst_IP",
+        "Timestamp",
+        "Cat",
+        "Sub_Cat"
+      ],
+      "class_col": "Sub_Cat",
+      "filter_col": "Sub_Cat",
+      "include_prefixes": [
+        "Normal",
+        "Mirai-UDP",
+        "Mirai-HTTP",
+        "Mirai-Ack"
+      ],
+      "order": "file",
+      "time_col": "Timestamp",
+      "time_format": "%d/%m/%Y %I:%M:%S %p",
+      "subsample": "stride",
+      "limit": 50000
+    }
+  },
+  "versions": {
+    "python": "3.11.18",
+    "platform": "Windows-10-10.0.26200-SP0",
+    "river": "0.22.0",
+    "pandas": "2.3.3",
+    "numpy": "2.4.6",
+    "sklearn": "1.9.1"
+  },
+  "elapsed_s": 921.5,
+  "finished_at": "2026-11-03T04:55:34"
+}
