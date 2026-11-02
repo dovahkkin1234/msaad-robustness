@@ -40,6 +40,12 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results/radp_grid`: 6 new CSV; 6 new JSON; 6 new log; summary_radp.csv (new)
   - `results/under_attack`: 1 new CSV; 1 new JSON
 
+### 2026-11-02 13:05 (UTC+05:30) - Figures and tables rebuilt from the laptop's per-seed results
+
+- **Code version:** 87219aa
+- **Results:**
+  - `results/paper`: fig_attack_asr.pdf (new), fig_attack_asr.png (new), fig_audit_tradeoff.pdf (new), fig_audit_tradeoff.png (new), fig_label_delay.pdf (new), fig_label_delay.png (new), fig_loop_poison.pdf (new), fig_loop_poison.png (new), fig_loop_time.pdf (new), fig_loop_time.png (new), fig_radp_detect.pdf (new), fig_radp_detect.png (new) and 7 more
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->

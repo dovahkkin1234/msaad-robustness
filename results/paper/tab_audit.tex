@@ -1,0 +1,27 @@
+\begin{table*}[t]
+\centering
+\caption{strict and importance-weighted strict (IW-strict) across verified-label budgets (\%, mean $\pm$ std over seeds): false alarms with true labels on clean traffic and under the repaired PGD attack, and evasion under full label poisoning ($q=1$) without and with the perturbation.}
+\label{tab:audit}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lllcccc}
+\toprule
+Dataset & Policy & Verified & FPR clean & FPR attack & ASR poison & ASR evade+poison \\
+\midrule
+IoTID20 & strict & 1\% & 6.65 $\pm$ 3.36 & 25.13 $\pm$ 7.58 & 0.08 $\pm$ 0.01 & 4.42 $\pm$ 1.96 \\
+IoTID20 & strict & 5\% & 5.32 $\pm$ 1.89 & 7.47 $\pm$ 2.29 & 0.09 $\pm$ 0.01 & 1.37 $\pm$ 0.19 \\
+IoTID20 & strict & 10\% & 4.92 $\pm$ 1.64 & 4.62 $\pm$ 1.56 & 0.08 $\pm$ 0.02 & 0.92 $\pm$ 0.33 \\
+IoTID20 & strict & 20\% & 4.62 $\pm$ 1.18 & 4.35 $\pm$ 0.29 & 0.06 $\pm$ 0.01 & 0.48 $\pm$ 0.17 \\
+IoTID20 & IW-strict & 5\% & 6.63 $\pm$ 2.02 & 11.36 $\pm$ 9.30 & 0.39 $\pm$ 0.06 & 1.74 $\pm$ 0.42 \\
+IoTID20 & IW-strict & 10\% & 4.35 $\pm$ 1.30 & 2.99 $\pm$ 0.97 & 0.19 $\pm$ 0.05 & 1.19 $\pm$ 0.32 \\
+IoTID20 & IW-strict & 20\% & 4.13 $\pm$ 1.04 & 2.39 $\pm$ 0.98 & 0.11 $\pm$ 0.04 & 0.46 $\pm$ 0.11 \\
+CICIoT2023 & strict & 1\% & 19.62 $\pm$ 17.87 & 38.84 $\pm$ 27.90 & 0.08 $\pm$ 0.03 & 2.92 $\pm$ 1.33 \\
+CICIoT2023 & strict & 5\% & 13.92 $\pm$ 12.92 & 25.52 $\pm$ 16.52 & 0.09 $\pm$ 0.04 & 0.75 $\pm$ 0.29 \\
+CICIoT2023 & strict & 10\% & 9.11 $\pm$ 2.72 & 17.72 $\pm$ 9.53 & 0.10 $\pm$ 0.03 & 0.49 $\pm$ 0.25 \\
+CICIoT2023 & strict & 20\% & 7.01 $\pm$ 3.92 & 11.11 $\pm$ 3.64 & 0.11 $\pm$ 0.04 & 0.35 $\pm$ 0.13 \\
+CICIoT2023 & IW-strict & 5\% & 8.61 $\pm$ 6.07 & 16.52 $\pm$ 3.54 & 0.16 $\pm$ 0.03 & 0.83 $\pm$ 0.24 \\
+CICIoT2023 & IW-strict & 10\% & 5.70 $\pm$ 3.41 & 4.51 $\pm$ 1.88 & 0.16 $\pm$ 0.06 & 0.51 $\pm$ 0.33 \\
+CICIoT2023 & IW-strict & 20\% & 4.70 $\pm$ 2.79 & 3.40 $\pm$ 2.05 & 0.12 $\pm$ 0.03 & 0.33 $\pm$ 0.09 \\
+\bottomrule
+\end{tabular}
+\end{table*}

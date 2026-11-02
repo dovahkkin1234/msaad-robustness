@@ -1,0 +1,19 @@
+\begin{table*}[t]
+\centering
+\caption{Clean prequential reproduction (mean $\pm$ std over seeds, \%). FPR: benign flows flagged as DDoS. Last column: accuracy reported by the base paper.}
+\label{tab:repro}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lcccccc}
+\toprule
+Stream & Acc. & Prec. & Rec. & F1 & FPR & Paper acc. \\
+\midrule
+iotid20 & 99.33 $\pm$ 0.08 & 99.33 $\pm$ 0.07 & 99.91 $\pm$ 0.02 & 99.62 $\pm$ 0.05 & 4.98 $\pm$ 0.51 & 99.50 \\
+iotid20\_time & 99.99 $\pm$ 0.01 & 100.00 $\pm$ 0.00 & 99.99 $\pm$ 0.01 & 100.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 & -- \\
+iotid20\_campaign & 99.41 $\pm$ 0.04 & 99.48 $\pm$ 0.08 & 99.85 $\pm$ 0.04 & 99.67 $\pm$ 0.02 & 3.85 $\pm$ 0.58 & -- \\
+iotid20\_mirai & 98.85 $\pm$ 0.37 & 98.84 $\pm$ 0.36 & 99.92 $\pm$ 0.04 & 99.37 $\pm$ 0.21 & 12.15 $\pm$ 3.82 & -- \\
+iotid20\_all & 99.15 $\pm$ 0.20 & 99.17 $\pm$ 0.21 & 99.93 $\pm$ 0.02 & 99.55 $\pm$ 0.10 & 12.20 $\pm$ 3.18 & -- \\
+ciciot2023 & 99.76 $\pm$ 0.10 & 99.80 $\pm$ 0.09 & 99.95 $\pm$ 0.02 & 99.87 $\pm$ 0.06 & 6.19 $\pm$ 2.78 & 99.28 \\
+\bottomrule
+\end{tabular}
+\end{table*}
