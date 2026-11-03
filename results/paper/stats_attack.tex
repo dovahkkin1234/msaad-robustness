@@ -8,26 +8,36 @@
 \toprule
 Comparison & Dataset & Condition & $n$ & Mean [95\% CI] & Baseline mean & Median $\Delta$ & $p_\mathrm{Holm}$ & $r$ \\
 \midrule
-ASR (\%), no labels vs instant labels & CICIoT2023 & frozen (cw/attack\_only) & 15 & 47.06 [29.74, 63.87] & 0.12 & +62.77 & 0.0005 & +1.00 \\
- & CICIoT2023 & frozen (cw/attack\_only/feasible) & 15 & 47.69 [28.93, 65.44] & 0.12 & +53.39 & 0.0005 & +1.00 \\
- & CICIoT2023 & frozen (pgd/attack\_only) & 15 & 51.73 [34.34, 69.48] & 0.04 & +54.26 & 0.0005 & +1.00 \\
- & CICIoT2023 & frozen (pgd/attack\_only/feasible) & 15 & 48.52 [29.11, 67.76] & 0.08 & +73.43 & 0.0005 & +1.00 \\
- & IoTID20 & frozen (cw/attack\_only) & 15 & 11.50 [8.56, 14.22] & 0.10 & +12.65 & 0.0005 & +1.00 \\
- & IoTID20 & frozen (cw/attack\_only/feasible) & 15 & 11.25 [8.16, 14.09] & 0.12 & +12.39 & 0.0005 & +1.00 \\
- & IoTID20 & frozen (pgd/attack\_only) & 15 & 16.42 [13.91, 19.14] & 0.07 & +16.17 & 0.0005 & +1.00 \\
- & IoTID20 & frozen (pgd/attack\_only/feasible) & 15 & 17.32 [15.25, 19.37] & 0.10 & +16.91 & 0.0005 & +1.00 \\
-ASR (\%), delayed vs instant labels & CICIoT2023 & delay:1000 (cw/attack\_only) & 15 & 4.90 [3.17, 6.57] & 0.12 & +6.18 & 0.0005 & +1.00 \\
- & CICIoT2023 & delay:5000 (cw/attack\_only) & 15 & 23.97 [15.23, 32.40] & 0.12 & +30.98 & 0.0005 & +1.00 \\
- & CICIoT2023 & delay:1000 (pgd/attack\_only) & 15 & 5.27 [3.53, 7.05] & 0.04 & +5.43 & 0.0005 & +1.00 \\
- & CICIoT2023 & delay:5000 (pgd/attack\_only) & 15 & 26.17 [17.39, 35.15] & 0.04 & +27.42 & 0.0005 & +1.00 \\
- & IoTID20 & delay:1000 (cw/attack\_only) & 15 & 1.44 [1.13, 1.71] & 0.10 & +1.48 & 0.0005 & +1.00 \\
- & IoTID20 & delay:5000 (cw/attack\_only) & 15 & 6.18 [4.65, 7.59] & 0.10 & +7.08 & 0.0005 & +1.00 \\
- & IoTID20 & delay:1000 (pgd/attack\_only) & 15 & 1.80 [1.52, 2.11] & 0.07 & +1.73 & 0.0005 & +1.00 \\
- & IoTID20 & delay:5000 (pgd/attack\_only) & 15 & 8.65 [7.34, 10.06] & 0.07 & +8.53 & 0.0005 & +1.00 \\
-ASR (\%), repaired vs raw attack, no labels & CICIoT2023 & feasible (cw) & 15 & 47.69 [28.93, 65.44] & 47.06 & +0.00 & 1.0000 & -0.03 \\
+ASR (\%), no labels vs instant labels & CIC-IDS2017 & frozen (cw/attack\_only) & 15 & 27.31 [12.05, 45.22] & 0.06 & +14.04 & 0.0014 & +1.00 \\
+ & CIC-IDS2017 & frozen (cw/attack\_only/feasible) & 15 & 25.21 [10.27, 43.18] & 0.06 & +7.94 & 0.0014 & +1.00 \\
+ & CIC-IDS2017 & frozen (pgd/attack\_only) & 15 & 47.09 [29.96, 64.72] & 0.01 & +48.35 & 0.0007 & +1.00 \\
+ & CIC-IDS2017 & frozen (pgd/attack\_only/feasible) & 15 & 45.36 [29.05, 62.31] & 0.02 & +39.30 & 0.0007 & +1.00 \\
+ & CICIoT2023 & frozen (cw/attack\_only) & 15 & 47.06 [29.74, 63.87] & 0.12 & +62.77 & 0.0007 & +1.00 \\
+ & CICIoT2023 & frozen (cw/attack\_only/feasible) & 15 & 47.69 [28.93, 65.44] & 0.12 & +53.39 & 0.0007 & +1.00 \\
+ & CICIoT2023 & frozen (pgd/attack\_only) & 15 & 51.73 [34.34, 69.48] & 0.04 & +54.26 & 0.0007 & +1.00 \\
+ & CICIoT2023 & frozen (pgd/attack\_only/feasible) & 15 & 48.52 [29.11, 67.76] & 0.08 & +73.43 & 0.0007 & +1.00 \\
+ & IoTID20 & frozen (cw/attack\_only) & 15 & 11.50 [8.56, 14.22] & 0.10 & +12.65 & 0.0007 & +1.00 \\
+ & IoTID20 & frozen (cw/attack\_only/feasible) & 15 & 11.25 [8.16, 14.09] & 0.12 & +12.39 & 0.0007 & +1.00 \\
+ & IoTID20 & frozen (pgd/attack\_only) & 15 & 16.42 [13.91, 19.14] & 0.07 & +16.17 & 0.0007 & +1.00 \\
+ & IoTID20 & frozen (pgd/attack\_only/feasible) & 15 & 17.32 [15.25, 19.37] & 0.10 & +16.91 & 0.0007 & +1.00 \\
+ASR (\%), delayed vs instant labels & CIC-IDS2017 & delay:1000 (cw/attack\_only) & 15 & 3.53 [1.54, 5.87] & 0.06 & +1.60 & 0.0014 & +1.00 \\
+ & CIC-IDS2017 & delay:5000 (cw/attack\_only) & 15 & 16.45 [7.27, 27.14] & 0.06 & +7.78 & 0.0014 & +1.00 \\
+ & CIC-IDS2017 & delay:1000 (pgd/attack\_only) & 15 & 6.03 [3.78, 8.36] & 0.01 & +6.07 & 0.0007 & +1.00 \\
+ & CIC-IDS2017 & delay:5000 (pgd/attack\_only) & 15 & 28.23 [17.95, 38.76] & 0.01 & +29.23 & 0.0007 & +1.00 \\
+ & CICIoT2023 & delay:1000 (cw/attack\_only) & 15 & 4.90 [3.17, 6.57] & 0.12 & +6.18 & 0.0007 & +1.00 \\
+ & CICIoT2023 & delay:5000 (cw/attack\_only) & 15 & 23.97 [15.23, 32.40] & 0.12 & +30.98 & 0.0007 & +1.00 \\
+ & CICIoT2023 & delay:1000 (pgd/attack\_only) & 15 & 5.27 [3.53, 7.05] & 0.04 & +5.43 & 0.0007 & +1.00 \\
+ & CICIoT2023 & delay:5000 (pgd/attack\_only) & 15 & 26.17 [17.39, 35.15] & 0.04 & +27.42 & 0.0007 & +1.00 \\
+ & IoTID20 & delay:1000 (cw/attack\_only) & 15 & 1.44 [1.13, 1.71] & 0.10 & +1.48 & 0.0007 & +1.00 \\
+ & IoTID20 & delay:5000 (cw/attack\_only) & 15 & 6.18 [4.65, 7.59] & 0.10 & +7.08 & 0.0007 & +1.00 \\
+ & IoTID20 & delay:1000 (pgd/attack\_only) & 15 & 1.80 [1.52, 2.11] & 0.07 & +1.73 & 0.0007 & +1.00 \\
+ & IoTID20 & delay:5000 (pgd/attack\_only) & 15 & 8.65 [7.34, 10.06] & 0.07 & +8.53 & 0.0007 & +1.00 \\
+ASR (\%), repaired vs raw attack, no labels & CIC-IDS2017 & feasible (cw) & 15 & 25.21 [10.27, 43.18] & 27.31 & -0.02 & 0.4583 & -0.56 \\
+ & CIC-IDS2017 & feasible (pgd) & 15 & 45.36 [29.05, 62.31] & 47.09 & +0.00 & 1.0000 & +0.33 \\
+ & CICIoT2023 & feasible (cw) & 15 & 47.69 [28.93, 65.44] & 47.06 & +0.00 & 1.0000 & -0.03 \\
  & CICIoT2023 & feasible (pgd) & 15 & 48.52 [29.11, 67.76] & 51.73 & -5.98 & 1.0000 & -0.13 \\
- & IoTID20 & feasible (cw) & 15 & 11.25 [8.16, 14.09] & 11.50 & -0.14 & 0.5415 & -0.45 \\
- & IoTID20 & feasible (pgd) & 15 & 17.32 [15.25, 19.37] & 16.42 & +0.57 & 0.9084 & +0.32 \\
+ & IoTID20 & feasible (cw) & 15 & 11.25 [8.16, 14.09] & 11.50 & -0.14 & 0.6769 & -0.45 \\
+ & IoTID20 & feasible (pgd) & 15 & 17.32 [15.25, 19.37] & 16.42 & +0.57 & 1.0000 & +0.32 \\
 \bottomrule
 \end{tabular}
 \end{table*}

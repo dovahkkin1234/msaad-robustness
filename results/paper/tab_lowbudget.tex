@@ -1,0 +1,27 @@
+\begin{table}[t]
+\centering
+\caption{Small audit budgets, weight clipping (iwstrict:a:cap) and the noise-aware baseline: evasion under evasion + full poisoning, false alarms on clean traffic and under attack with true labels (\%), mean $\pm$ std over seeds.}
+\label{tab:lowbudget}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llccc}
+\toprule
+Dataset & Policy & ASR & FPR clean & FPR attack \\
+\midrule
+IoTID20 & strict:0.1 & 0.88 $\pm$ 0.29 & 4.53 $\pm$ 1.06 & 5.33 $\pm$ 1.78 \\
+IoTID20 & noiseaware:0.1 & 59.95 $\pm$ 9.88 & 3.35 $\pm$ 0.66 & 2.45 $\pm$ 0.89 \\
+IoTID20 & strict:0.05 & 1.71 $\pm$ 0.80 & 4.65 $\pm$ 1.26 & 9.11 $\pm$ 5.52 \\
+IoTID20 & iwstrict:0.05:5 & 1.91 $\pm$ 0.78 & 4.71 $\pm$ 1.34 & 5.52 $\pm$ 1.68 \\
+IoTID20 & iwstrict:0.05:10 & 1.88 $\pm$ 0.72 & 4.46 $\pm$ 1.25 & 6.04 $\pm$ 2.41 \\
+IoTID20 & strict:0.02 & 3.44 $\pm$ 1.12 & 5.20 $\pm$ 1.79 & 25.02 $\pm$ 17.04 \\
+IoTID20 & iwstrict:0.02:10 & 4.03 $\pm$ 1.25 & 4.86 $\pm$ 1.33 & 11.03 $\pm$ 6.14 \\
+CICIoT2023 & strict:0.1 & 0.44 $\pm$ 0.22 & 12.61 $\pm$ 4.12 & 23.12 $\pm$ 15.26 \\
+CICIoT2023 & noiseaware:0.1 & 5.55 $\pm$ 3.63 & 6.45 $\pm$ 2.81 & 4.30 $\pm$ 2.84 \\
+CICIoT2023 & strict:0.05 & 0.88 $\pm$ 0.46 & 16.52 $\pm$ 7.42 & 28.89 $\pm$ 16.19 \\
+CICIoT2023 & iwstrict:0.05:5 & 0.93 $\pm$ 0.61 & 12.19 $\pm$ 5.26 & 14.70 $\pm$ 7.15 \\
+CICIoT2023 & iwstrict:0.05:10 & 0.85 $\pm$ 0.39 & 12.87 $\pm$ 4.47 & 14.89 $\pm$ 6.61 \\
+CICIoT2023 & strict:0.02 & 1.86 $\pm$ 1.26 & 17.80 $\pm$ 7.53 & 32.03 $\pm$ 19.30 \\
+CICIoT2023 & iwstrict:0.02:10 & 1.82 $\pm$ 1.16 & 14.39 $\pm$ 6.81 & 21.44 $\pm$ 9.92 \\
+\bottomrule
+\end{tabular}
+\end{table}

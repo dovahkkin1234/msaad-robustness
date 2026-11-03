@@ -1,0 +1,27 @@
+\begin{table*}[t]
+\centering
+\caption{Chain of detectors, repaired attacks, no labels (frozen) unless stated: evasion rate (\%), false alarms on clean traffic, share of the flows MABTSE misses that the chain catches, and evasion under full label poisoning with labels 1{,}000 flows late (paper's rule vs strict, 10\% audits). Mean $\pm$ std over seeds.}
+\label{tab:cascade}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llcccccc}
+\toprule
+Dataset & Chain & PGD & C\&W & FPR & Caught & Poisoned, vanilla & Poisoned, strict \\
+\midrule
+IoTID20 (P2) & MABTSE & 20.72 $\pm$ 9.78 & 13.50 $\pm$ 12.93 & 25.87 $\pm$ 5.46 & 0.00 $\pm$ 0.00 & 91.52 $\pm$ 1.08 & 2.35 $\pm$ 1.15 \\
+IoTID20 (P2) & + online MLP & 19.98 $\pm$ 9.56 & 7.68 $\pm$ 8.59 & 28.21 $\pm$ 5.41 & 4.84 $\pm$ 6.52 & 91.44 $\pm$ 1.04 & 2.27 $\pm$ 1.11 \\
+IoTID20 (P2) & + host-feature MLP (control) & 8.78 $\pm$ 8.42 & 2.52 $\pm$ 3.89 & 30.06 $\pm$ 7.95 & 47.91 $\pm$ 38.80 & 89.84 $\pm$ 1.12 & 1.03 $\pm$ 1.06 \\
+IoTID20 (P2) & + GNN, full graph & 11.01 $\pm$ 10.59 & 4.57 $\pm$ 6.95 & 27.31 $\pm$ 6.14 & 43.36 $\pm$ 36.50 & 90.01 $\pm$ 1.35 & 1.21 $\pm$ 1.13 \\
+IoTID20 (P2) & + GNN, drifting hosts & 12.90 $\pm$ 9.58 & 6.40 $\pm$ 7.56 & 26.62 $\pm$ 5.84 & 35.09 $\pm$ 29.39 & 90.02 $\pm$ 1.35 & 1.22 $\pm$ 1.13 \\
+IoTID20 (P2) & + MLP + GNN, drifting hosts & 12.47 $\pm$ 9.39 & 3.97 $\pm$ 4.92 & 28.79 $\pm$ 5.71 & 37.28 $\pm$ 29.23 & 90.01 $\pm$ 1.33 & 1.19 $\pm$ 1.12 \\
+CICIoT2023 & MABTSE & 48.52 $\pm$ 39.02 & 47.69 $\pm$ 37.38 & 6.41 $\pm$ 2.55 & 0.00 $\pm$ 0.00 & 94.84 $\pm$ 3.92 & 5.37 $\pm$ 4.02 \\
+CICIoT2023 & + online MLP & 1.93 $\pm$ 1.26 & 3.90 $\pm$ 8.58 & 10.41 $\pm$ 3.94 & 85.61 $\pm$ 16.62 & 90.01 $\pm$ 0.06 & 0.41 $\pm$ 0.13 \\
+CIC-IDS2017 & MABTSE & 45.35 $\pm$ 34.10 & 25.21 $\pm$ 33.93 & 0.21 $\pm$ 0.20 & 0.00 $\pm$ 0.00 & 92.79 $\pm$ 4.51 & 5.94 $\pm$ 4.57 \\
+CIC-IDS2017 & + online MLP & 44.90 $\pm$ 33.49 & 0.05 $\pm$ 0.00 & 0.69 $\pm$ 0.22 & 0.64 $\pm$ 1.64 & 92.72 $\pm$ 4.44 & 5.87 $\pm$ 4.48 \\
+CIC-IDS2017 & + host-feature MLP (control) & 1.25 $\pm$ 2.94 & 0.02 $\pm$ 0.06 & 0.57 $\pm$ 0.32 & 96.51 $\pm$ 6.29 & 85.60 $\pm$ 1.60 & 0.10 $\pm$ 0.35 \\
+CIC-IDS2017 & + GNN, full graph & 0.72 $\pm$ 1.84 & 0.00 $\pm$ 0.00 & 1.73 $\pm$ 2.66 & 98.75 $\pm$ 2.60 & 85.56 $\pm$ 0.74 & 0.00 $\pm$ 0.00 \\
+CIC-IDS2017 & + GNN, drifting hosts & 1.31 $\pm$ 2.04 & 0.34 $\pm$ 0.43 & 1.72 $\pm$ 2.71 & 97.59 $\pm$ 2.77 & 85.56 $\pm$ 0.74 & 0.00 $\pm$ 0.00 \\
+CIC-IDS2017 & + MLP + GNN, drifting hosts & 1.30 $\pm$ 2.04 & 0.00 $\pm$ 0.00 & 2.20 $\pm$ 2.69 & 97.59 $\pm$ 2.77 & 85.56 $\pm$ 0.73 & 0.00 $\pm$ 0.00 \\
+\bottomrule
+\end{tabular}
+\end{table*}

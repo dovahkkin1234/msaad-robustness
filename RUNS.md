@@ -205,6 +205,12 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results`: grid_runs.jsonl (changed)
   - `results/loop_grid`: 6 changed log; 18 new CSV; 18 new JSON; 12 new log; summary_loop_lowbudget.csv (new)
 
+### 2026-11-04 04:47 (UTC+05:30) - 15-seed summaries, statistics and figures, three datasets
+
+- **Code version:** f5ac9b4
+- **Results:**
+  - `results/paper`: fig_advtrain.pdf (changed), fig_advtrain.png (changed), fig_attack_asr.pdf (changed), fig_attack_asr.png (changed), fig_audit_tradeoff.pdf (changed), fig_audit_tradeoff.png (changed), fig_label_delay.pdf (changed), fig_label_delay.png (changed), fig_loop_poison.pdf (changed), fig_loop_poison.png (changed), fig_loop_time.pdf (changed), fig_loop_time.png (changed) and 35 more
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->

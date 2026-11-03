@@ -1,0 +1,19 @@
+\begin{table}[t]
+\centering
+\caption{Graph-aware attacker against the chain (no labels): evaded volume, the share (\%) of the full attack's flows that get through (rate $\times$ evasion rate). spoof: random source addresses; thin: the attacker sends only that share of its flows.}
+\label{tab:graph_adaptive}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llcccc}
+\toprule
+Dataset & Attacker & MABTSE & + GNN full & + GNN drift & + control \\
+\midrule
+IoTID20 (P2) & repaired PGD & 20.72 & 11.01 & 12.90 & 8.78 \\
+IoTID20 (P2) & repaired PGD spoof:10 & 20.72 & 18.95 & 19.41 & 14.67 \\
+IoTID20 (P2) & repaired PGD thin:0.25 & 5.15 & 2.47 & 2.74 & 2.01 \\
+CIC-IDS2017 & repaired PGD & 45.35 & 0.72 & 1.31 & 1.25 \\
+CIC-IDS2017 & repaired PGD spoof:10 & 45.35 & 17.12 & 17.82 & 12.96 \\
+CIC-IDS2017 & repaired PGD thin:0.25 & 11.38 & 0.03 & 0.03 & 0.12 \\
+\bottomrule
+\end{tabular}
+\end{table}

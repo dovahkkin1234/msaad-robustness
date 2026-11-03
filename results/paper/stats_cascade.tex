@@ -1,0 +1,66 @@
+\begin{table*}[t]
+\centering
+\caption{Paired statistics over seeds (cascade): mean with 95\% bootstrap CI, the median per-seed difference to the baseline, two-sided Wilcoxon signed-rank test (Holm-corrected within each comparison) and the matched-pairs rank-biserial correlation $r$.}}
+\label{tab:stats_cascade}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lllcccccc}
+\toprule
+Comparison & Dataset & Condition & $n$ & Mean [95\% CI] & Baseline mean & Median $\Delta$ & $p_\mathrm{Holm}$ & $r$ \\
+\midrule
+Chain: ASR (\%) left after each chain vs MABTSE alone, repaired attacks, no labels & CIC-IDS2017 & S1+S2 (cw/attack\_only/feasible) & 15 & 0.05 [0.05, 0.05] & 25.21 & -7.93 & 0.0065 & -1.00 \\
+ & CIC-IDS2017 & S1+S2+S3:gnn\_drift (cw/attack\_only/feasible) & 15 & 0.00 [0.00, 0.00] & 25.21 & -7.98 & 0.0065 & -1.00 \\
+ & CIC-IDS2017 & S1+S3:ctx (cw/attack\_only/feasible) & 15 & 0.02 [0.00, 0.05] & 25.21 & -7.98 & 0.0065 & -1.00 \\
+ & CIC-IDS2017 & S1+S3:gnn\_drift (cw/attack\_only/feasible) & 15 & 0.34 [0.14, 0.56] & 25.21 & -7.86 & 0.0065 & -1.00 \\
+ & CIC-IDS2017 & S1+S3:gnn\_full (cw/attack\_only/feasible) & 15 & 0.00 [0.00, 0.00] & 25.21 & -7.98 & 0.0065 & -1.00 \\
+ & CIC-IDS2017 & S1+S2 (pgd/attack\_only/feasible) & 15 & 44.90 [28.85, 61.50] & 45.36 & +0.00 & 0.0090 & -1.00 \\
+ & CIC-IDS2017 & S1+S2+S3:gnn\_drift (pgd/attack\_only/feasible) & 15 & 1.31 [0.47, 2.45] & 45.36 & -38.79 & 0.0013 & -1.00 \\
+ & CIC-IDS2017 & S1+S3:ctx (pgd/attack\_only/feasible) & 15 & 1.25 [0.16, 2.92] & 45.36 & -36.92 & 0.0013 & -1.00 \\
+ & CIC-IDS2017 & S1+S3:gnn\_drift (pgd/attack\_only/feasible) & 15 & 1.31 [0.47, 2.45] & 45.36 & -38.79 & 0.0013 & -1.00 \\
+ & CIC-IDS2017 & S1+S3:gnn\_full (pgd/attack\_only/feasible) & 15 & 0.72 [0.00, 1.77] & 45.36 & -39.33 & 0.0013 & -1.00 \\
+ & CICIoT2023 & S1+S2 (cw/attack\_only/feasible) & 15 & 3.90 [0.87, 8.73] & 47.69 & -45.64 & 0.0013 & -1.00 \\
+ & CICIoT2023 & S1+S2 (pgd/attack\_only/feasible) & 15 & 1.93 [1.39, 2.61] & 48.52 & -71.63 & 0.0013 & -1.00 \\
+ & IoTID20 (P2) & S1+S2 (cw/attack\_only/feasible) & 15 & 7.68 [3.73, 12.10] & 13.50 & -2.75 & 0.0013 & -1.00 \\
+ & IoTID20 (P2) & S1+S2+S3:gnn\_drift (cw/attack\_only/feasible) & 15 & 3.97 [1.83, 6.56] & 13.50 & -3.91 & 0.0013 & -1.00 \\
+ & IoTID20 (P2) & S1+S3:ctx (cw/attack\_only/feasible) & 15 & 2.52 [0.88, 4.70] & 13.50 & -4.42 & 0.0065 & -1.00 \\
+ & IoTID20 (P2) & S1+S3:gnn\_drift (cw/attack\_only/feasible) & 15 & 6.40 [2.98, 10.37] & 13.50 & -3.52 & 0.0013 & -1.00 \\
+ & IoTID20 (P2) & S1+S3:gnn\_full (cw/attack\_only/feasible) & 15 & 4.57 [1.50, 8.21] & 13.50 & -4.38 & 0.0013 & -1.00 \\
+ & IoTID20 (P2) & S1+S2 (pgd/attack\_only/feasible) & 15 & 19.98 [15.08, 24.33] & 20.72 & -0.55 & 0.0065 & -1.00 \\
+ & IoTID20 (P2) & S1+S2+S3:gnn\_drift (pgd/attack\_only/feasible) & 15 & 12.47 [8.10, 17.19] & 20.72 & -2.68 & 0.0013 & -1.00 \\
+ & IoTID20 (P2) & S1+S3:ctx (pgd/attack\_only/feasible) & 15 & 8.78 [5.00, 13.20] & 20.72 & -15.13 & 0.0065 & -1.00 \\
+ & IoTID20 (P2) & S1+S3:gnn\_drift (pgd/attack\_only/feasible) & 15 & 12.90 [8.46, 17.69] & 20.72 & -2.40 & 0.0065 & -1.00 \\
+ & IoTID20 (P2) & S1+S3:gnn\_full (pgd/attack\_only/feasible) & 15 & 11.01 [6.10, 16.28] & 20.72 & -3.23 & 0.0013 & -1.00 \\
+Chain: FPR (\%) on clean traffic vs MABTSE alone, no labels & CIC-IDS2017 & S1+S2 & 15 & 0.69 [0.60, 0.81] & 0.21 & +0.49 & 0.0059 & +1.00 \\
+ & CIC-IDS2017 & S1+S2+S3:gnn\_drift & 15 & 2.20 [1.00, 3.66] & 0.21 & +0.74 & 0.0059 & +1.00 \\
+ & CIC-IDS2017 & S1+S3:ctx & 15 & 0.57 [0.42, 0.74] & 0.21 & +0.29 & 0.0059 & +1.00 \\
+ & CIC-IDS2017 & S1+S3:gnn\_drift & 15 & 1.72 [0.50, 3.20] & 0.21 & +0.17 & 0.0059 & +1.00 \\
+ & CIC-IDS2017 & S1+S3:gnn\_full & 15 & 1.73 [0.56, 3.17] & 0.21 & +0.17 & 0.0059 & +1.00 \\
+ & CICIoT2023 & S1+S2 & 15 & 10.41 [8.57, 12.41] & 6.41 & +2.10 & 0.0059 & +1.00 \\
+ & IoTID20 (P2) & S1+S2 & 15 & 28.21 [25.55, 30.79] & 25.87 & +2.36 & 0.0007 & +1.00 \\
+ & IoTID20 (P2) & S1+S2+S3:gnn\_drift & 15 & 28.79 [25.99, 31.55] & 25.87 & +2.53 & 0.0007 & +1.00 \\
+ & IoTID20 (P2) & S1+S3:ctx & 15 & 30.06 [26.22, 33.96] & 25.87 & +1.35 & 0.0059 & +1.00 \\
+ & IoTID20 (P2) & S1+S3:gnn\_drift & 15 & 26.62 [23.79, 29.47] & 25.87 & +0.26 & 0.0059 & +1.00 \\
+ & IoTID20 (P2) & S1+S3:gnn\_full & 15 & 27.31 [24.38, 30.38] & 25.87 & +0.76 & 0.0059 & +1.00 \\
+Message passing vs the matched control: ASR (\%) after MABTSE + stage 3, repaired attacks & CIC-IDS2017 & S1+S3:gnn\_drift (cw/attack\_only/feasible) & 15 & 0.34 [0.14, 0.56] & 0.02 & +0.13 & 0.0354 & +0.86 \\
+ & CIC-IDS2017 & S1+S3:gnn\_full (cw/attack\_only/feasible) & 15 & 0.00 [0.00, 0.00] & 0.02 & +0.00 & 1.0000 & -1.00 \\
+ & CIC-IDS2017 & S1+S3:gnn\_drift (pgd/attack\_only/feasible) & 15 & 1.31 [0.47, 2.45] & 1.25 & +0.40 & 1.0000 & +0.14 \\
+ & CIC-IDS2017 & S1+S3:gnn\_full (pgd/attack\_only/feasible) & 15 & 0.72 [0.00, 1.77] & 1.25 & +0.00 & 1.0000 & -0.20 \\
+ & IoTID20 (P2) & S1+S3:gnn\_drift (cw/attack\_only/feasible) & 15 & 6.40 [2.98, 10.37] & 2.52 & +0.90 & 0.2474 & +0.62 \\
+ & IoTID20 (P2) & S1+S3:gnn\_full (cw/attack\_only/feasible) & 15 & 4.57 [1.50, 8.21] & 2.52 & +0.02 & 1.0000 & +0.17 \\
+ & IoTID20 (P2) & S1+S3:gnn\_drift (pgd/attack\_only/feasible) & 15 & 12.90 [8.46, 17.69] & 8.78 & +0.16 & 1.0000 & +0.28 \\
+ & IoTID20 (P2) & S1+S3:gnn\_full (pgd/attack\_only/feasible) & 15 & 11.01 [6.10, 16.28] & 8.78 & -0.42 & 1.0000 & -0.03 \\
+Graph-aware attacker: ASR (\%) after the full chain vs plain repaired PGD & CIC-IDS2017 & pgd/attack\_only/feasible/spoof:10 & 15 & 17.81 [3.42, 34.03] & 1.31 & +3.71 & 0.0105 & +0.79 \\
+ & CIC-IDS2017 & pgd/attack\_only/feasible/thin:0.25 & 15 & 0.14 [0.00, 0.37] & 1.31 & -0.51 & 0.0105 & -0.91 \\
+ & IoTID20 (P2) & pgd/attack\_only/feasible/spoof:10 & 15 & 18.89 [14.11, 23.18] & 12.47 & +1.77 & 0.0105 & +0.83 \\
+ & IoTID20 (P2) & pgd/attack\_only/feasible/thin:0.25 & 15 & 10.49 [5.70, 15.70] & 12.47 & -1.07 & 0.0105 & -0.83 \\
+Chain with fully poisoned labels (1,000-flow delay): ASR (\%) strict vs vanilla, repaired PGD & CIC-IDS2017 & delay:1000|poison:1.0|strict:0.1 (S1) & 15 & 5.94 [3.77, 8.20] & 92.79 & -86.90 & 0.0032 & -1.00 \\
+ & CIC-IDS2017 & delay:1000|poison:1.0|strict:0.1 (S1+S2) & 15 & 5.87 [3.72, 8.09] & 92.72 & -86.89 & 0.0032 & -1.00 \\
+ & CIC-IDS2017 & delay:1000|poison:1.0|strict:0.1 (S1+S2+S3:gnn\_drift) & 15 & 0.00 [0.00, 0.00] & 85.56 & -85.16 & 0.0032 & -1.00 \\
+ & CICIoT2023 & delay:1000|poison:1.0|strict:0.1 (S1) & 15 & 5.37 [3.38, 7.35] & 94.84 & -89.48 & 0.0005 & -1.00 \\
+ & CICIoT2023 & delay:1000|poison:1.0|strict:0.1 (S1+S2) & 15 & 0.41 [0.35, 0.47] & 90.01 & -89.63 & 0.0032 & -1.00 \\
+ & IoTID20 (P2) & delay:1000|poison:1.0|strict:0.1 (S1) & 15 & 2.35 [1.77, 2.89] & 91.52 & -89.20 & 0.0005 & -1.00 \\
+ & IoTID20 (P2) & delay:1000|poison:1.0|strict:0.1 (S1+S2) & 15 & 2.27 [1.71, 2.78] & 91.44 & -89.21 & 0.0032 & -1.00 \\
+ & IoTID20 (P2) & delay:1000|poison:1.0|strict:0.1 (S1+S2+S3:gnn\_drift) & 15 & 1.19 [0.66, 1.74] & 90.01 & -88.90 & 0.0005 & -1.00 \\
+\bottomrule
+\end{tabular}
+\end{table*}

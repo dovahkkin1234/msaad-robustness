@@ -1,0 +1,29 @@
+\begin{table*}[t]
+\centering
+\caption{Paired statistics over seeds (audits): mean with 95\% bootstrap CI, the median per-seed difference to the baseline, two-sided Wilcoxon signed-rank test (Holm-corrected within each comparison) and the matched-pairs rank-biserial correlation $r$.}}
+\label{tab:stats_audits_s15_audits_auditsmix}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lllcccccc}
+\toprule
+Comparison & Dataset & Condition & $n$ & Mean [95\% CI] & Baseline mean & Median $\Delta$ & $p_\mathrm{Holm}$ & $r$ \\
+\midrule
+Audit allocation: ASR (\%), evasion + full poisoning, vs random audits & CICIoT2023 & mixed (iwstrict:0.1) & 15 & 0.32 [0.22, 0.41] & 0.43 & -0.06 & 0.0802 & -0.65 \\
+ & CICIoT2023 & uncertain (iwstrict:0.1) & 15 & 0.46 [0.29, 0.67] & 0.43 & +0.08 & 1.0000 & +0.05 \\
+ & CICIoT2023 & mixed (strict:0.1) & 15 & 0.31 [0.22, 0.42] & 0.44 & -0.11 & 0.0626 & -0.75 \\
+ & CICIoT2023 & uncertain (strict:0.1) & 15 & 0.45 [0.27, 0.67] & 0.44 & -0.01 & 1.0000 & -0.17 \\
+ & IoTID20 & mixed (iwstrict:0.1) & 15 & 0.46 [0.39, 0.54] & 1.15 & -0.68 & 0.0039 & -1.00 \\
+ & IoTID20 & uncertain (iwstrict:0.1) & 15 & 0.31 [0.24, 0.39] & 1.15 & -0.81 & 0.0039 & -1.00 \\
+ & IoTID20 & mixed (strict:0.1) & 15 & 0.34 [0.28, 0.41] & 0.88 & -0.53 & 0.0005 & -1.00 \\
+ & IoTID20 & uncertain (strict:0.1) & 15 & 0.28 [0.21, 0.38] & 0.88 & -0.55 & 0.0005 & -1.00 \\
+Audit allocation: FPR (\%) under attack, true labels, vs random audits & CICIoT2023 & mixed (iwstrict:0.1) & 15 & 0.68 [0.54, 0.82] & 6.95 & -5.71 & 0.0005 & -1.00 \\
+ & CICIoT2023 & uncertain (iwstrict:0.1) & 15 & 0.64 [0.42, 0.86] & 6.95 & -6.01 & 0.0005 & -1.00 \\
+ & CICIoT2023 & mixed (strict:0.1) & 15 & 3.34 [2.36, 4.51] & 23.12 & -18.32 & 0.0005 & -1.00 \\
+ & CICIoT2023 & uncertain (strict:0.1) & 15 & 3.78 [2.54, 5.23] & 23.12 & -19.51 & 0.0005 & -1.00 \\
+ & IoTID20 & mixed (iwstrict:0.1) & 15 & 0.58 [0.51, 0.65] & 3.52 & -2.94 & 0.0019 & -1.00 \\
+ & IoTID20 & uncertain (iwstrict:0.1) & 15 & 0.45 [0.38, 0.52] & 3.52 & -3.09 & 0.0019 & -1.00 \\
+ & IoTID20 & mixed (strict:0.1) & 15 & 2.48 [2.15, 2.85] & 5.33 & -2.29 & 0.0005 & -1.00 \\
+ & IoTID20 & uncertain (strict:0.1) & 15 & 2.45 [2.11, 2.82] & 5.33 & -2.12 & 0.0019 & -1.00 \\
+\bottomrule
+\end{tabular}
+\end{table*}

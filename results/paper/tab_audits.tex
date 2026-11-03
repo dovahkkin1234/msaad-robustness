@@ -1,0 +1,27 @@
+\begin{table}[t]
+\centering
+\caption{Audit allocation: random, uncertainty-based or mixed audits (10\% budget). Evasion under evasion + full poisoning, share of the attacker's flows that got audited, and false alarms under attack with true labels (\%), mean $\pm$ std over seeds.}
+\label{tab:audits}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lllccc}
+\toprule
+Dataset & Policy & Audits & ASR & Attacker flows audited & FPR \\
+\midrule
+IoTID20 & strict 10\% & random & 0.88 $\pm$ 0.29 & -- & 5.33 $\pm$ 1.78 \\
+IoTID20 & strict 10\% & uncertain & 0.28 $\pm$ 0.18 & 6.03 $\pm$ 0.33 & 2.45 $\pm$ 0.72 \\
+IoTID20 & strict 10\% & mixed & 0.34 $\pm$ 0.14 & 7.67 $\pm$ 0.24 & 2.48 $\pm$ 0.71 \\
+IoTID20 & IW-strict 10\% & random & 1.15 $\pm$ 0.28 & -- & 3.52 $\pm$ 0.74 \\
+IoTID20 & IW-strict 10\% & uncertain & 0.31 $\pm$ 0.15 & 7.14 $\pm$ 0.46 & 0.45 $\pm$ 0.14 \\
+IoTID20 & IW-strict 10\% & mixed & 0.46 $\pm$ 0.15 & 8.59 $\pm$ 0.31 & 0.58 $\pm$ 0.14 \\
+CICIoT2023 & strict 10\% & random & 0.44 $\pm$ 0.22 & -- & 23.12 $\pm$ 15.26 \\
+CICIoT2023 & strict 10\% & uncertain & 0.45 $\pm$ 0.41 & 5.84 $\pm$ 0.77 & 3.78 $\pm$ 2.75 \\
+CICIoT2023 & strict 10\% & mixed & 0.32 $\pm$ 0.20 & 7.49 $\pm$ 0.39 & 3.34 $\pm$ 2.22 \\
+CICIoT2023 & IW-strict 10\% & random & 0.43 $\pm$ 0.23 & -- & 6.95 $\pm$ 3.17 \\
+CICIoT2023 & IW-strict 10\% & uncertain & 0.47 $\pm$ 0.39 & 6.63 $\pm$ 0.88 & 0.64 $\pm$ 0.44 \\
+CICIoT2023 & IW-strict 10\% & mixed & 0.32 $\pm$ 0.19 & 8.33 $\pm$ 0.41 & 0.68 $\pm$ 0.29 \\
+CIC-IDS2017 & strict 10\% & random & 0.14 $\pm$ 0.15 & 10.01 $\pm$ 0.44 & 0.66 $\pm$ 0.30 \\
+CIC-IDS2017 & IW-strict 10\% & random & 0.13 $\pm$ 0.14 & 10.01 $\pm$ 0.44 & 0.25 $\pm$ 0.18 \\
+\bottomrule
+\end{tabular}
+\end{table}

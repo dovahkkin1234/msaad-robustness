@@ -1,0 +1,23 @@
+\begin{table*}[t]
+\centering
+\caption{Framing (availability poisoning through the trusted direction): false alarms (\%) on genuine benign flows for each framing rate, and evasion / false alarms under evasion + full poisoning + 5\% framing. Mean $\pm$ std over seeds.}
+\label{tab:framing}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llccccc}
+\toprule
+Dataset & Policy & FPR, no framing & FPR, 2\% & FPR, 10\% & ASR, all three & FPR, all three \\
+\midrule
+IoTID20 & vanilla & 3.33 $\pm$ 0.63 & 11.06 $\pm$ 1.22 & 37.04 $\pm$ 2.99 & 99.74 $\pm$ 0.08 & 8.75 $\pm$ 1.67 \\
+IoTID20 & strict 10\% & 4.53 $\pm$ 1.06 & 61.26 $\pm$ 6.89 & 89.18 $\pm$ 4.66 & 0.23 $\pm$ 0.09 & 71.63 $\pm$ 7.75 \\
+IoTID20 & IW-strict 10\% & 4.21 $\pm$ 0.89 & 41.29 $\pm$ 4.82 & 62.36 $\pm$ 3.23 & 1.07 $\pm$ 0.52 & 43.02 $\pm$ 3.98 \\
+IoTID20 & consensus 10\% & 4.27 $\pm$ 1.00 & 8.92 $\pm$ 4.51 & 78.72 $\pm$ 4.97 & 0.53 $\pm$ 0.17 & 54.32 $\pm$ 7.18 \\
+IoTID20 & IW-consensus 10\% & 4.16 $\pm$ 0.81 & 5.59 $\pm$ 1.39 & 49.05 $\pm$ 4.63 & 1.81 $\pm$ 0.65 & 22.59 $\pm$ 5.34 \\
+CICIoT2023 & vanilla & 5.77 $\pm$ 2.24 & 25.48 $\pm$ 3.23 & 50.99 $\pm$ 4.58 & 99.94 $\pm$ 0.04 & 29.83 $\pm$ 3.98 \\
+CICIoT2023 & strict 10\% & 12.61 $\pm$ 4.12 & 92.33 $\pm$ 4.12 & 99.36 $\pm$ 0.11 & 0.16 $\pm$ 0.17 & 76.28 $\pm$ 8.44 \\
+CICIoT2023 & IW-strict 10\% & 10.25 $\pm$ 4.74 & 60.74 $\pm$ 6.80 & 70.51 $\pm$ 7.88 & 0.22 $\pm$ 0.20 & 59.18 $\pm$ 7.50 \\
+CICIoT2023 & consensus 10\% & 11.93 $\pm$ 4.58 & 30.65 $\pm$ 11.23 & 93.45 $\pm$ 1.84 & 0.24 $\pm$ 0.17 & 72.15 $\pm$ 10.46 \\
+CICIoT2023 & IW-consensus 10\% & 9.13 $\pm$ 4.21 & 36.02 $\pm$ 9.69 & 62.70 $\pm$ 7.83 & 0.35 $\pm$ 0.20 & 50.35 $\pm$ 6.74 \\
+\bottomrule
+\end{tabular}
+\end{table*}

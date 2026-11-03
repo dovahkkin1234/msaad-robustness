@@ -1,0 +1,17 @@
+\begin{table*}[t]
+\centering
+\caption{Adaptive evasion (repaired PGD unless stated), no labels: plain transfer, a surrogate distilled from the detector's verdicts, an adversarially trained surrogate, and label-only HopSkipJump (2{,}000 queries per flow) in the raw feature space, after repairing its result, and with valid-traffic queries only. Evasion rate (\%), mean $\pm$ std over seeds.}
+\label{tab:adaptive}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llcccccc}
+\toprule
+Dataset & Detector & Transfer & Distilled & AT surrogate & HSJ raw & HSJ raw, repaired & HSJ valid \\
+\midrule
+CICIoT2023 & no adv. training & 56.23 $\pm$ 39.71 & 38.38 $\pm$ 39.67 & 23.70 $\pm$ 21.56 & 73.20 $\pm$ 33.90 & 27.60 $\pm$ 20.51 & 51.20 $\pm$ 35.57 \\
+CICIoT2023 & adv. training, PGD & 0.06 $\pm$ 0.07 & 0.02 $\pm$ 0.02 & 0.05 $\pm$ 0.06 & 0.80 $\pm$ 1.10 & 0.40 $\pm$ 0.89 & 2.00 $\pm$ 2.83 \\
+IoTID20 & no adv. training & 15.96 $\pm$ 2.58 & 17.57 $\pm$ 2.46 & 16.08 $\pm$ 3.87 & 31.60 $\pm$ 11.44 & 4.00 $\pm$ 3.16 & 25.20 $\pm$ 4.15 \\
+IoTID20 & adv. training, PGD & 0.03 $\pm$ 0.07 & 0.14 $\pm$ 0.18 & 0.11 $\pm$ 0.11 & 16.40 $\pm$ 4.77 & 1.60 $\pm$ 1.67 & 14.00 $\pm$ 7.35 \\
+\bottomrule
+\end{tabular}
+\end{table*}
