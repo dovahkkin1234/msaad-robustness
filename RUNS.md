@@ -168,6 +168,15 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results`: grid_runs.jsonl (changed)
   - `results/loop_grid`: 3 changed log; 33 new CSV; 33 new JSON; 33 new log; summary_loop_auditsmix.csv (new)
 
+### 2026-11-03 21:22 (UTC+05:30) - loop grid [s15]: cicids2017 x seeds 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+
+- **Command:** `python experiments\run_grid.py --exp loop --data cicids2017 --jobs 3 --tag s15 --push --seeds 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 --labels true poison:0.25 poison:0.5 poison:1.0 --policies vanilla audit:0.1 guard:0.1 strict:0.1 iwstrict:0.1 iwstrict:0.2`
+- **Runs:** 15 ok, 0 failed; 261.9 min (2026-11-03 17:00:18 to 2026-11-03 21:22:15)
+- **Code version:** 770c602
+- **Results:**
+  - `results`: grid_runs.jsonl (changed)
+  - `results/loop_grid`: 3 changed log; 3 new CSV; 3 new JSON; summary_loop_s15.csv (changed)
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->
@@ -487,6 +496,9 @@ Reconstructed from the result files and the project notes; times are when the ru
 | 2026-11-03 21:14:41 | loop grid | ciciot2023 | 14 | auditsmix | 30,000 | 5.8 | `results/loop_grid/ciciot2023_seed14_auditsmix.json` |
 | 2026-11-03 21:14:45 | loop grid | ciciot2023 | 13 | auditsmix | 30,000 | 6.0 | `results/loop_grid/ciciot2023_seed13_auditsmix.json` |
 | 2026-11-03 21:14:58 | loop grid | ciciot2023 | 15 | auditsmix | 30,000 | 5.8 | `results/loop_grid/ciciot2023_seed15_auditsmix.json` |
+| 2026-11-03 21:20:27 | loop grid | cicids2017 | 13 | s15 | 30,000 | 50.6 | `results/loop_grid/cicids2017_seed13_s15.json` |
+| 2026-11-03 21:21:38 | loop grid | cicids2017 | 14 | s15 | 30,000 | 51.1 | `results/loop_grid/cicids2017_seed14_s15.json` |
+| 2026-11-03 21:22:15 | loop grid | cicids2017 | 15 | s15 | 30,000 | 51.2 | `results/loop_grid/cicids2017_seed15_s15.json` |
 
 Dataset reports: `results/inspect_IoT_Network_Intrusion_Dataset.txt`, `results/inspect_friday.txt`, `results/inspect_part-00000.txt`
 <!-- history:end -->

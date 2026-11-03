@@ -42,3 +42,16 @@
 [loop] pgd/attack_only/feasible   poison:0.25 iwstrict:0.1 acc  99.87  fpr   0.45  asr   0.03  KNN sel    0.0  skipped  3834  (49.5s)
 [loop] pgd/attack_only/feasible   poison:0.25 iwstrict:0.2 acc  99.89  fpr   0.41  asr   0.01  KNN sel    0.0  skipped  3367  (52.3s)
 [loop] pgd/attack_only/feasible   poison:0.5  vanilla    acc  64.28  fpr   0.04  asr  47.34  KNN sel   0.29  skipped     0  (81.5s)
+[loop] pgd/attack_only/feasible   poison:0.5  audit:0.1  acc  75.57  fpr   0.04  asr  32.38  KNN sel    0.0  skipped     0  (77.0s)
+[loop] pgd/attack_only/feasible   poison:0.5  guard:0.1  acc  99.89  fpr   0.33  asr   0.04  KNN sel    0.0  skipped  3357  (38.5s)
+[loop] pgd/attack_only/feasible   poison:0.5  strict:0.1 acc  99.92  fpr   0.29  asr   0.01  KNN sel    0.0  skipped  5529  (27.0s)
+[loop] pgd/attack_only/feasible   poison:0.5  iwstrict:0.1 acc  99.80  fpr   0.70  asr   0.04  KNN sel    0.0  skipped  5529  (38.5s)
+[loop] pgd/attack_only/feasible   poison:0.5  iwstrict:0.2 acc  99.91  fpr   0.25  asr   0.04  KNN sel    0.0  skipped  4903  (41.3s)
+[loop] pgd/attack_only/feasible   poison:1.0  vanilla    acc  24.61  fpr   0.00  asr  99.95  KNN sel    0.0  skipped     0  (48.3s)
+[loop] pgd/attack_only/feasible   poison:1.0  audit:0.1  acc  24.68  fpr   0.00  asr  99.85  KNN sel    0.0  skipped     0  (70.3s)
+[loop] pgd/attack_only/feasible   poison:1.0  guard:0.1  acc  99.90  fpr   0.04  asr   0.12  KNN sel    0.0  skipped  6717  (20.3s)
+[loop] pgd/attack_only/feasible   poison:1.0  strict:0.1 acc  99.87  fpr   0.37  asr   0.05  KNN sel    0.0  skipped  8898  (9.3s)
+[loop] pgd/attack_only/feasible   poison:1.0  iwstrict:0.1 acc  99.95  fpr   0.12  asr   0.03  KNN sel    0.0  skipped  8898  (20.4s)
+[loop] pgd/attack_only/feasible   poison:1.0  iwstrict:0.2 acc  99.94  fpr   0.21  asr   0.01  KNN sel    0.0  skipped  7903  (24.6s)
+
+[loop] done in 51.1 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\loop_grid\cicids2017_seed14_s15.json and cicids2017_seed14_s15.csv

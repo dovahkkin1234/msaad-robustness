@@ -43,3 +43,15 @@
 [loop] pgd/attack_only/feasible   poison:0.25 iwstrict:0.2 acc  99.94  fpr   0.16  asr   0.03  KNN sel    0.0  skipped  3417  (50.9s)
 [loop] pgd/attack_only/feasible   poison:0.5  vanilla    acc  63.45  fpr   0.00  asr  48.45  KNN sel   0.38  skipped     0  (81.3s)
 [loop] pgd/attack_only/feasible   poison:0.5  audit:0.1  acc  74.43  fpr   0.04  asr  33.88  KNN sel    0.0  skipped     0  (79.1s)
+[loop] pgd/attack_only/feasible   poison:0.5  guard:0.1  acc  99.91  fpr   0.21  asr   0.05  KNN sel    0.0  skipped  3445  (38.4s)
+[loop] pgd/attack_only/feasible   poison:0.5  strict:0.1 acc  99.90  fpr   0.33  asr   0.03  KNN sel    0.0  skipped  5627  (26.0s)
+[loop] pgd/attack_only/feasible   poison:0.5  iwstrict:0.1 acc  99.95  fpr   0.21  asr    0.0  KNN sel    0.0  skipped  5627  (37.2s)
+[loop] pgd/attack_only/feasible   poison:0.5  iwstrict:0.2 acc  99.97  fpr   0.12  asr    0.0  KNN sel    0.0  skipped  4971  (39.9s)
+[loop] pgd/attack_only/feasible   poison:1.0  vanilla    acc  24.65  fpr   0.00  asr  99.89  KNN sel    0.0  skipped     0  (46.7s)
+[loop] pgd/attack_only/feasible   poison:1.0  audit:0.1  acc  24.78  fpr   0.00  asr  99.72  KNN sel    0.0  skipped     0  (68.4s)
+[loop] pgd/attack_only/feasible   poison:1.0  guard:0.1  acc  99.94  fpr   0.08  asr   0.05  KNN sel    0.0  skipped  6753  (20.8s)
+[loop] pgd/attack_only/feasible   poison:1.0  strict:0.1 acc  99.91  fpr   0.21  asr   0.05  KNN sel    0.0  skipped  8937  (8.7s)
+[loop] pgd/attack_only/feasible   poison:1.0  iwstrict:0.1 acc  99.97  fpr   0.12  asr    0.0  KNN sel    0.0  skipped  8937  (20.2s)
+[loop] pgd/attack_only/feasible   poison:1.0  iwstrict:0.2 acc  99.97  fpr   0.04  asr   0.03  KNN sel    0.0  skipped  7915  (25.1s)
+
+[loop] done in 50.6 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\loop_grid\cicids2017_seed13_s15.json and cicids2017_seed13_s15.csv
