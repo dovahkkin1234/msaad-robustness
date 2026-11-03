@@ -1,0 +1,25 @@
+[loaders] campaign order: 334,569 rows pass the filter; attack rows in capture-time order (attacks 2019-07-25 -> 2019-07-25) with benign rows spread evenly; replaying 30,000 evenly spaced
+[loaders] skipping non-numeric or NaN/inf values in 2 column(s), e.g. ['Flow_Byts/s', 'Flow_Pkts/s']
+[cascade] iotid20_campaign: 30,000 rows x 79 features; train 20,100 / test 9,900; seed 3; graph stage on
+[cascade] 117 hosts; timestamps NOT in time order
+[cascade] thresholds (added false alarms <= 1% on calibration benign flows): p2 0.863, gnn 0.941, ctx 0.571; params {'stage2_params': 7233, 'stage3_gnn_params': 96337, 'stage3_gnn_seconds': 3.4, 'stage3_ctx_params': 96209, 'stage3_ctx_seconds': 2.4}
+[attack] pgd/attack_only: surrogate fooled on 56.44% of perturbed rows; infeasible 100.0%
+[attack] cw/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 99.4%
+[cascade] clean                                  frozen                           S1 asr   0.06 fpr  29.26 | S1+S2+S3:gnn_drift asr   0.05 fpr  32.88 | caught   20.0 | drift cover 87%  (8.4s)
+[cascade] clean                                  delay:1000|true|vanilla          S1 asr   1.93 fpr  10.88 | S1+S2+S3:gnn_drift asr   1.77 fpr  13.15 | caught   8.33 | drift cover 87%  (93.3s)
+[cascade] clean                                  delay:1000|poison:1.0|vanilla    S1 asr  89.58 fpr   0.08 | S1+S2+S3:gnn_drift asr  89.04 fpr   0.42 | caught    0.6 | drift cover 87%  (71.6s)
+[cascade] clean                                  delay:1000|poison:1.0|strict:0.1 S1 asr   0.02 fpr  19.31 | S1+S2+S3:gnn_drift asr   0.02 fpr  21.08 | caught    0.0 | drift cover 87%  (20.5s)
+[cascade] pgd/attack_only                        frozen                           S1 asr  26.54 fpr  29.26 | S1+S2+S3:gnn_drift asr  25.75 fpr  32.88 | caught   2.98 | drift cover 87%  (9.1s)
+[cascade] pgd/attack_only/feasible               frozen                           S1 asr  26.89 fpr  29.26 | S1+S2+S3:gnn_drift asr  25.77 fpr  32.88 | caught   4.14 | drift cover 87%  (8.3s)
+[cascade] pgd/attack_only/feasible               delay:1000|true|vanilla          S1 asr   2.86 fpr   3.12 | S1+S2+S3:gnn_drift asr   2.78 fpr  10.37 | caught   2.81 | drift cover 87%  (95.1s)
+[cascade] pgd/attack_only/feasible               delay:1000|poison:1.0|vanilla    S1 asr   92.3 fpr   0.17 | S1+S2+S3:gnn_drift asr  92.13 fpr   0.42 | caught   0.19 | drift cover 87%  (83.3s)
+[cascade] pgd/attack_only/feasible               delay:1000|poison:1.0|strict:0.1 S1 asr   2.97 fpr  15.43 | S1+S2+S3:gnn_drift asr   2.87 fpr  17.12 | caught   3.47 | drift cover 87%  (22.9s)
+[cascade] cw/attack_only                         frozen                           S1 asr  31.71 fpr  29.26 | S1+S2+S3:gnn_drift asr   4.67 fpr  32.88 | caught  85.27 | drift cover 87%  (8.1s)
+[cascade] cw/attack_only/feasible                frozen                           S1 asr  31.51 fpr  29.26 | S1+S2+S3:gnn_drift asr   4.31 fpr  32.88 | caught  86.31 | drift cover 87%  (8.7s)
+[cascade] cw/attack_only/feasible                delay:1000|true|vanilla          S1 asr   3.53 fpr  10.46 | S1+S2+S3:gnn_drift asr   1.53 fpr  15.09 | caught  56.82 | drift cover 87%  (95.4s)
+[cascade] cw/attack_only/feasible                delay:1000|poison:1.0|vanilla    S1 asr  92.04 fpr   0.17 | S1+S2+S3:gnn_drift asr  89.98 fpr   0.42 | caught   2.23 | drift cover 87%  (77.2s)
+[cascade] cw/attack_only/feasible                delay:1000|poison:1.0|strict:0.1 S1 asr   3.04 fpr  17.88 | S1+S2+S3:gnn_drift asr   0.83 fpr  19.65 | caught  72.83 | drift cover 87%  (23.0s)
+[cascade] pgd/attack_only/feasible/spoof:10      frozen                           S1 asr  26.89 fpr  29.26 | S1+S2+S3:gnn_drift asr  25.75 fpr  32.88 | caught   4.23 | drift cover 81%  (10.4s)
+[cascade] pgd/attack_only/feasible/thin:0.25     frozen                           S1 asr  27.57 fpr  29.26 | S1+S2+S3:gnn_drift asr   26.6 fpr  32.88 | caught   3.54 | drift cover 89%  (4.1s)
+
+[cascade] done in 15.9 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\cascade_grid\iotid20_campaign_seed3_s15.json and iotid20_campaign_seed3_s15.csv

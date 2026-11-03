@@ -1,0 +1,21 @@
+[loaders] file order, stride sampling: 883,690 rows pass the filter; taking 30,000 evenly spaced (about 1 in 29.5)
+[cascade] ciciot2023: 30,000 rows x 46 features; train 20,100 / test 9,900; seed 14; graph stage off (no host addresses)
+[cascade] thresholds (added false alarms <= 1% on calibration benign flows): p2 0.242; params {'stage2_params': 5121}
+[attack] pgd/attack_only: surrogate fooled on 4.23% of perturbed rows; infeasible 100.0%
+[attack] cw/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 99.9%
+[cascade] clean                                  frozen                           S1 asr   0.05 fpr    3.3 | S1+S2 asr   0.05 fpr   5.11 | caught    0.0  (4.0s)
+[cascade] clean                                  delay:1000|true|vanilla          S1 asr   0.02 fpr    3.6 | S1+S2 asr   0.02 fpr    3.9 | caught    0.0  (58.8s)
+[cascade] clean                                  delay:1000|poison:1.0|vanilla    S1 asr  89.67 fpr    0.6 | S1+S2 asr  89.67 fpr    0.6 | caught    0.0  (40.2s)
+[cascade] clean                                  delay:1000|poison:1.0|strict:0.1 S1 asr   0.05 fpr    4.2 | S1+S2 asr   0.05 fpr   5.41 | caught    0.0  (7.7s)
+[cascade] pgd/attack_only                        frozen                           S1 asr  12.89 fpr    3.3 | S1+S2 asr   2.25 fpr   5.11 | caught  82.56  (3.7s)
+[cascade] pgd/attack_only/feasible               frozen                           S1 asr   4.42 fpr    3.3 | S1+S2 asr   1.72 fpr   5.11 | caught  60.99  (3.3s)
+[cascade] pgd/attack_only/feasible               delay:1000|true|vanilla          S1 asr   0.71 fpr    2.4 | S1+S2 asr   0.25 fpr    3.9 | caught  64.71  (45.4s)
+[cascade] pgd/attack_only/feasible               delay:1000|poison:1.0|vanilla    S1 asr  90.49 fpr    0.6 | S1+S2 asr  90.01 fpr    0.6 | caught   0.53  (38.5s)
+[cascade] pgd/attack_only/feasible               delay:1000|poison:1.0|strict:0.1 S1 asr   0.96 fpr   9.31 | S1+S2 asr   0.44 fpr  12.01 | caught  54.35  (7.8s)
+[cascade] cw/attack_only                         frozen                           S1 asr   1.47 fpr    3.3 | S1+S2 asr   0.22 fpr   5.11 | caught  85.11  (3.7s)
+[cascade] cw/attack_only/feasible                frozen                           S1 asr   0.82 fpr    3.3 | S1+S2 asr    0.2 fpr   5.11 | caught  75.64  (3.2s)
+[cascade] cw/attack_only/feasible                delay:1000|true|vanilla          S1 asr   0.18 fpr    4.2 | S1+S2 asr   0.05 fpr   5.41 | caught  70.59  (46.1s)
+[cascade] cw/attack_only/feasible                delay:1000|poison:1.0|vanilla    S1 asr  89.89 fpr    0.6 | S1+S2 asr  89.82 fpr    0.6 | caught   0.08  (37.8s)
+[cascade] cw/attack_only/feasible                delay:1000|poison:1.0|strict:0.1 S1 asr   0.28 fpr   7.21 | S1+S2 asr   0.09 fpr  11.41 | caught  66.67  (8.1s)
+
+[cascade] done in 8.2 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\cascade_grid\ciciot2023_seed14_s15.json and ciciot2023_seed14_s15.csv
