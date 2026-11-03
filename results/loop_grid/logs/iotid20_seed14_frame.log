@@ -31,3 +31,18 @@
 [loop] pgd/attack_only/feasible   true        iwconsensus:0.1 acc  99.33  fpr   3.67  asr   0.24  KNN sel    0.0  skipped  1119  (79.1s)
 [loop] pgd/attack_only/feasible   frame:0.02  vanilla    acc  99.38  fpr   4.56  asr   0.06  KNN sel    0.0  skipped     0  (82.2s)
 [loop] pgd/attack_only/feasible   frame:0.02  strict:0.1 acc  91.76  fpr  66.10  asr   0.06  KNN sel    0.0  skipped  1101  (72.6s)
+[loop] pgd/attack_only/feasible   frame:0.02  iwstrict:0.1 acc  95.65  fpr  34.15  asr   0.14  KNN sel    0.0  skipped  1101  (77.0s)
+[loop] pgd/attack_only/feasible   frame:0.02  consensus:0.1 acc  92.28  fpr  61.12  asr   0.16  KNN sel    0.0  skipped  1155  (75.0s)
+[loop] pgd/attack_only/feasible   frame:0.02  iwconsensus:0.1 acc  98.82  fpr   7.66  asr   0.27  KNN sel    0.0  skipped  1283  (80.3s)
+[loop] pgd/attack_only/feasible   frame:0.1   vanilla    acc  96.12  fpr  30.81  asr   0.07  KNN sel    0.0  skipped     0  (91.4s)
+[loop] pgd/attack_only/feasible   frame:0.1   strict:0.1 acc  89.35  fpr  85.74  asr   0.02  KNN sel    0.0  skipped  1101  (79.3s)
+[loop] pgd/attack_only/feasible   frame:0.1   iwstrict:0.1 acc  93.24  fpr  53.63  asr   0.13  KNN sel    0.0  skipped  1101  (89.9s)
+[loop] pgd/attack_only/feasible   frame:0.1   consensus:0.1 acc  89.05  fpr  87.20  asr   0.16  KNN sel    0.0  skipped  1176  (76.3s)
+[loop] pgd/attack_only/feasible   frame:0.1   iwconsensus:0.1 acc  93.65  fpr  44.91  asr    0.9  KNN sel    0.0  skipped  1392  (86.5s)
+[loop] pgd/attack_only/feasible   poison:1.0+frame:0.05 vanilla    acc  11.39  fpr   9.05  asr  99.86  KNN sel    0.0  skipped     0  (81.8s)
+[loop] pgd/attack_only/feasible   poison:1.0+frame:0.05 strict:0.1 acc  91.17  fpr  69.85  asr    0.2  KNN sel    0.0  skipped  8898  (21.3s)
+[loop] pgd/attack_only/feasible   poison:1.0+frame:0.05 iwstrict:0.1 acc  93.85  fpr  44.50  asr   0.73  KNN sel    0.0  skipped  8898  (31.8s)
+[loop] pgd/attack_only/feasible   poison:1.0+frame:0.05 consensus:0.1 acc  91.97  fpr  61.53  asr   0.46  KNN sel    0.0  skipped  8995  (20.1s)
+[loop] pgd/attack_only/feasible   poison:1.0+frame:0.05 iwconsensus:0.1 acc  94.53  fpr  24.69  asr   2.76  KNN sel    0.0  skipped  9155  (28.5s)
+
+[loop] done in 51.3 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\loop_grid\iotid20_seed14_frame.json and iotid20_seed14_frame.csv

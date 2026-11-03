@@ -1,0 +1,19 @@
+[loaders] time window 2017-07-07 20:31:00 -> 2017-07-07 21:26:00: keeping 129,401 of 386,556 rows
+[loaders] time order: 129,401 rows pass the filter, sorted by Timestamp (2017-07-07 -> 2017-07-07); replaying 30,000 evenly spaced
+[loaders] skipping non-numeric or NaN/inf values in 6 column(s), e.g. ['Flow Bytes/s', 'Flow IAT Max', 'Flow IAT Mean', 'Flow IAT Min', 'Flow IAT Std', 'Flow Packets/s']
+[loop] cicids2017: 30,000 rows x 79 features; train 20,100 / test 9,900 (test DDoS share 75.4%), seed 5
+[attack] pgd/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 100.0%
+[loop] clean                      frozen      frozen     acc  99.87  fpr   0.37  asr   0.05  KNN sel    0.0  skipped     0  (19.5s)
+[loop] clean                      true        vanilla    acc  99.93  fpr   0.16  asr   0.04  KNN sel    0.0  skipped     0  (58.9s)
+[loop] clean                      true        audit:0.1  acc  99.91  fpr   0.25  asr   0.04  KNN sel    0.0  skipped     0  (58.2s)
+[loop] clean                      true        guard:0.1  acc  99.88  fpr   0.33  asr   0.05  KNN sel    0.0  skipped     8  (58.1s)
+[loop] clean                      true        strict:0.1 acc  99.91  fpr   0.25  asr   0.04  KNN sel    0.0  skipped  2193  (46.2s)
+[loop] clean                      true        iwstrict:0.1 acc  99.94  fpr   0.12  asr   0.04  KNN sel    0.0  skipped  2193  (57.2s)
+[loop] clean                      true        iwstrict:0.2 acc  99.92  fpr   0.21  asr   0.04  KNN sel    0.0  skipped  1907  (59.0s)
+[loop] clean                      poison:0.25 vanilla    acc  99.01  fpr   0.12  asr   1.27  KNN sel    0.0  skipped     0  (79.9s)
+[loop] clean                      poison:0.25 audit:0.1  acc  99.31  fpr   0.16  asr   0.86  KNN sel    0.0  skipped     0  (75.5s)
+[loop] clean                      poison:0.25 guard:0.1  acc  99.90  fpr   0.29  asr   0.04  KNN sel    0.0  skipped  1703  (48.1s)
+[loop] clean                      poison:0.25 strict:0.1 acc  99.87  fpr   0.41  asr   0.04  KNN sel    0.0  skipped  3889  (36.7s)
+[loop] clean                      poison:0.25 iwstrict:0.1 acc  99.94  fpr   0.12  asr   0.04  KNN sel    0.0  skipped  3889  (47.8s)
+[loop] clean                      poison:0.25 iwstrict:0.2 acc  99.93  fpr   0.16  asr   0.04  KNN sel    0.0  skipped  3360  (50.8s)
+[loop] clean                      poison:0.5  vanilla    acc  58.05  fpr   0.04  asr   55.6  KNN sel   0.52  skipped     0  (82.7s)

@@ -32,3 +32,17 @@
 [loop] pgd/attack_only/feasible   frame:0.02  vanilla    acc  99.36  fpr   4.73  asr   0.06  KNN sel    0.0  skipped     0  (84.7s)
 [loop] pgd/attack_only/feasible   frame:0.02  strict:0.1 acc  88.91  fpr  88.92  asr   0.08  KNN sel    0.0  skipped  1112  (70.6s)
 [loop] pgd/attack_only/feasible   frame:0.02  iwstrict:0.1 acc  95.23  fpr  37.73  asr    0.1  KNN sel    0.0  skipped  1112  (77.5s)
+[loop] pgd/attack_only/feasible   frame:0.02  consensus:0.1 acc  96.47  fpr  27.38  asr   0.15  KNN sel    0.0  skipped  1242  (69.9s)
+[loop] pgd/attack_only/feasible   frame:0.02  iwconsensus:0.1 acc  98.02  fpr  14.83  asr   0.16  KNN sel    0.0  skipped  1262  (78.7s)
+[loop] pgd/attack_only/feasible   frame:0.1   vanilla    acc  96.11  fpr  30.97  asr   0.06  KNN sel    0.0  skipped     0  (89.4s)
+[loop] pgd/attack_only/feasible   frame:0.1   strict:0.1 acc  88.52  fpr  92.42  asr   0.03  KNN sel    0.0  skipped  1112  (77.8s)
+[loop] pgd/attack_only/feasible   frame:0.1   iwstrict:0.1 acc  92.75  fpr  57.54  asr   0.14  KNN sel    0.0  skipped  1112  (88.0s)
+[loop] pgd/attack_only/feasible   frame:0.1   consensus:0.1 acc  89.90  fpr  79.95  asr   0.22  KNN sel    0.0  skipped  1231  (77.6s)
+[loop] pgd/attack_only/feasible   frame:0.1   iwconsensus:0.1 acc  93.93  fpr  41.48  asr   1.06  KNN sel    0.0  skipped  1457  (82.2s)
+[loop] pgd/attack_only/feasible   poison:1.0+frame:0.05 vanilla    acc  11.27  fpr  10.84  asr  99.75  KNN sel    0.0  skipped     0  (82.5s)
+[loop] pgd/attack_only/feasible   poison:1.0+frame:0.05 strict:0.1 acc  90.49  fpr  74.57  asr    0.3  KNN sel    0.0  skipped  8908  (18.9s)
+[loop] pgd/attack_only/feasible   poison:1.0+frame:0.05 iwstrict:0.1 acc  93.53  fpr  46.21  asr   0.85  KNN sel    0.0  skipped  8908  (29.6s)
+[loop] pgd/attack_only/feasible   poison:1.0+frame:0.05 consensus:0.1 acc  93.51  fpr  47.43  asr    0.7  KNN sel    0.0  skipped  9038  (18.3s)
+[loop] pgd/attack_only/feasible   poison:1.0+frame:0.05 iwconsensus:0.1 acc  95.36  fpr  26.98  asr   1.48  KNN sel    0.0  skipped  9132  (27.6s)
+
+[loop] done in 50.1 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\loop_grid\iotid20_seed15_frame.json and iotid20_seed15_frame.csv
