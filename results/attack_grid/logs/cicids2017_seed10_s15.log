@@ -1,0 +1,35 @@
+[loaders] time window 2017-07-07 20:31:00 -> 2017-07-07 21:26:00: keeping 129,401 of 386,556 rows
+[loaders] time order: 129,401 rows pass the filter, sorted by Timestamp (2017-07-07 -> 2017-07-07); replaying 30,000 evenly spaced
+[loaders] skipping non-numeric or NaN/inf values in 6 column(s), e.g. ['Flow Bytes/s', 'Flow IAT Max', 'Flow IAT Mean', 'Flow IAT Min', 'Flow IAT Std', 'Flow Packets/s']
+[loaders] time window 2017-07-07 20:31:00 -> 2017-07-07 21:26:00: keeping 129,401 of 386,556 rows
+[loaders] time order: 129,401 rows pass the filter, sorted by Timestamp (2017-07-07 -> 2017-07-07); replaying 30,000 evenly spaced
+[loaders] skipping non-numeric or NaN/inf values in 6 column(s), e.g. ['Flow Bytes/s', 'Flow IAT Max', 'Flow IAT Mean', 'Flow IAT Min', 'Flow IAT Std', 'Flow Packets/s']
+[attack] cicids2017: 30,000 rows x 79 features; train 20,100 / test 9,900 (test DDoS share 75.4%), seed 10
+[attack] surrogate mlp: train acc 100.0%, clean test acc 99.93%
+[attack] constraints: 4 constant, 2 binary, 5 categorical, 43 integer, 74 non-negative, 4 equality groups, 24 orderings
+[attack] pgd/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 100.0%
+[attack] cw/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 99.95%
+[attack] clean                      online     acc  99.96  rec  99.95  f1  99.97  fpr   0.00  asr      -  drifts   8  (80.3s)
+[attack] clean                      frozen     acc  99.92  rec  99.95  f1  99.95  fpr   0.16  asr      -  drifts   0  (3.1s)
+[attack] clean                      delay:1000 acc  99.95  rec  99.95  f1  99.97  fpr   0.04  asr      -  drifts   3  (74.0s)
+[attack] clean                      delay:5000 acc  99.93  rec  99.95  f1  99.95  fpr   0.12  asr      -  drifts   0  (41.5s)
+[attack] clean                      delaysec:60 acc  99.95  rec  99.95  f1  99.97  fpr   0.04  asr      -  drifts   8  (78.4s)
+[attack] clean                      delaysec:300 acc  99.93  rec  99.95  f1  99.95  fpr   0.12  asr      -  drifts   6  (75.5s)
+[attack] pgd/attack_only            online     acc  99.97  rec  99.99  f1  99.98  fpr   0.08  asr   0.01  drifts  14  (75.9s)
+[attack] pgd/attack_only            frozen     acc  27.20  rec   3.55  f1   6.85  fpr   0.16  asr  96.45  drifts   0  (3.8s)
+[attack] pgd/attack_only            delay:1000 acc  90.49  rec  87.44  f1  93.28  fpr   0.12  asr  12.56  drifts  12  (73.4s)
+[attack] pgd/attack_only            delay:5000 acc  56.52  rec  42.38  f1  59.52  fpr   0.08  asr  57.62  drifts   8  (42.6s)
+[attack] pgd/attack_only            delaysec:60 acc  89.13  rec  85.63  f1  92.24  fpr   0.12  asr  14.37  drifts  14  (79.6s)
+[attack] pgd/attack_only            delaysec:300 acc  44.84  rec  26.91  f1  42.40  fpr   0.12  asr  73.09  drifts  14  (73.7s)
+[attack] pgd/attack_only/feasible   online     acc  99.96  rec  99.96  f1  99.97  fpr   0.04  asr   0.04  drifts  15  (75.0s)
+[attack] pgd/attack_only/feasible   frozen     acc  27.20  rec   3.55  f1   6.85  fpr   0.16  asr  96.45  drifts   0  (3.6s)
+[attack] cw/attack_only             online     acc  99.92  rec  99.91  f1  99.95  fpr   0.04  asr   0.09  drifts  14  (77.5s)
+[attack] cw/attack_only             frozen     acc  27.11  rec   3.43  f1   6.63  fpr   0.16  asr  96.57  drifts   0  (4.0s)
+[attack] cw/attack_only             delay:1000 acc  90.36  rec  87.37  f1  93.19  fpr   0.45  asr  12.63  drifts   8  (76.9s)
+[attack] cw/attack_only             delay:5000 acc  56.45  rec  42.30  f1  59.44  fpr   0.08  asr   57.7  drifts   4  (43.2s)
+[attack] cw/attack_only             delaysec:60 acc  89.07  rec  85.57  f1  92.19  fpr   0.16  asr  14.43  drifts  13  (80.4s)
+[attack] cw/attack_only             delaysec:300 acc  44.73  rec  26.79  f1  42.24  fpr   0.21  asr  73.21  drifts  11  (77.6s)
+[attack] cw/attack_only/feasible    online     acc  99.93  rec  99.93  f1  99.95  fpr   0.08  asr   0.07  drifts  11  (77.2s)
+[attack] cw/attack_only/feasible    frozen     acc  27.11  rec   3.43  f1   6.63  fpr   0.16  asr  96.57  drifts   0  (3.8s)
+
+[attack] done in 24.2 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\attack_grid\cicids2017_seed10_s15.json and cicids2017_seed10_s15.csv

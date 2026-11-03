@@ -1,0 +1,10 @@
+[loaders] file order, stride sampling: 883,690 rows pass the filter; taking 30,000 evenly spaced (about 1 in 29.5)
+[loop] ciciot2023: 30,000 rows x 46 features; train 20,100 / test 9,900 (test DDoS share 96.6%), seed 4
+[attack] pgd/attack_only: surrogate fooled on 2.71% of perturbed rows; infeasible 100.0%
+[loop] clean                      frozen      frozen     acc  99.54  fpr  10.51  asr   0.11  KNN sel    0.0  skipped     0  (14.3s)
+[loop] clean                      true        vanilla    acc  99.64  fpr   8.11  asr   0.09  KNN sel    0.0  skipped     0  (49.4s)
+[loop] clean                      true        strict:0.1 acc  99.28  fpr  18.92  asr   0.08  KNN sel    0.0  skipped   301  (47.7s)
+[loop] clean                      true        iwstrict:0.1 acc  99.54  fpr  11.71  asr   0.07  KNN sel    0.0  skipped   301  (48.6s)
+[loop] clean                      true        consensus:0.1 acc  99.22  fpr  21.02  asr   0.07  KNN sel    0.0  skipped   307  (47.0s)
+[loop] clean                      true        iwconsensus:0.1 acc  99.44  fpr  14.11  asr   0.08  KNN sel    0.0  skipped   308  (46.8s)
+[loop] clean                      frame:0.02  vanilla    acc  99.21  fpr  20.42  asr    0.1  KNN sel    0.0  skipped     0  (46.7s)
