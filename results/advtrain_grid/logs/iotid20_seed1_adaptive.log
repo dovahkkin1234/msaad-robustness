@@ -1,0 +1,35 @@
+[loaders] file order, stride sampling: 334,569 rows pass the filter; taking 30,000 evenly spaced (about 1 in 11.2)
+[loaders] skipping non-numeric or NaN/inf values in 2 column(s), e.g. ['Flow_Byts/s', 'Flow_Pkts/s']
+[advtrain] iotid20: 30,000 rows x 79 features; train 20,100 (17,662 DDoS) / test 9,900; seed 1; copies feasible
+[attack] fgsm/attack_only: surrogate fooled on 78.05% of perturbed rows; infeasible 99.94%
+[attack] bim/attack_only: surrogate fooled on 80.85% of perturbed rows; infeasible 99.94%
+[attack] pgd/attack_only: surrogate fooled on 80.89% of perturbed rows; infeasible 100.0%
+[attack] cw/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 99.55%
+[advtrain] none: trained on 20,100 flows (0 adversarial copies) in 157.8s
+[advtrain] none                 hsj (label-only, 50 flows): raw-space {'250': 20.0, '500': 20.0, '1000': 24.0, '2000': 50.0} (valid after repair 0.0%); valid-traffic queries {'250': 18.0, '500': 20.0, '1000': 20.0, '2000': 32.0}
+[advtrain] none                 clean                      frozen      acc  99.48  fpr   3.67  rec  99.93  asr      -  (7.0s)
+[advtrain] none                 fgsm/attack_only           frozen      acc  82.19  fpr   3.67  rec  80.19  asr  19.81  (7.5s)
+[advtrain] none                 fgsm/attack_only/feasible  frozen      acc  85.12  fpr   3.67  rec  83.54  asr  16.46  (7.6s)
+[advtrain] none                 bim/attack_only            frozen      acc  82.52  fpr   3.67  rec  80.56  asr  19.44  (7.9s)
+[advtrain] none                 bim/attack_only/feasible   frozen      acc  82.76  fpr   3.67  rec  80.84  asr  19.16  (7.9s)
+[advtrain] none                 pgd/attack_only            frozen      acc  82.96  fpr   3.67  rec  81.07  asr  18.93  (8.1s)
+[advtrain] none                 pgd/attack_only/feasible   frozen      acc  82.37  fpr   3.67  rec  80.40  asr   19.6  (8.0s)
+[advtrain] none                 cw/attack_only             frozen      acc  93.27  fpr   3.67  rec  92.84  asr   7.16  (7.6s)
+[advtrain] none                 cw/attack_only/feasible    frozen      acc  95.35  fpr   3.67  rec  95.22  asr   4.78  (8.8s)
+[advtrain] none                 pgd-atsur/attack_only/feasible frozen      acc  80.15  fpr   3.67  rec  77.86  asr  22.14  (9.0s)
+[advtrain] none                 pgd-distill/attack_only/feasible frozen      acc  80.45  fpr   3.67  rec  78.21  asr  21.79  (8.2s)
+[advtrain] at:pgd: trained on 37,762 flows (17,662 adversarial copies) in 300.6s; pgd: fools own surrogate 33.52%
+[advtrain] at:pgd               hsj (label-only, 50 flows): raw-space {'250': 6.0, '500': 10.0, '1000': 14.0, '2000': 18.0} (valid after repair 0.0%); valid-traffic queries {'250': 2.0, '500': 2.0, '1000': 2.0, '2000': 2.0}
+[advtrain] at:pgd               clean                      frozen      acc  99.48  fpr   4.16  rec 100.00  asr      -  (5.6s)
+[advtrain] at:pgd               fgsm/attack_only           frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (6.8s)
+[advtrain] at:pgd               fgsm/attack_only/feasible  frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (6.5s)
+[advtrain] at:pgd               bim/attack_only            frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (7.0s)
+[advtrain] at:pgd               bim/attack_only/feasible   frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (6.6s)
+[advtrain] at:pgd               pgd/attack_only            frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (6.4s)
+[advtrain] at:pgd               pgd/attack_only/feasible   frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (6.5s)
+[advtrain] at:pgd               cw/attack_only             frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (7.6s)
+[advtrain] at:pgd               cw/attack_only/feasible    frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (7.0s)
+[advtrain] at:pgd               pgd-atsur/attack_only/feasible frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (7.4s)
+[advtrain] at:pgd               pgd-distill/attack_only/feasible frozen      acc  99.48  fpr   4.16  rec 100.00  asr    0.0  (7.7s)
+
+[advtrain] done in 18.9 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\advtrain_grid\iotid20_seed1_adaptive.json and iotid20_seed1_adaptive.csv

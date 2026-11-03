@@ -1,0 +1,25 @@
+n_flows,asr_raw_by_budget,asr_raw,median_queries_raw,asr_raw_after_repair,asr_feasible_by_budget,asr_feasible,median_queries_feasible,asr,asr_by_budget,median_queries,at,scenario,attack,variant,learning,seen,n,accuracy,precision,recall,f1,fpr,tp,fp,tn,fn,attack_share,majority_accuracy,clean_miss,evasion_gain,drifts_total,seconds
+50,"{""250"": 56.0, ""500"": 72.0, ""1000"": 88.0, ""2000"": 96.0}",96.0,1994,40.0,"{""250"": 48.0, ""500"": 56.0, ""1000"": 56.0, ""2000"": 60.0}",60.0,1994,60.0,"{""250"": 48.0, ""500"": 56.0, ""1000"": 56.0, ""2000"": 60.0}",1994,none,hsj/attack_only/feasible,hsj,feasible,frozen,False,,,,,,,,,,,,,,,,
+,,,,,,,,,,,none,clean,,clean,frozen,,9900,99.77,99.85,99.91,99.88,4.2,9558,14,319,9,96.64,96.64,,,0,3.0
+,,,,,,,,99.73,,,none,fgsm/attack_only,fgsm,raw,frozen,False,9900,3.48,65.0,0.27,0.54,4.2,26,14,319,9541,96.64,96.64,0.09,99.64,0,3.6
+,,,,,,,,78.05,,,none,fgsm/attack_only/feasible,fgsm,feasible,frozen,False,9900,24.43,99.34,21.95,35.96,4.2,2100,14,319,7467,96.64,96.64,0.09,77.96,0,3.4
+,,,,,,,,99.71,,,none,bim/attack_only,bim,raw,frozen,False,9900,3.51,66.67,0.29,0.58,4.2,28,14,319,9539,96.64,96.64,0.09,99.62,0,3.8
+,,,,,,,,78.05,,,none,bim/attack_only/feasible,bim,feasible,frozen,False,9900,24.43,99.34,21.95,35.96,4.2,2100,14,319,7467,96.64,96.64,0.09,77.96,0,3.2
+,,,,,,,,99.68,,,none,pgd/attack_only,pgd,raw,frozen,False,9900,3.54,68.89,0.32,0.65,4.2,31,14,319,9536,96.64,96.64,0.09,99.59,0,3.7
+,,,,,,,,78.05,,,none,pgd/attack_only/feasible,pgd,feasible,frozen,False,9900,24.43,99.34,21.95,35.96,4.2,2100,14,319,7467,96.64,96.64,0.09,77.96,0,3.2
+,,,,,,,,74.96,,,none,cw/attack_only,cw,raw,frozen,False,9900,27.42,99.42,25.04,40.01,4.2,2396,14,319,7171,96.64,96.64,0.09,74.87,0,3.5
+,,,,,,,,77.39,,,none,cw/attack_only/feasible,cw,feasible,frozen,False,9900,25.07,99.36,22.61,36.84,4.2,2163,14,319,7404,96.64,96.64,0.09,77.3,0,3.0
+,,,,,,,,5.17,,,none,pgd-atsur/attack_only/feasible,pgd-atsur,feasible,frozen,False,9900,94.86,99.85,94.83,97.27,4.2,9072,14,319,495,96.64,96.64,0.09,5.08,0,3.3
+,,,,,,,,67.59,,,none,pgd-distill/attack_only/feasible,pgd-distill,feasible,frozen,False,9900,34.55,99.55,32.41,48.9,4.2,3101,14,319,6466,96.64,96.64,0.09,67.5,0,3.3
+50,"{""250"": 0.0, ""500"": 0.0, ""1000"": 0.0, ""2000"": 2.0}",2.0,1995,0.0,"{""250"": 0.0, ""500"": 2.0, ""1000"": 2.0, ""2000"": 4.0}",4.0,1995,4.0,"{""250"": 0.0, ""500"": 2.0, ""1000"": 2.0, ""2000"": 4.0}",1995,at:pgd,hsj/attack_only/feasible,hsj,feasible,frozen,False,,,,,,,,,,,,,,,,
+,,,,,,,,,,,at:pgd,clean,,clean,frozen,,9900,99.75,99.84,99.9,99.87,4.5,9557,15,318,10,96.64,96.64,,,0,3.5
+,,,,,,,,0.01,,,at:pgd,fgsm/attack_only,fgsm,raw,frozen,False,9900,99.84,99.84,99.99,99.92,4.5,9566,15,318,1,96.64,96.64,0.1,-0.09,0,4.1
+,,,,,,,,0.01,,,at:pgd,fgsm/attack_only/feasible,fgsm,feasible,frozen,False,9900,99.84,99.84,99.99,99.92,4.5,9566,15,318,1,96.64,96.64,0.1,-0.09,0,3.7
+,,,,,,,,0.01,,,at:pgd,bim/attack_only,bim,raw,frozen,False,9900,99.84,99.84,99.99,99.92,4.5,9566,15,318,1,96.64,96.64,0.1,-0.09,0,3.5
+,,,,,,,,0.01,,,at:pgd,bim/attack_only/feasible,bim,feasible,frozen,False,9900,99.84,99.84,99.99,99.92,4.5,9566,15,318,1,96.64,96.64,0.1,-0.09,0,4.1
+,,,,,,,,0.0,,,at:pgd,pgd/attack_only,pgd,raw,frozen,True,9900,99.85,99.84,100.0,99.92,4.5,9567,15,318,0,96.64,96.64,0.1,-0.1,0,3.3
+,,,,,,,,0.02,,,at:pgd,pgd/attack_only/feasible,pgd,feasible,frozen,True,9900,99.83,99.84,99.98,99.91,4.5,9565,15,318,2,96.64,96.64,0.1,-0.08,0,3.8
+,,,,,,,,0.09,,,at:pgd,cw/attack_only,cw,raw,frozen,False,9900,99.76,99.84,99.91,99.87,4.5,9558,15,318,9,96.64,96.64,0.1,-0.01,0,3.2
+,,,,,,,,0.09,,,at:pgd,cw/attack_only/feasible,cw,feasible,frozen,False,9900,99.76,99.84,99.91,99.87,4.5,9558,15,318,9,96.64,96.64,0.1,-0.01,0,3.6
+,,,,,,,,0.01,,,at:pgd,pgd-atsur/attack_only/feasible,pgd-atsur,feasible,frozen,False,9900,99.84,99.84,99.99,99.92,4.5,9566,15,318,1,96.64,96.64,0.1,-0.09,0,3.3
+,,,,,,,,0.01,,,at:pgd,pgd-distill/attack_only/feasible,pgd-distill,feasible,frozen,False,9900,99.84,99.84,99.99,99.92,4.5,9566,15,318,1,96.64,96.64,0.1,-0.09,0,3.7

@@ -140,6 +140,16 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results/cascade_grid`: 30 new CSV; 30 new JSON; 30 new log; summary_cascade_s15.csv (new)
   - `results/loop_grid`: 3 changed log; 3 new CSV; 3 new JSON; 3 new log
 
+### 2026-11-03 19:41 (UTC+05:30) - advtrain grid [adaptive]: iotid20, ciciot2023 x seeds 1, 2, 3, 4, 5
+
+- **Command:** `python experiments\run_grid.py --exp advtrain --data iotid20 ciciot2023 --seeds 1 2 3 4 5 --jobs 6 --tag adaptive --variants none at:pgd --learning frozen --adaptive distill atsur hsj --push`
+- **Runs:** 10 ok, 0 failed; 27.1 min (2026-11-03 19:14:31 to 2026-11-03 19:41:34)
+- **Code version:** a18e58c
+- **Results:**
+  - `results`: grid_runs.jsonl (changed)
+  - `results/advtrain_grid`: 10 new CSV; 10 new JSON; 10 new log; summary_advtrain_adaptive.csv (new)
+  - `results/loop_grid`: 3 changed log; 3 new CSV; 3 new JSON; 3 new log
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->
@@ -383,6 +393,19 @@ Reconstructed from the result files and the project notes; times are when the ru
 | 2026-11-03 19:13:56 | cascade_grid | ciciot2023 | 14 | s15 | 30,000 | 8.2 | `results/cascade_grid/ciciot2023_seed14_s15.json` |
 | 2026-11-03 19:13:59 | cascade_grid | ciciot2023 | 13 | s15 | 30,000 | 8.5 | `results/cascade_grid/ciciot2023_seed13_s15.json` |
 | 2026-11-03 19:14:07 | cascade_grid | ciciot2023 | 15 | s15 | 30,000 | 8.2 | `results/cascade_grid/ciciot2023_seed15_s15.json` |
+| 2026-11-03 19:25:27 | advtrain_grid | ciciot2023 | 1 | adaptive | 30,000 | 10.9 | `results/advtrain_grid/ciciot2023_seed1_adaptive.json` |
+| 2026-11-03 19:32:56 | advtrain_grid | iotid20 | 2 | adaptive | 30,000 | 18.4 | `results/advtrain_grid/iotid20_seed2_adaptive.json` |
+| 2026-11-03 19:33:01 | advtrain_grid | iotid20 | 3 | adaptive | 30,000 | 18.5 | `results/advtrain_grid/iotid20_seed3_adaptive.json` |
+| 2026-11-03 19:33:27 | advtrain_grid | iotid20 | 1 | adaptive | 30,000 | 18.9 | `results/advtrain_grid/iotid20_seed1_adaptive.json` |
+| 2026-11-03 19:33:31 | advtrain_grid | iotid20 | 4 | adaptive | 30,000 | 19.0 | `results/advtrain_grid/iotid20_seed4_adaptive.json` |
+| 2026-11-03 19:33:38 | advtrain_grid | iotid20 | 5 | adaptive | 30,000 | 19.1 | `results/advtrain_grid/iotid20_seed5_adaptive.json` |
+| 2026-11-03 19:35:15 | advtrain_grid | ciciot2023 | 2 | adaptive | 30,000 | 9.8 | `results/advtrain_grid/ciciot2023_seed2_adaptive.json` |
+| 2026-11-03 19:37:47 | loop grid | cicids2017 | 8 | s15 | 30,000 | 52.1 | `results/loop_grid/cicids2017_seed8_s15.json` |
+| 2026-11-03 19:38:02 | loop grid | cicids2017 | 7 | s15 | 30,000 | 53.8 | `results/loop_grid/cicids2017_seed7_s15.json` |
+| 2026-11-03 19:39:15 | loop grid | cicids2017 | 9 | s15 | 30,000 | 53.1 | `results/loop_grid/cicids2017_seed9_s15.json` |
+| 2026-11-03 19:41:31 | advtrain_grid | ciciot2023 | 3 | adaptive | 30,000 | 8.6 | `results/advtrain_grid/ciciot2023_seed3_adaptive.json` |
+| 2026-11-03 19:41:31 | advtrain_grid | ciciot2023 | 4 | adaptive | 30,000 | 8.5 | `results/advtrain_grid/ciciot2023_seed4_adaptive.json` |
+| 2026-11-03 19:41:34 | advtrain_grid | ciciot2023 | 5 | adaptive | 30,000 | 8.1 | `results/advtrain_grid/ciciot2023_seed5_adaptive.json` |
 
 Dataset reports: `results/inspect_IoT_Network_Intrusion_Dataset.txt`, `results/inspect_friday.txt`, `results/inspect_part-00000.txt`
 <!-- history:end -->

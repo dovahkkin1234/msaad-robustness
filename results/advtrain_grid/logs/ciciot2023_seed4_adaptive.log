@@ -1,0 +1,34 @@
+[loaders] file order, stride sampling: 883,690 rows pass the filter; taking 30,000 evenly spaced (about 1 in 29.5)
+[advtrain] ciciot2023: 30,000 rows x 46 features; train 20,100 (19,457 DDoS) / test 9,900; seed 4; copies feasible
+[attack] fgsm/attack_only: surrogate fooled on 2.62% of perturbed rows; infeasible 100.0%
+[attack] bim/attack_only: surrogate fooled on 2.69% of perturbed rows; infeasible 100.0%
+[attack] pgd/attack_only: surrogate fooled on 2.71% of perturbed rows; infeasible 100.0%
+[attack] cw/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 99.95%
+[advtrain] none: trained on 20,100 flows (0 adversarial copies) in 81.7s
+[advtrain] none                 hsj (label-only, 50 flows): raw-space {'250': 60.0, '500': 62.0, '1000': 68.0, '2000': 76.0} (valid after repair 0.0%); valid-traffic queries {'250': 0.0, '500': 0.0, '1000': 0.0, '2000': 2.0}
+[advtrain] none                 clean                      frozen      acc  99.54  fpr  10.51  rec  99.89  asr      -  (2.3s)
+[advtrain] none                 fgsm/attack_only           frozen      acc  96.28  fpr  10.51  rec  96.52  asr   3.48  (3.1s)
+[advtrain] none                 fgsm/attack_only/feasible  frozen      acc  98.27  fpr  10.51  rec  98.58  asr   1.42  (2.4s)
+[advtrain] none                 bim/attack_only            frozen      acc  86.26  fpr  10.51  rec  86.15  asr  13.85  (3.2s)
+[advtrain] none                 bim/attack_only/feasible   frozen      acc  98.42  fpr  10.51  rec  98.74  asr   1.26  (2.5s)
+[advtrain] none                 pgd/attack_only            frozen      acc  82.39  fpr  10.51  rec  82.15  asr  17.85  (3.3s)
+[advtrain] none                 pgd/attack_only/feasible   frozen      acc  98.41  fpr  10.51  rec  98.72  asr   1.28  (2.5s)
+[advtrain] none                 cw/attack_only             frozen      acc  96.42  fpr  10.51  rec  96.67  asr   3.33  (2.8s)
+[advtrain] none                 cw/attack_only/feasible    frozen      acc  99.11  fpr  10.51  rec  99.45  asr   0.55  (2.3s)
+[advtrain] none                 pgd-atsur/attack_only/feasible frozen      acc  97.44  fpr  10.51  rec  97.72  asr   2.28  (2.4s)
+[advtrain] none                 pgd-distill/attack_only/feasible frozen      acc  98.59  fpr  10.51  rec  98.90  asr    1.1  (2.5s)
+[advtrain] at:pgd: trained on 39,557 flows (19,457 adversarial copies) in 155.7s; pgd: fools own surrogate 2.43%
+[advtrain] at:pgd               hsj (label-only, 50 flows): raw-space {'250': 0.0, '500': 0.0, '1000': 0.0, '2000': 2.0} (valid after repair 2.0%); valid-traffic queries {'250': 0.0, '500': 2.0, '1000': 2.0, '2000': 6.0}
+[advtrain] at:pgd               clean                      frozen      acc  99.63  fpr  10.21  rec  99.97  asr      -  (2.4s)
+[advtrain] at:pgd               fgsm/attack_only           frozen      acc  98.95  fpr  10.21  rec  99.27  asr   0.73  (3.1s)
+[advtrain] at:pgd               fgsm/attack_only/feasible  frozen      acc  99.54  fpr  10.21  rec  99.87  asr   0.13  (2.9s)
+[advtrain] at:pgd               bim/attack_only            frozen      acc  98.86  fpr  10.21  rec  99.17  asr   0.83  (3.3s)
+[advtrain] at:pgd               bim/attack_only/feasible   frozen      acc  99.49  fpr  10.21  rec  99.83  asr   0.17  (2.8s)
+[advtrain] at:pgd               pgd/attack_only            frozen      acc  98.83  fpr  10.21  rec  99.14  asr   0.86  (3.1s)
+[advtrain] at:pgd               pgd/attack_only/feasible   frozen      acc  99.51  fpr  10.21  rec  99.84  asr   0.16  (3.0s)
+[advtrain] at:pgd               cw/attack_only             frozen      acc  99.62  fpr  10.21  rec  99.96  asr   0.04  (2.8s)
+[advtrain] at:pgd               cw/attack_only/feasible    frozen      acc  99.62  fpr  10.21  rec  99.96  asr   0.04  (2.7s)
+[advtrain] at:pgd               pgd-atsur/attack_only/feasible frozen      acc  99.53  fpr  10.21  rec  99.86  asr   0.14  (2.8s)
+[advtrain] at:pgd               pgd-distill/attack_only/feasible frozen      acc  99.65  fpr  10.21  rec  99.99  asr   0.01  (2.7s)
+
+[advtrain] done in 8.5 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\advtrain_grid\ciciot2023_seed4_adaptive.json and ciciot2023_seed4_adaptive.csv

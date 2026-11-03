@@ -1,0 +1,25 @@
+n_flows,asr_raw_by_budget,asr_raw,median_queries_raw,asr_raw_after_repair,asr_feasible_by_budget,asr_feasible,median_queries_feasible,asr,asr_by_budget,median_queries,at,scenario,attack,variant,learning,seen,n,accuracy,precision,recall,f1,fpr,tp,fp,tn,fn,attack_share,majority_accuracy,clean_miss,evasion_gain,drifts_total,seconds
+50,"{""250"": 20.0, ""500"": 20.0, ""1000"": 24.0, ""2000"": 50.0}",50.0,1994,0.0,"{""250"": 18.0, ""500"": 20.0, ""1000"": 20.0, ""2000"": 32.0}",32.0,1994,32.0,"{""250"": 18.0, ""500"": 20.0, ""1000"": 20.0, ""2000"": 32.0}",1994,none,hsj/attack_only/feasible,hsj,feasible,frozen,False,,,,,,,,,,,,,,,,
+,,,,,,,,,,,none,clean,,clean,frozen,,9900,99.48,99.48,99.93,99.71,3.67,8667,45,1182,6,87.61,87.61,,,0,7.0
+,,,,,,,,19.81,,,none,fgsm/attack_only,fgsm,raw,frozen,False,9900,82.19,99.36,80.19,88.75,3.67,6955,45,1182,1718,87.61,87.61,0.07,19.74,0,7.5
+,,,,,,,,16.46,,,none,fgsm/attack_only/feasible,fgsm,feasible,frozen,False,9900,85.12,99.38,83.54,90.77,3.67,7245,45,1182,1428,87.61,87.61,0.07,16.39,0,7.6
+,,,,,,,,19.44,,,none,bim/attack_only,bim,raw,frozen,False,9900,82.52,99.36,80.56,88.98,3.67,6987,45,1182,1686,87.61,87.61,0.07,19.37,0,7.9
+,,,,,,,,19.16,,,none,bim/attack_only/feasible,bim,feasible,frozen,False,9900,82.76,99.36,80.84,89.15,3.67,7011,45,1182,1662,87.61,87.61,0.07,19.09,0,7.9
+,,,,,,,,18.93,,,none,pgd/attack_only,pgd,raw,frozen,False,9900,82.96,99.36,81.07,89.29,3.67,7031,45,1182,1642,87.61,87.61,0.07,18.86,0,8.1
+,,,,,,,,19.6,,,none,pgd/attack_only/feasible,pgd,feasible,frozen,False,9900,82.37,99.36,80.4,88.88,3.67,6973,45,1182,1700,87.61,87.61,0.07,19.53,0,8.0
+,,,,,,,,7.16,,,none,cw/attack_only,cw,raw,frozen,False,9900,93.27,99.44,92.84,96.03,3.67,8052,45,1182,621,87.61,87.61,0.07,7.09,0,7.6
+,,,,,,,,4.78,,,none,cw/attack_only/feasible,cw,feasible,frozen,False,9900,95.35,99.46,95.22,97.29,3.67,8258,45,1182,415,87.61,87.61,0.07,4.71,0,8.8
+,,,,,,,,22.14,,,none,pgd-atsur/attack_only/feasible,pgd-atsur,feasible,frozen,False,9900,80.15,99.34,77.86,87.3,3.67,6753,45,1182,1920,87.61,87.61,0.07,22.07,0,9.0
+,,,,,,,,21.79,,,none,pgd-distill/attack_only/feasible,pgd-distill,feasible,frozen,False,9900,80.45,99.34,78.21,87.52,3.67,6783,45,1182,1890,87.61,87.61,0.07,21.72,0,8.2
+50,"{""250"": 6.0, ""500"": 10.0, ""1000"": 14.0, ""2000"": 18.0}",18.0,1994,0.0,"{""250"": 2.0, ""500"": 2.0, ""1000"": 2.0, ""2000"": 2.0}",2.0,1994,2.0,"{""250"": 2.0, ""500"": 2.0, ""1000"": 2.0, ""2000"": 2.0}",1994,at:pgd,hsj/attack_only/feasible,hsj,feasible,frozen,False,,,,,,,,,,,,,,,,
+,,,,,,,,,,,at:pgd,clean,,clean,frozen,,9900,99.48,99.42,100.0,99.71,4.16,8673,51,1176,0,87.61,87.61,,,0,5.6
+,,,,,,,,0.0,,,at:pgd,fgsm/attack_only,fgsm,raw,frozen,False,9900,99.48,99.42,100.0,99.71,4.16,8673,51,1176,0,87.61,87.61,0.0,0.0,0,6.8
+,,,,,,,,0.0,,,at:pgd,fgsm/attack_only/feasible,fgsm,feasible,frozen,False,9900,99.48,99.42,100.0,99.71,4.16,8673,51,1176,0,87.61,87.61,0.0,0.0,0,6.5
+,,,,,,,,0.0,,,at:pgd,bim/attack_only,bim,raw,frozen,False,9900,99.48,99.42,100.0,99.71,4.16,8673,51,1176,0,87.61,87.61,0.0,0.0,0,7.0
+,,,,,,,,0.0,,,at:pgd,bim/attack_only/feasible,bim,feasible,frozen,False,9900,99.48,99.42,100.0,99.71,4.16,8673,51,1176,0,87.61,87.61,0.0,0.0,0,6.6
+,,,,,,,,0.0,,,at:pgd,pgd/attack_only,pgd,raw,frozen,True,9900,99.48,99.42,100.0,99.71,4.16,8673,51,1176,0,87.61,87.61,0.0,0.0,0,6.4
+,,,,,,,,0.0,,,at:pgd,pgd/attack_only/feasible,pgd,feasible,frozen,True,9900,99.48,99.42,100.0,99.71,4.16,8673,51,1176,0,87.61,87.61,0.0,0.0,0,6.5
+,,,,,,,,0.0,,,at:pgd,cw/attack_only,cw,raw,frozen,False,9900,99.48,99.42,100.0,99.71,4.16,8673,51,1176,0,87.61,87.61,0.0,0.0,0,7.6
+,,,,,,,,0.0,,,at:pgd,cw/attack_only/feasible,cw,feasible,frozen,False,9900,99.48,99.42,100.0,99.71,4.16,8673,51,1176,0,87.61,87.61,0.0,0.0,0,7.0
+,,,,,,,,0.0,,,at:pgd,pgd-atsur/attack_only/feasible,pgd-atsur,feasible,frozen,False,9900,99.48,99.42,100.0,99.71,4.16,8673,51,1176,0,87.61,87.61,0.0,0.0,0,7.4
+,,,,,,,,0.0,,,at:pgd,pgd-distill/attack_only/feasible,pgd-distill,feasible,frozen,False,9900,99.48,99.42,100.0,99.71,4.16,8673,51,1176,0,87.61,87.61,0.0,0.0,0,7.7
