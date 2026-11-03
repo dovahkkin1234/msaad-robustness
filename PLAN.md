@@ -6,7 +6,7 @@
 > schedule in `MSAAD_Plan_Nov10.pdf` supersedes the one-week sprint table in §5 below;
 > the gap scan, novelty claim and pipeline stages here are unchanged.
 
-# Status and findings so far (2 Nov 2026)
+# Status and findings so far (3 Nov 2026)
 
 Research notes for the paper — facts and numbers to build on, not paper text.
 
@@ -21,7 +21,10 @@ Research notes for the paper — facts and numbers to build on, not paper text.
 | S3 RADP (Layer 1): MSAPG + GAN + RAD + purification | **done, 3 seeds, both datasets** (F12) |
 | S4 adaptation-loop study + defence | **done, 3 seeds, both datasets (F9) + sweep (F9b)** |
 | S4 importance-weighted strict (IW-strict) | **done, 3 seeds, both datasets (F14)** |
-| Adversarial-training baseline (v13) | **running (2 Nov)**: code tested, grid on the laptop |
+| Adversarial-training baseline (v13) | **done, 3 seeds, both datasets (F15)** |
+| v14 on exp/conference: 15-seed replication (loop, attack, adversarial training; RADP 5 seeds) | **done (F16, 3 Nov)** |
+| v14 on exp/conference: framing, audits, chain + GNN, adaptive attacks | **queued (3–4 Nov)**, predictions P1–P8 registered below |
+| v14 third dataset: CIC-IDS2017 (WTMC 2021), configured from the inspector | **ready to run (v14c, Step 19)**, prediction P9 |
 | Figures and tables | generated from the real results; IW-strict included automatically |
 
 **Where we stand (2 Nov).** Every planned experiment has run on both datasets with three
@@ -47,7 +50,12 @@ in `RUNS.md` and pushed to the private repository (Step 15).
 | 9 | IW-strict grid (v10), both datasets, 57 min | Step 13 part 5, `--tag iw` | `results\loop_grid\summary_loop_iw.csv` | done (F14) |
 | 10 | Private GitHub repository; push after every run (`--push`) | Step 15 | the pushed repository | done (2 Nov) |
 | 7 | Figures and tables | Step 14 | the `results\paper` folder (zip it) | done on current results; re-run after #11 |
-| 11 | Adversarial-training baseline (v13), both datasets, ~3 h | Step 16, `--exp advtrain` | `results\advtrain_grid\summary_advtrain.csv` | running (2 Nov) |
+| 11 | Adversarial-training baseline (v13), both datasets, 78 min | Step 16, `--exp advtrain` | `results\advtrain_grid\summary_advtrain.csv` | done (F15) |
+| 12 | 15-seed replication: loop, adversarial training, attack (`--tag s15`); RADP to 5 seeds; 6.5 h | Step 17 | the terminal output | done (F16) |
+| 13 | v14a: framing, uncertainty / mixed audits, low budgets (15 seeds) | Step 17 | `summary_loop_{frame,audits,auditsmix,lowbudget}.csv` | queued |
+| 14 | v14b: detector chain (15 seeds), adaptive attackers (5 seeds) | Step 18 | `summary_cascade_s15.csv`, `summary_advtrain_adaptive.csv` | queued |
+| 15 | v14c: CIC-IDS2017 stream check, then attack, loop, adversarial training, chain (15 seeds) | Step 19 | check output, then the four summaries | to run |
+| 16 | Paired statistics on everything finished | Steps 17, 19 | `results\paper\stats_*.csv` | after #13–15 |
 
 **Why #11.** The first question a reviewer asks of an evasion result is "why not adversarial
 training?". Three detectors per run, identical attacker: no adversarial training, trained on
@@ -59,6 +67,48 @@ label channel, not the detector's training data, is where robustness has to come
 outcome goes in the paper. Limitation to state: the attacker is not adaptive (it does not
 re-train against the hardened detector), so the numbers are an upper bound on what adversarial
 training buys.
+
+## v14 (exp/conference branch, 2–5 Nov): conference-level additions, predictions registered before the runs
+
+Written before any v14 result exists, so the paper can report which predictions held (the
+FANET project's discipline). Each is checked on 15 seeds unless stated.
+
+| # | Experiment (Setup Guide step) | Prediction |
+|---|---|---|
+| P1 | Framing `frame:r` (17) | Framing raises strict's false alarms far more than vanilla's (vanilla also learns benign labels); IW-strict cuts strict's rise roughly in half; consensus blocks framing but raises ASR under evasion with true labels (slower adaptation). |
+| P2 | Audit allocation (17) | Uncertainty-only audits check fewer attacker flows than random audits (evading flows look confidently benign), so strict's ASR under evasion + full poisoning rises; mixed audits sit in between. |
+| P3 | Low budgets (17) | Copy caps of 5–10 remove most of IW-strict's instability at 5% audits; 2% audits stay worse than 10%. |
+| P4 | Noise-aware baseline (17) | Between vanilla and strict under full poisoning (it still learns 1 − rho of the poisoned labels); close to vanilla on clean traffic. |
+| P5 | Detector chain (18) | The online MLP catches few of MABTSE's misses (the attacker's surrogate is also an MLP, so the same perturbations transfer); the host-graph stage catches most of them on IoTID20 (campaign order); the matched control is within 5 points of the GNN (host aggregates and message passing substitute, as in FANET); the drift focus keeps most of the catch while scoring fewer flows. Calibrated thresholds may not hold their 1% false-alarm target on test traffic (drift). |
+| P6 | Graph-aware attacker (18) | Spoofing sources lowers the graph stage's catch rate (it never saw spoofed patterns in training); thinning keeps the catch rate, so the evaded volume falls with the rate: evading the graph stage costs attack volume. |
+| P7 | Adaptive evasion (18, 5 seeds) | A surrogate distilled from the detector transfers better than the plain surrogate; label-only HopSkipJump restricted to valid traffic succeeds on most flows within 2,000 queries against the plain detector but far fewer against the adversarially trained one; raw-space HopSkipJump evasions rarely survive repair to valid traffic. |
+| P8 | 15-seed statistics | Every large effect of F6, F9, F10, F12, F14, F15 stays significant after Holm correction (p < 0.01); IW-strict's false-alarm advantage over strict is significant on CICIoT2023, less certain on IoTID20. |
+| P9 | CIC-IDS2017, third dataset (19; registered 3 Nov, before any run) | The label-channel results replicate on an independently labelled, time-ordered stream: with instant true labels evasion stays ≤ 1%; vanilla lets ≥ 95% through under evasion + full poisoning while strict and IW-strict keep it ≤ 2%; evasion grows with the label delay, in seconds as in flows. Frozen transfer evasion: no prediction (the first two datasets disagree, 17% vs 49%). In the chain, the host-graph stage catches most of MABTSE's misses (one source floods one victim, which stands out in the host graph) and spoofing many sources lowers that catch. |
+
+**Third dataset, confirmed by the inspector (3 Nov).** Corrected CIC-IDS2017 (Engelen et al.,
+WTMC 2021), Friday file: 547,915 flows, 84 columns; BENIGN 291,433, PortScan 159,151, DDoS 95,123,
+Bot 738, Bot - Attempted 1,470. Timestamps parse 100% (`%d/%m/%Y %I:%M:%S %p`); the file is not
+in time order (56.6% of consecutive rows), so it is replayed sorted by time.
+- The LOIC flood runs 20:56:31–21:16:10 on the file's clock; CIC's published schedule says
+  15:56–16:16, so the file's clock is 5 h ahead (a time-zone shift; only relative times matter).
+- Every PortScan and DDoS flow comes from one address, 172.16.0.1 (the attackers' NAT address):
+  an address feature would label the attack by itself. Addresses are context only (host graph,
+  label delays in seconds), never features; ports and protocol stay features, as for IoTID20.
+  Paper: one sentence on this, and the spoofing attacker (P6) is the honest test of the graph stage.
+- Replay: 20:31–21:26 (25 min of normal traffic, the 20-min flood, 10 min after), BENIGN + DDoS,
+  30,000 flows evenly spaced. Training (the first 67%) ends inside the flood, so the detector
+  has seen the flood start; the test stream holds the rest of it and the quiet period after.
+  `scripts\check_stream.py --data cicids2017` prints the exact split, classes per part, the
+  clock times, and what a delay of 1,000 / 5,000 flows means in seconds.
+- Found while configuring it (fixed in v14c): the attack, loop, adversarial-training and RADP
+  scripts ignored `time_window` and `exclude_values` (only the chain honoured them). IoTID20 and
+  CICIoT2023 use neither, so every result so far is unaffected (their streams are identical
+  between v14b and v14c, checked on the mock file).
+
+Dropped on purpose: a host-hash partition ensemble with a DPA-style certificate. Attack
+traffic comes from few hosts, so host partitions without them never learn what an attack
+looks like (the vote fails on clean data), and flow-level partitions certify only a handful
+of poisoned flows, orders of magnitude fewer than one flood. Discussed, not built.
 
 **F1 — The clean result reproduces.** IoTID20, P1 (file order), 50,000 flows, 3 seeds,
 mean ± std. The seeds vary only the models' randomness; every seed sees the same flows.
@@ -364,6 +414,78 @@ Paper's rule (vanilla): FPR 3.56 / 2.23 (IoTID20), 3.30 / 2.00 (CICIoT2023); ASR
 - Under full poisoning IW-strict's false alarms are lowest (CICIoT2023 1.5–4.6%): the attacker's
   flows arrive labelled benign and are skipped, as the F9b mechanism predicts.
 - Selection shares do not move here either (IoTID20 keeps ARF-DDM, SRP-ADWIN, SRP-DDM), as in F9.
+
+**F15 — Adversarial training stops label-free evasion from this attacker, at a false-alarm
+cost, and cannot touch label poisoning.** E9 (run #11), 30,000 flows, 3 seeds; one repaired copy
+per DDoS training flow, crafted on the defender's surrogate. The "none" detector reproduces F6/F10.
+
+| Dataset | Detector | FPR clean, no labels / delay 1,000 | Worst ASR, repaired, no labels | ASR rep. PGD / C&W, delay 1,000 |
+|---|---|---|---|---|
+| IoTID20 | none | 3.59 / 3.56 | 16.59 (FGSM) | 1.79 / 0.67 |
+| IoTID20 | AT PGD only | 5.38 / 5.24 | 0.03 (C&W, unseen) | 0.00 / 0.03 |
+| IoTID20 | AT all four | 5.87 / 4.86 | 0.19 (PGD) | 0.02 / 0.04 |
+| CICIoT2023 | none | 4.20 / 3.90 | 86.55 (C&W) | 8.79 / 8.81 |
+| CICIoT2023 | AT PGD only | 8.41 ± 6.25 / 7.60 | 0.05 (C&W, unseen) | 0.02 / 0.06 |
+| CICIoT2023 | AT all four | 8.11 ± 6.31 / 5.71 | 0.06 | 0.01 / 0.03 |
+
+- Evasion without labels: 80–87% → < 0.1% (CICIoT2023), 16% → < 0.2% (IoTID20); PGD-only training
+  covers FGSM, BIM, C&W. Cost: +1.8 to +2.3 FPR points (IoTID20), ~+4 (CICIoT2023, unstable).
+- Beats RADP: unseen C&W 0.05% vs 71.7% ASR; nothing deleted vs up to 18% of benign flows.
+- Likely optimistic: non-adaptive attacker; attacker and defender surrogates share architecture and
+  data (different seeds), so "unseen" attacks share a gradient source.
+- Cannot address poisoning: F9's poisoning-only attack uses unperturbed flows (99.64% at q = 1).
+  Prediction (untested): AT + IW-strict are complementary.
+
+**F16 — 15 seeds (run #12, 2–3 Nov): the label-channel results replicate; four 3-seed numbers
+change.** Same settings as F6–F15 (30,000 flows, eps 0.1), seeds 1–15 (`--tag s15`); RADP seeds
+1–5. Mean ± std over seeds; ASR in %, repaired PGD unless stated.
+
+| | IoTID20 | CICIoT2023 |
+|---|---|---|
+| Instant true labels | 0.10 | 0.08 |
+| Label delay 1,000 / 5,000 flows (raw PGD) | 1.80 / 8.65 | 5.27 / 26.17 ± 18.32 |
+| No labels: raw / repaired | 16.42 ± 5.41 / 17.32 ± 4.22 | 51.73 ± 36.20 / 48.52 ± 39.02 |
+| No labels, C&W: raw / repaired | 11.50 ± 5.74 / 11.25 ± 6.03 | 47.06 ± 35.16 / 47.69 ± 37.38 |
+| Vanilla, q = 0.25 / 0.5 / 1 | 3.37 / 51.50 / 99.74 | 1.60 / 50.55 / 99.96 |
+| Poisoning alone (no perturbation), vanilla q = 0.5 | 52.94 | 48.63 |
+| Audit (selector only) q = 0.5 / 1 | 36.94 / 99.59 | 30.97 / 99.84 |
+| Guard q = 1: with evasion / poisoning alone | 83.73 ± 23.97 / 0.19 | 62.18 ± 45.54 / 0.48 |
+| Strict / IW-strict 10% / IW-strict 20%, q = 1 | 0.88 / 1.15 / 0.53 | 0.44 / 0.43 / 0.30 |
+
+False alarms (%) with true labels, clean traffic / under attack:
+
+| Policy | IoTID20 | CICIoT2023 |
+|---|---|---|
+| Vanilla (paper's rule) | 3.33 / 2.17 | 5.77 / 3.52 |
+| Strict 10% | 4.53 / 5.33 | 12.61 / 23.12 ± 15.26 |
+| IW-strict 10% | 4.21 / 3.52 | 10.25 / 6.95 |
+| IW-strict 20% | 3.95 / 2.64 | 7.47 / 4.68 |
+
+- Replicates: F6 (instant labels stop transfer evasion), F9 and F9b (the threshold lies between
+  q = 0.25 and 0.5; poisoning, not the perturbation, does the damage: evasion adds ≤ 2 points),
+  F11 (evasion grows with the delay), the robustness half of F14 (strict and IW-strict ≤ 1.2%
+  everywhere) and F15's evasion result.
+- New: guard holds against poisoning alone but not against evasion + full poisoning, where it
+  fails on some seeds and holds on others (± 24 and ± 46).
+- Correction to F10: "repaired attacks are stronger and steadier" is withdrawn. With 15 seeds,
+  raw and repaired transfer are alike on CICIoT2023 (FGSM 50.8 / 47.3, BIM 52.6 / 48.7, PGD
+  51.7 / 48.5, C&W 47.1 / 47.7; std 35–39), and the 3-seed means (58.6–86.6) were high. A std
+  this large around a mean near 50 suggests seeds at both ends; confirm with
+  `scripts\per_seed.py` and report median, IQR and per-seed dots, not the mean alone.
+- Correction to F11: C&W on IoTID20 without labels evades 11.3–11.5%, not 5.9%.
+- Correction to F14: IW-strict's false-alarm price over vanilla is +0.5 to +1.7 points at 20%
+  verified and +0.9 to +4.5 at 10% (3 seeds: +0.2 to +2.5). Its gain over strict under attack
+  holds: CICIoT2023 23.1% → 7.0% (vanilla 3.5%), 82% of strict's extra false alarms removed.
+- Correction to F15: adversarial training's false-alarm cost on CICIoT2023 is +7.7 points without
+  labels (6.41 → 14.13 ± 7.30) and +3.7 with labels 1,000 flows late (6.05 → 9.75); IoTID20 +2.2 /
+  +1.8. Evasion without labels: IoTID20 17.3 → 0.1% (PGD), 11.3 → 0.7% (C&W); CICIoT2023 48.5 →
+  0.03%, 47.7 → 0.04%.
+- RADP (F12), 5 seeds: on IoTID20 RAD flags 10.9–17.1% of repaired attacks (91–100% of raw ones);
+  repaired PGD still gets through end to end, 16.0 → 13.0%. On CICIoT2023 it flags 98–100% of them
+  but deletes 26.4 ± 17.2% of benign flows (2.9 ± 3.0% without the GAN, which still flags 93–96%).
+- P8 (significance after Holm) awaits `scripts\stats.py` on the laptop. With 15 seeds the
+  smallest exact two-sided Wilcoxon p is 6.1 × 10⁻⁵, so every comparison where all seeds agree
+  survives Holm over these families.
 
 **S4 design (v9) — what the adaptation-loop experiment tests.** F6 says MABTSE's robustness
 comes from learning true labels at once. S4 asks what happens when the label source is also

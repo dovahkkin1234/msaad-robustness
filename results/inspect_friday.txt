@@ -1,0 +1,150 @@
+file: friday.csv
+size_on_disk_MB: 282.6
+columns: 84
+
+COLUMNS  (name : dtype : distinct values in first 200,000 rows)
+  Flow ID : object : 94322
+  Src IP : object : 19
+  Src Port : int64 : 34695
+  Dst IP : object : 4633
+  Dst Port : int64 : 1450
+  Protocol : int64 : 3
+  Timestamp : object : 15931
+  Flow Duration : int64 : 119145
+  Total Fwd Packet : int64 : 530
+  Total Bwd packets : int64 : 638
+  Total Length of Fwd Packet : float64 : 5575
+  Total Length of Bwd Packet : float64 : 9963
+  Fwd Packet Length Max : float64 : 2319
+  Fwd Packet Length Min : float64 : 121
+  Fwd Packet Length Mean : float64 : 12916
+  Fwd Packet Length Std : float64 : 15311
+  Bwd Packet Length Max : float64 : 2370
+  Bwd Packet Length Min : float64 : 371
+  Bwd Packet Length Mean : float64 : 14239
+  Bwd Packet Length Std : float64 : 15865
+  Flow Bytes/s : float64 : 158467
+  Flow Packets/s : float64 : 125236
+  Flow IAT Mean : float64 : 126938
+  Flow IAT Std : float64 : 108264
+  Flow IAT Max : float64 : 117900
+  Flow IAT Min : float64 : 28207
+  Fwd IAT Total : float64 : 89721
+  Fwd IAT Mean : float64 : 90459
+  Fwd IAT Std : float64 : 84431
+  Fwd IAT Max : float64 : 87570
+  Fwd IAT Min : float64 : 12180
+  Bwd IAT Total : float64 : 84454
+  Bwd IAT Mean : float64 : 85834
+  Bwd IAT Std : float64 : 78899
+  Bwd IAT Max : float64 : 83136
+  Bwd IAT Min : float64 : 11511
+  Fwd PSH Flags : int64 : 165
+  Bwd PSH Flags : int64 : 242
+  Fwd URG Flags : int64 : 1
+  Bwd URG Flags : int64 : 1
+  Fwd Header Length : int64 : 1181
+  Bwd Header Length : int64 : 1294
+  Fwd Packets/s : float64 : 124547
+  Bwd Packets/s : float64 : 122968
+  Packet Length Min : float64 : 123
+  Packet Length Max : float64 : 2847
+  Packet Length Mean : float64 : 17275
+  Packet Length Std : float64 : 23767
+  Packet Length Variance : float64 : 23999
+  FIN Flag Count : int64 : 10
+  SYN Flag Count : int64 : 10
+  RST Flag Count : int64 : 29
+  PSH Flag Count : int64 : 312
+  ACK Flag Count : int64 : 827
+  URG Flag Count : int64 : 1
+  CWR Flag Count : int64 : 4
+  ECE Flag Count : int64 : 2
+  Down/Up Ratio : float64 : 2086
+  Average Packet Size : float64 : 16167
+  Fwd Segment Size Avg : float64 : 11391
+  Bwd Segment Size Avg : float64 : 13477
+  Fwd Bytes/Bulk Avg : int64 : 1189
+  Fwd Packet/Bulk Avg : int64 : 45
+  Fwd Bulk Rate Avg : int64 : 4923
+  Bwd Bytes/Bulk Avg : int64 : 5742
+  Bwd Packet/Bulk Avg : int64 : 208
+  Bwd Bulk Rate Avg : int64 : 10331
+  Subflow Fwd Packets : int64 : 2
+  Subflow Fwd Bytes : int64 : 519
+  Subflow Bwd Packets : int64 : 2
+  Subflow Bwd Bytes : int64 : 1236
+  FWD Init Win Bytes : int64 : 651
+  Bwd Init Win Bytes : int64 : 2006
+  Fwd Act Data Pkts : int64 : 184
+  Fwd Seg Size Min : int64 : 7
+  Active Mean : float64 : 51264
+  Active Std : float64 : 13587
+  Active Max : float64 : 50927
+  Active Min : float64 : 46732
+  Idle Mean : float64 : 55026
+  Idle Std : float64 : 13668
+  Idle Max : float64 : 54403
+  Idle Min : float64 : 54655
+  Label : object : 5
+
+TOTAL ROWS IN FILE: 547,915
+
+LABEL-LIKE COLUMNS  (full-file value counts)
+--- Src IP ---
+  '172.16.0.1': 254,439
+  '192.168.10.3': 54,104
+  '192.168.10.15': 30,575
+  '192.168.10.5': 28,793
+  '192.168.10.12': 28,045
+  '192.168.10.9': 26,989
+  '192.168.10.14': 24,507
+  '192.168.10.8': 22,968
+  '192.168.10.19': 22,706
+  '192.168.10.16': 19,304
+  '192.168.10.17': 18,785
+  '192.168.10.25': 7,976
+  '192.168.10.50': 7,191
+  '192.168.10.51': 1,279
+  '8.6.0.1': 233
+  '210.14.132.70': 4
+  '109.201.130.57': 4
+  '77.238.121.220': 4
+  '109.201.130.58': 3
+  '192.168.10.1': 2
+  '172.16.0.2': 2
+  '188.92.40.81': 1
+  '131.253.34.246': 1
+--- Label ---
+  'BENIGN': 291,433
+  'PortScan': 159,151
+  'DDoS': 95,123
+  'Bot - Attempted': 1,470
+  'Bot': 738
+
+ORDER CHECK  (is the file in time order? are the classes mixed along it?)
+  timestamp column: Timestamp   format: %d/%m/%Y %I:%M:%S %p   parsed: 100.0%
+  time range: 2017-07-07 13:59:50  ->  2017-07-07 22:02:40
+  consecutive rows in time order: 56.6%   (100% = sorted by time; ~50% = randomly shuffled)
+  class mix of 'Src IP' in 10 consecutive blocks of the FILE:
+    block  1 (rows 0-54,790): 192.168.10.3 55%, 192.168.10.9 7%, 192.168.10.5 7%
+    block  2 (rows 54,791-109,582): 172.16.0.1 37%, 192.168.10.3 29%, 192.168.10.15 6%
+    block  3 (rows 109,583-164,373): 172.16.0.1 67%, 192.168.10.3 9%, 192.168.10.15 5%
+    block  4 (rows 164,374-219,165): 172.16.0.1 51%, 192.168.10.12 6%, 192.168.10.15 6%
+    block  5 (rows 219,166-273,956): 172.16.0.1 52%, 192.168.10.12 6%, 192.168.10.5 6%
+    block  6 (rows 273,957-328,748): 172.16.0.1 52%, 192.168.10.12 6%, 192.168.10.15 6%
+    block  7 (rows 328,749-383,539): 172.16.0.1 51%, 192.168.10.12 6%, 192.168.10.15 6%
+    block  8 (rows 383,540-438,331): 172.16.0.1 51%, 192.168.10.12 6%, 192.168.10.15 6%
+    block  9 (rows 438,332-493,122): 172.16.0.1 51%, 192.168.10.12 6%, 192.168.10.15 6%
+    block 10 (rows 493,123-547,914): 172.16.0.1 51%, 192.168.10.12 6%, 192.168.10.15 6%
+  the same rows in TIME order (10 blocks; what a time-sorted replay contains):
+    block  1 [2017-07-07 13:59 -> 2017-07-07 15:17]: 192.168.10.3 19%, 192.168.10.15 14%, 192.168.10.5 13%
+    block  2 [2017-07-07 15:17 -> 2017-07-07 16:23]: 192.168.10.3 19%, 192.168.10.9 18%, 192.168.10.19 15%
+    block  3 [2017-07-07 16:23 -> 2017-07-07 18:37]: 192.168.10.3 18%, 192.168.10.14 11%, 192.168.10.12 11%
+    block  4 [2017-07-07 18:37 -> 2017-07-07 19:51]: 192.168.10.3 17%, 192.168.10.8 15%, 172.16.0.1 13%
+    block  5 [2017-07-07 19:51 -> 2017-07-07 19:54]: 172.16.0.1 98%, 192.168.10.50 1%, 192.168.10.16 0%
+    block  6 [2017-07-07 19:54 -> 2017-07-07 19:55]: 172.16.0.1 98%, 192.168.10.50 1%, 192.168.10.5 0%
+    block  7 [2017-07-07 19:55 -> 2017-07-07 20:20]: 172.16.0.1 66%, 192.168.10.3 6%, 192.168.10.15 6%
+    block  8 [2017-07-07 20:20 -> 2017-07-07 21:00]: 172.16.0.1 48%, 192.168.10.3 9%, 192.168.10.5 7%
+    block  9 [2017-07-07 21:00 -> 2017-07-07 21:10]: 172.16.0.1 90%, 192.168.10.12 5%, 192.168.10.3 1%
+    block 10 [2017-07-07 21:10 -> 2017-07-07 22:02]: 172.16.0.1 52%, 192.168.10.15 9%, 192.168.10.3 9%

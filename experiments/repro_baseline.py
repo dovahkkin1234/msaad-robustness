@@ -59,6 +59,7 @@ def get_stream(data: str, cfg: dict, limit_override=None):
         filter_col=ds.get("filter_col"), include_prefixes=ds.get("include_prefixes"),
         subsample=ds.get("subsample", "head"), order=ds.get("order", "file"),
         time_col=ds.get("time_col"), time_format=ds.get("time_format"),
+        exclude_values=ds.get("exclude_values"), time_window=ds.get("time_window"),   # v14c
     )
 
 

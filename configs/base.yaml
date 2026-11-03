@@ -19,6 +19,7 @@ datasets:
     benign_values: ["Normal"]
     drop_cols: ["Flow_ID", "Src_IP", "Dst_IP", "Timestamp", "Cat", "Sub_Cat"]
     class_col: Sub_Cat            # fine-grained class, used only for per-class reporting
+    context: {src: Src_IP, dst: Dst_IP, time: Timestamp}   # v14: host graph + label delay in seconds (never features)
     # DDoS vs benign, consistent with the CICIoT2023 subset: Normal + the three Mirai
     # flooding classes (334,569 rows). Excluded: brute force, scans, ARP spoofing, and
     # single-source DoS-Synflooding.
@@ -74,6 +75,38 @@ datasets:
     subsample: stride
     limit: 50000
 
+  # ---- CIC-IDS2017, corrected by Engelen et al. (WTMC 2021), Friday: DDoS in real time order --
+  # v14 third dataset: benign background traffic interleaved in time with the LOIC DDoS burst,
+  # independently corrected labels, host addresses and timestamps (label delay in SECONDS).
+  # CONFIRMED BY THE INSPECTOR (results/inspect_friday.txt, 3 Nov): 547,915 rows, 84 columns;
+  # Label = BENIGN 291,433 / PortScan 159,151 / DDoS 95,123 / Bot 738 / Bot - Attempted 1,470.
+  # Timestamps look like "07/07/2017 01:59:50 PM" (100% parsed with the format below). The file
+  # is NOT in time order (56.6% of consecutive rows), so `order: time` sorts it.
+  # The LOIC DDoS burst runs 20:56:31 -> 21:16:10 on the file's clock (CIC publishes 15:56-16:16;
+  # the file's clock is 5 h ahead, a time-zone shift; only relative times matter here).
+  # Every PortScan and DDoS flow comes from 172.16.0.1 (the attackers' NAT address): host
+  # addresses are context only (host graph, label delays in seconds), never features. Ports and
+  # protocol stay features, as for IoTID20.
+  # Window: 25 min of normal traffic, the 20-min flood, 10 min after it. The first train_frac
+  # (67%) of the replay ends inside the flood: training sees its start, the test stream the
+  # rest of it and the quiet period after (scripts/check_stream.py prints the split).
+  cicids2017:
+    path: data/cicids2017/friday.csv
+    label_col: Label
+    benign_values: ["BENIGN"]
+    drop_cols: ["Flow ID", "Src IP", "Dst IP", "Timestamp", "id", "Attempted Category"]   # last two: 2022 release only
+    class_col: Label
+    context: {src: "Src IP", dst: "Dst IP", time: "Timestamp"}
+    filter_col: Label
+    include_prefixes: ["BENIGN", "DDoS"]
+    exclude_values: ["DDoS - Attempted"]      # not in the WTMC 2021 Friday file; kept for the 2022 release
+    order: time
+    time_col: Timestamp
+    time_format: "%d/%m/%Y %I:%M:%S %p"
+    time_window: ["2017-07-07 20:31:00", "2017-07-07 21:26:00"]
+    subsample: stride
+    limit: 50000
+
 # ---- Defaults for experiments/under_attack.py (the paper's Scenario 2, re-done properly) ----
 attack:
   limit: 30000              # rows per run, from the dataset's ordered stream
@@ -106,6 +139,8 @@ loop:
   variants: [feasible]      # raw and/or feasible (repaired, valid traffic: the realistic attacker)
   labels: ["true", "poison:0.5", "poison:1.0"]       # share q of attacker flows labelled benign
   policies: ["vanilla", "audit:0.1", "guard:0.1", "strict:0.1"]   # a = audited share
+  audits: random            # v14: how audited flows are chosen: random, uncertain or mixed
+  frame_span: 0.5           # v14: framing flows (frame:r) are sent during this share of the test stream
 
 # ---- Defaults for experiments/adv_training.py (adversarial-training baseline) -------------
 advtrain:
@@ -114,3 +149,17 @@ advtrain:
   copies: feasible          # repair the copies to valid traffic (feasible) or keep them raw
   learning: [frozen, "delay:1000"]   # test-stream label modes (delay covers clean + repaired attacks)
   defender_seed_offset: 1000  # the defender's surrogate uses a different seed from the attacker's
+  adaptive: []              # v14 adaptive attackers: distill, atsur, hsj (none = the v13 transfer attacker)
+  hsj_flows: 50             # attacker flows per run attacked by label-only HopSkipJump
+  hsj_queries: 2000         # its query budget per flow
+
+# ---- Defaults for experiments/cascade_eval.py (v14: chain of detectors) --------------------
+cascade:
+  attacks: [pgd, cw]
+  variants: [raw, feasible]
+  conditions: ["frozen", "delay:1000|true|vanilla", "delay:1000|poison:1.0|vanilla", "delay:1000|poison:1.0|strict:0.1"]
+  adaptive: ["spoof:10", "thin:0.25"]   # graph-aware attacker (needs host addresses)
+  alpha: 0.01               # each later stage may add at most this share of false alarms (calibration benign)
+  window: 800               # flows in the host graph's sliding window
+  frame: 64                 # flows scored per graph encoding
+  epochs: 2                 # training passes of the graph stage over the training stream

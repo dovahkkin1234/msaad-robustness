@@ -8,6 +8,8 @@ What it does, for one dataset and one seed:
        online    predict, then learn the true label at once (Algorithm 1; the paper's setting)
        frozen    predict only: no labels arrive during the test
        delay:D   the true label of each flow arrives D flows later (D = 0 is "online")
+       delaysec:T  (v14) the true label arrives T seconds later (time-ordered datasets with a
+                 timestamp in their `context` config, e.g. the corrected CIC-IDS2017)
        self      no labels: the model learns its own prediction (self-training)
     Delayed and self-labelled runs cost as much as online ones, so they cover the clean and
     the raw attack_only scenarios only.
@@ -77,9 +79,18 @@ LEARNING = ("online", "frozen")   # default label-feedback modes
 
 
 def parse_learning(mode: str):
-    """Validate a label-feedback mode; return the delay for 'delay:D', else None."""
+    """Validate a label-feedback mode; return the delay for 'delay:D', else None
+    ('delaysec:T' is validated here and handled by run_stream with timestamps)."""
     if mode in ("online", "frozen", "self"):
         return None
+    if mode.startswith("delaysec:"):
+        try:
+            sec = float(mode.split(":", 1)[1])
+        except ValueError:
+            sec = -1.0
+        if sec >= 0:
+            return None
+        raise SystemExit(f"[attack] bad label mode {mode!r}: delaysec:T needs T >= 0 seconds")
     if mode.startswith("delay:"):
         try:
             d = int(mode.split(":", 1)[1])
@@ -117,16 +128,23 @@ def load(data: str, cfg: dict, limit: int):
         filter_col=ds.get("filter_col"), include_prefixes=ds.get("include_prefixes"),
         subsample=ds.get("subsample", "head"), order=ds.get("order", "file"),
         time_col=ds.get("time_col"), time_format=ds.get("time_format"), meta_col=meta_col,
+        # v14c: honour the same row selection as src/data/context.py (CIC-IDS2017 window);
+        # both keys are absent for IoTID20 and CICIoT2023, so their streams are unchanged.
+        exclude_values=ds.get("exclude_values"), time_window=ds.get("time_window"),
     )
     return collect(stream, header)
 
 
-def run_stream(model, S, y, names, learning: str, label: str, progress: bool):
+def run_stream(model, S, y, names, learning: str, label: str, progress: bool, times=None):
     """Replay S on a copy of the model under one label-feedback mode.
 
+    times: per-row timestamps in seconds, needed by 'delaysec:T'.
     Returns (predictions, drift detections per learner during this replay)."""
     m = copy.deepcopy(model)
     delay = parse_learning(learning)
+    dsec = float(learning.split(":", 1)[1]) if learning.startswith("delaysec:") else None
+    if dsec is not None and times is None:
+        raise SystemExit("[attack] delaysec:T needs timestamps (a dataset with context.time)")
     learners = getattr(m, "learners", None)
     d0 = drift_counts(learners) if learners else {}
     preds = np.zeros(len(y), dtype=int)
@@ -146,6 +164,11 @@ def run_stream(model, S, y, names, learning: str, label: str, progress: bool):
             queue.append((x, int(y[i])))
             if len(queue) > delay:
                 xq, yq = queue.popleft()
+                m.learn_one(xq, yq)
+        elif dsec is not None:
+            queue.append((x, int(y[i]), times[i]))
+            while queue and times[i] - queue[0][2] >= dsec:
+                xq, yq, _ = queue.popleft()
                 m.learn_one(xq, yq)
     drifts = {k: v - d0.get(k, 0) for k, v in drift_counts(learners).items()} if learners else {}
     return preds, drifts
@@ -259,6 +282,15 @@ def main() -> int:
 
     # 1. Data, in stream order, scaled exactly as the dict pipeline does.
     names, X, y, meta = load(args.data, cfg, limit)
+    times = None
+    if any(m.startswith("delaysec:") for m in learning_modes):
+        from src.data.context import load_ctx
+        _, _, y_c, _, ctx = load_ctx(args.data, cfg, limit, cfg["seed"], ROOT)
+        if ctx is None or not np.isfinite(ctx["time"]).any() or not np.array_equal(y_c, y):
+            sys.exit("[attack] delaysec:T needs a dataset with a timestamp in its `context` config")
+        times = ctx["time"]
+        if not np.all(np.diff(times[np.isfinite(times)]) >= 0):
+            sys.exit("[attack] delaysec:T needs a time-ordered stream (order: time or campaign)")
     n = len(y)
     n_tr = int(round(train_frac * n))
     if n_tr < 100 or n - n_tr < 100:
@@ -304,7 +336,8 @@ def main() -> int:
     for sc, learning in runs:
         t = time.perf_counter()
         preds, drifts = run_stream(model, sc["S"], y_te, names, learning,
-                                   label=f"{sc['scenario']} ({learning})", progress=progress)
+                                   label=f"{sc['scenario']} ({learning})", progress=progress,
+                                   times=None if times is None else times[n_tr:])
         if sc["variant"] == "clean":
             clean_preds[learning] = preds
         bm = BinaryMetrics()

@@ -7,8 +7,10 @@ true and fully poisoned labels, and checks that
   * the strict policy blocks it (ASR stays near the no-learning reference) by skipping the
     unverified benign labels,
   * the importance-weighted strict policy (iwstrict) blocks it too while learning each
-    audited benign flow several times.
-About a minute. Run from the repo root:  python tests\\loop_smoke_test.py
+    audited benign flow several times;
+  v14: framing flows (frame:r) are injected and learned by strict but blocked by consensus,
+    the copy cap (iwstrict:a:c) is honoured, noiseaware runs, and mixed audits are spent.
+About two minutes. Run from the repo root:  python tests\\loop_smoke_test.py
 """
 from __future__ import annotations
 
@@ -71,6 +73,40 @@ def main() -> int:
           f"iwstrict {iw_pois['asr']}% | no learning {frozen}%")
     print(f"[loop-smoke] false alarms with true labels: vanilla {rows[('clean', 'true', 'vanilla')]['fpr']}%, "
           f"strict {st_true['fpr']}%, iwstrict {iw_true['fpr']}% (updates: {st_true['n_learn']} vs {iw_true['n_learn']})")
+
+    # v14: framing, consensus, copy cap, noiseaware, mixed audits.
+    with tempfile.TemporaryDirectory() as tmp:
+        out = Path(tmp) / "loop14.json"
+        cmd = [sys.executable, str(ROOT / "experiments" / "adaptation_loop.py"), "--data", "synthetic",
+               "--limit", "1500", "--no-progress", "--out", str(out), "--audits", "mixed",
+               "--labels", "true", "frame:0.1", "poison:1.0",
+               "--policies", "strict:0.1", "iwstrict:0.05:5", "consensus:0.1", "noiseaware:0.1"]
+        proc = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
+        if proc.returncode != 0 or not out.exists():
+            print(proc.stdout[-2000:], proc.stderr[-2000:])
+            print("[loop-smoke] FAIL: adaptation_loop.py (v14 options) did not finish")
+            return 1
+        r14 = json.load(open(out))
+    rows14 = {(s["scenario"], s["learning"], s["policy"]): s for s in r14["scenarios"]}
+    st_f, co_f = rows14[("clean", "frame:0.1", "strict:0.1")], rows14[("clean", "frame:0.1", "consensus:0.1")]
+    st_t = rows14[("clean", "true", "strict:0.1")]
+    if st_f["n_frame_learned"] <= 0 or st_f.get("fpr_frame_window") is None:
+        problems.append("framing flows were not injected / learned by strict")
+    if co_f["n_frame_blocked"] <= 0:
+        problems.append("consensus did not block unverified framing labels")
+    if not st_f["fpr"] >= st_t["fpr"]:
+        problems.append(f"framing did not raise strict's false alarms ({st_t['fpr']} -> {st_f['fpr']})")
+    cap_row = rows14[("clean", "true", "iwstrict:0.05:5")]
+    if cap_row["iw_cap"] != 5:
+        problems.append("the iwstrict copy cap was not recorded")
+    if any(s["n_audited"] <= 0 for s in r14["scenarios"] if s["policy"] != "frozen"):
+        problems.append("mixed audits were not spent")
+    if ("clean", "poison:1.0", "noiseaware:0.1") not in rows14:
+        problems.append("noiseaware run missing")
+    print(f"[loop-smoke] framing (10%): strict FPR {st_t['fpr']}% -> {st_f['fpr']}% "
+          f"(learned {st_f['n_frame_learned']} framing flows); consensus FPR {co_f['fpr']}% "
+          f"(blocked {co_f['n_frame_blocked']}); noiseaware ASR under full poisoning "
+          f"{rows14[('clean', 'poison:1.0', 'noiseaware:0.1')]['asr']}%")
     if problems:
         for p in problems:
             print("  -", p)

@@ -56,12 +56,17 @@ def _prefix_mask(s: pd.Series, prefixes: Tuple[str, ...]) -> np.ndarray:
     return mask
 
 
-def _count_kept(path: str, fcol: str, prefixes: Optional[Tuple[str, ...]]) -> int:
+def _count_kept(path: str, fcol: str, prefixes: Optional[Tuple[str, ...]],
+                exclude: Optional[Set[str]] = None) -> int:
     """Count rows that pass the class filter, reading only the filter column (fast)."""
     total = 0
     for chunk in pd.read_csv(path, chunksize=200_000, low_memory=False,
                              usecols=lambda c: str(c).strip() == fcol):
-        total += len(chunk) if prefixes is None else int(_prefix_mask(chunk.iloc[:, 0], prefixes).sum())
+        col = chunk.iloc[:, 0]
+        keep = np.ones(len(col), bool) if prefixes is None else _prefix_mask(col, prefixes)
+        if exclude:
+            keep &= ~col.astype(str).str.strip().str.lower().isin(exclude).to_numpy()
+        total += int(keep.sum())
     return total
 
 
@@ -76,8 +81,9 @@ class _RowConverter:
     """Turns one CSV record into (features, y[, meta]); reports skipped columns once."""
 
     def __init__(self, label_col: str, benign: Set[str], drop: Set[str],
-                 meta_col: Optional[str] = None) -> None:
+                 meta_col: Optional[str] = None, context: Optional[Dict[str, str]] = None) -> None:
         self.label_col, self.benign, self.drop, self.meta_col = label_col, benign, drop, meta_col
+        self.context = dict(context or {})
         self._reported = False
 
     def __call__(self, row: dict):
@@ -98,6 +104,10 @@ class _RowConverter:
             self._reported = True
         if not x:
             return None
+        if self.context:          # v14: meta = dict with the class and the context columns
+            meta = {k: str(row[c]) for k, c in self.context.items()}
+            meta["class"] = str(row[self.meta_col]) if self.meta_col is not None else None
+            return x, y, meta
         if self.meta_col is not None:
             return x, y, str(row[self.meta_col])
         return x, y
@@ -116,8 +126,19 @@ def stream_csv(
     time_col: Optional[str] = None,
     time_format: Optional[str] = None,
     meta_col: Optional[str] = None,
+    context_cols: Optional[Dict[str, str]] = None,
+    exclude_values: Optional[Sequence[str]] = None,
+    time_window: Optional[Sequence[str]] = None,
 ):
     """Yield (features, y), or (features, y, meta) when ``meta_col`` is given.
+
+    ``context_cols`` (v14): e.g. {"src": "Src_IP", "dst": "Dst_IP", "time": "Timestamp"}. The
+    columns are never features; meta becomes a dict with these values plus "class" (the
+    ``meta_col`` value), for the host-graph stage and label delays in seconds.
+    ``exclude_values`` (v14): filter-column values to drop (exact, case-insensitive), e.g.
+    "DDoS - Attempted" in the corrected CIC-IDS2017. ``time_window`` (v14, time/campaign
+    order only): [start, end] timestamps (parsed like the time column); rows outside are
+    dropped before sampling.
 
     y = 0 if the label is in ``benign_values`` (case-insensitive) else 1.
     ``include_prefixes``: keep only rows whose ``filter_col`` value (default: the label
@@ -138,14 +159,15 @@ def stream_csv(
     benign = {_norm(b) for b in benign_values}
     fcol = filter_col or label_col
     prefixes = tuple(_norm(p) for p in include_prefixes) if include_prefixes else None
+    exclude = {_norm(v) for v in exclude_values} if exclude_values else None
     drop = ({label_col, fcol, *drop_cols} | ({time_col} if time_col else set())
-            | ({meta_col} if meta_col else set()))
-    convert = _RowConverter(label_col, benign, drop, meta_col)
+            | ({meta_col} if meta_col else set()) | set((context_cols or {}).values()))
+    convert = _RowConverter(label_col, benign, drop, meta_col, context_cols)
 
     # Header check up front, so a wrong column name fails fast with a clear message.
     header = [str(c).strip() for c in pd.read_csv(path, nrows=0).columns]
     needed = ([label_col, fcol] + ([time_col] if order != "file" else [])
-              + ([meta_col] if meta_col else []))
+              + ([meta_col] if meta_col else []) + list((context_cols or {}).values()))
     missing = [c for c in dict.fromkeys(needed) if c not in header]
     if missing:
         raise KeyError(f"column(s) {missing} not in {path}. Available columns: {header}. "
@@ -155,13 +177,14 @@ def stream_csv(
         yield from _stream_time_ordered(path, fcol, prefixes, time_col, time_format,
                                         limit, subsample, convert,
                                         campaign=(order == "campaign"),
-                                        label_col=label_col, benign=benign)
+                                        label_col=label_col, benign=benign,
+                                        exclude=exclude, time_window=time_window)
         return
 
     # ---- file order: stream in chunks, never holding the whole file in memory ----------
     positions = None
     if subsample == "stride" and limit is not None:
-        total = _count_kept(path, fcol, prefixes)
+        total = _count_kept(path, fcol, prefixes, exclude)
         positions = _even_positions(total, limit, subsample)
         if positions is not None:
             print(f"[loaders] file order, stride sampling: {total:,} rows pass the filter; "
@@ -175,6 +198,8 @@ def stream_csv(
         chunk.columns = [str(c).strip() for c in chunk.columns]
         for row in chunk.to_dict("records"):
             if prefixes is not None and not _norm(row[fcol]).startswith(prefixes):
+                continue
+            if exclude and _norm(row[fcol]) in exclude:
                 continue
             kept_idx += 1
             if positions is not None and kept_idx not in positions:
@@ -203,12 +228,15 @@ def _campaign_key(is_benign: np.ndarray) -> np.ndarray:
 
 
 def _stream_time_ordered(path, fcol, prefixes, time_col, time_format, limit, subsample,
-                         convert, campaign=False, label_col=None, benign=None):
+                         convert, campaign=False, label_col=None, benign=None, exclude=None,
+                         time_window=None):
     frames = []
     for chunk in pd.read_csv(path, chunksize=100_000, low_memory=False):
         chunk.columns = [str(c).strip() for c in chunk.columns]
         if prefixes is not None:
             chunk = chunk[_prefix_mask(chunk[fcol], prefixes)]
+        if exclude:
+            chunk = chunk[~chunk[fcol].astype(str).str.strip().str.lower().isin(exclude).to_numpy()]
         frames.append(chunk)
     df = pd.concat(frames, ignore_index=True)
     ts = pd.to_datetime(df[time_col].astype(str), format=time_format, errors="coerce")
@@ -216,6 +244,14 @@ def _stream_time_ordered(path, fcol, prefixes, time_col, time_format, limit, sub
     if bad:
         print(f"[loaders] dropping {bad:,} row(s) whose {time_col} could not be parsed")
     df = df.assign(_t=ts)[ts.notna().to_numpy()]
+    if time_window:
+        t0 = pd.to_datetime(str(time_window[0]), format=time_format, errors="coerce")
+        t1 = pd.to_datetime(str(time_window[1]), format=time_format, errors="coerce")
+        if pd.isna(t0) or pd.isna(t1):                    # window written in ISO form
+            t0, t1 = pd.Timestamp(str(time_window[0])), pd.Timestamp(str(time_window[1]))
+        inside = ((df["_t"] >= t0) & (df["_t"] <= t1)).to_numpy()
+        print(f"[loaders] time window {t0} -> {t1}: keeping {int(inside.sum()):,} of {len(df):,} rows")
+        df = df[inside]
     df = df.sort_values("_t", kind="mergesort")  # stable: ties keep file order
     total = len(df)
     if total == 0:

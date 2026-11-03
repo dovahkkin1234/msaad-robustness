@@ -103,6 +103,14 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results`: grid_runs.jsonl (changed)
   - `results/radp_grid`: 4 new CSV; 4 new JSON; 4 new log; summary_radp.csv (changed)
 
+### 2026-11-03 14:58 (UTC+05:30) - Code v14c: CIC-IDS2017 configured, time-window fix, stream check, chain statistics
+
+- **Code version:** 35a67db; this commit also changes 24 code/document file(s): `PLAN.md`, `PLAN.pdf`, `README.md`, `SETUP.md`, `SETUP.pdf`, `configs/base.yaml`, `experiments/adaptation_loop.py`, `experiments/adv_training.py` ...
+- **Results:**
+  - `results`: inspect_friday.txt (new)
+  - `results/loop_grid`: 6 new log
+  - `results/paper`: stats_advtrain.csv (new), stats_advtrain.tex (new), stats_attack.csv (new), stats_attack.tex (new), stats_loop.csv (new), stats_loop.tex (new), stats_radp.csv (new), stats_radp.tex (new)
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->
@@ -266,5 +274,5 @@ Reconstructed from the result files and the project notes; times are when the ru
 | 2026-11-03 05:46:08 | RADP grid | iotid20 | 4 |  | 30,000 | 16.2 | `results/radp_grid/iotid20_seed4.json` |
 | 2026-11-03 05:47:04 | RADP grid | iotid20 | 5 |  | 30,000 | 17.2 | `results/radp_grid/iotid20_seed5.json` |
 
-Dataset reports: `results/inspect_IoT_Network_Intrusion_Dataset.txt`, `results/inspect_part-00000.txt`
+Dataset reports: `results/inspect_IoT_Network_Intrusion_Dataset.txt`, `results/inspect_friday.txt`, `results/inspect_part-00000.txt`
 <!-- history:end -->

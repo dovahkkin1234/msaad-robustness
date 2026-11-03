@@ -13,7 +13,7 @@ nothing here generates traffic or runs against any live system.
 
 ---
 
-## What is here (stages S0–S4 + adversarial-training baseline, v13)
+## What is here (stages S0–S4, adversarial training, detector chain, adaptive attacks, CIC-IDS2017 — v14c)
 
 ```
 msaad-robustness/
@@ -25,23 +25,30 @@ msaad-robustness/
 ├── configs/base.yaml        # datasets (filters, replay order), hyperparameters, attack defaults
 ├── scripts/
 │   ├── DOWNLOAD_DATA.md      # where to get IoTID20 / CICIoT2023 (verified sources)
+│   ├── check_stream.py       # v14c: what a configured stream holds (split, classes, clock, hosts)
 │   ├── inspect_dataset.py    # columns, class counts, file order vs time order
 │   ├── make_figures.py       # paper figures (PDF/PNG, every seed as a dot) + LaTeX tables
-│   └── push_run.py           # journal the latest run in RUNS.md, commit it, push to GitHub
+│   ├── per_seed.py           # v14c: the per-seed values behind one summary line
+│   ├── push_run.py           # journal the latest run in RUNS.md, commit it, push to GitHub
+│   └── stats.py              # paired seed statistics: bootstrap CIs, Wilcoxon, Holm, effect sizes
 ├── src/
 │   ├── data/
 │   │   ├── loaders.py        # CSV + synthetic streams; file / campaign / time replay orders
 │   │   ├── preprocessing.py  # leakage-free running min-max (transform-then-learn)
-│   │   └── matrix.py         # stream -> arrays, vectorised identical scaler, -> dicts
+│   │   ├── matrix.py         # stream -> arrays, vectorised identical scaler, -> dicts
+│   │   └── context.py        # v14: host addresses + timestamps for the graph and delays in seconds
 │   ├── models/
 │   │   ├── pool.py           # the 5 online learners (Layer 2) + drift-detection counts
 │   │   ├── knn_adwin.py      # KNN-ADWIN rebuilt for River 0.22 (exact, deterministic)
+│   │   ├── online_mlp.py     # v14: online MLP (PyTorch, River-style), stage 2 of the chain
+│   │   ├── graph_stage.py    # v14: window host graphs + graph attention + matched control + host drift
 │   │   └── mabtse.py         # Thompson-Sampling + AUWPAE ensemble (Layer 3), reward fix,
 │   │                         #   optional learner-only updates (used by the S4 defence)
 │   ├── attacks/
 │   │   ├── surrogate.py      # attacker's differentiable stand-in (MLP / LR, NumPy gradients)
 │   │   ├── evasion.py        # FGSM, BIM, PGD, C&W-L2 (eps ball, domain box, NaN-safe)
-│   │   └── constraints.py    # mined flow-feature constraints: audit + monotone repair
+│   │   ├── constraints.py    # mined flow-feature constraints: audit + monotone repair
+│   │   └── decision.py       # v14: label-only HopSkipJump (L-inf)
 │   ├── defense/
 │   │   ├── gan.py            # small tabular GAN in NumPy (hand-written backprop, Adam)
 │   │   └── radp.py           # RADP (Layer 1): MSAPG, RAD training mix, RAD, purification
@@ -53,15 +60,18 @@ msaad-robustness/
 │   ├── repro_baseline.py     # S2: clean prequential reproduction (one run)
 │   ├── under_attack.py       # S3: the paper's Scenario 2 + label modes (online/frozen/delay/self)
 │   ├── radp_defense.py       # S3: the paper's Scenario 3 — RADP vs raw and realistic attacks
-│   ├── adaptation_loop.py    # S4: label poisoning, selector steering; audit/guard/strict/IW-strict policies
-│   ├── adv_training.py       # baseline defence: MABTSE trained on repaired adversarial copies
+│   ├── adaptation_loop.py    # S4: label poisoning + framing; audit/guard/strict/IW-strict/consensus/
+│   │                         #   noise-aware policies; random/uncertain/mixed audits
+│   ├── adv_training.py       # adversarial training + adaptive attackers (distill, AT surrogate, HopSkipJump)
+│   ├── cascade_eval.py       # v14: chain MABTSE -> online MLP -> host-graph GNN (drift focus, matched control)
 │   └── run_grid.py           # many runs in parallel (datasets x seeds) + mean/std summary
 └── tests/
     ├── smoke_test.py         # pipeline self-check (no data needed)
     ├── attack_smoke_test.py  # attack-stack self-check (no data needed)
     ├── radp_smoke_test.py    # RADP + label-mode self-check (no data needed)
     ├── loop_smoke_test.py    # S4 self-check (no data needed)
-    └── advtrain_smoke_test.py  # adversarial-training self-check (no data needed)
+    ├── advtrain_smoke_test.py  # adversarial-training self-check (no data needed)
+    └── cascade_smoke_test.py   # v14 chain + adaptive attackers self-check (no data needed)
 ```
 
 ## Quick start

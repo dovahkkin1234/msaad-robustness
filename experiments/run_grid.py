@@ -5,7 +5,7 @@ time (one CPU core each), saves every result as JSON plus a log, and finally pri
 mean +/- std over seeds and writes a summary CSV. Finished runs are skipped when you start
 it again, so an interrupted overnight grid simply resumes.
 
-Five experiments:
+Six experiments:
   --exp repro   (default) experiments/repro_baseline.py — clean prequential reproduction;
                 results in results\\grid, summary per dataset.
   --exp attack  experiments/under_attack.py — the under-attack scenarios; results in
@@ -15,6 +15,8 @@ Five experiments:
   --exp loop    experiments/adaptation_loop.py — S4: label poisoning, selector steering and
                 the audited / guarded defence; results in results\\loop_grid, summary per
                 policy x scenario x label source.
+  --exp cascade  experiments/cascade_eval.py — v14 chain of detectors (MABTSE -> online MLP ->
+                host-graph GNN, drift focus, matched control); results in results\\cascade_grid.
   --exp advtrain  experiments/adv_training.py — adversarial-training baseline: MABTSE trained
                 with adversarial copies of its DDoS training flows, under the same attacks;
                 results in results\\advtrain_grid, summary per variant x scenario x label mode.
@@ -35,6 +37,10 @@ Options:
     --outdir D   where results go
     --push       afterwards, journal the grid in RUNS.md, commit the results and push them to
                  GitHub (scripts/push_run.py; one-time setup in SETUP.md, Step 15)
+    --summarise  run nothing: rewrite summary_<exp>[_<tag>].csv from the result files on disk
+                 (e.g. python experiments\\run_grid.py --exp loop --tag s15 --summarise)
+Summaries (v14c) cover every dataset and seed with the grid's tag that is on disk, in config
+order, so a grid on one dataset (e.g. CIC-IDS2017 with --tag s15) keeps the others' rows.
 Every grid is also recorded in results\\grid_runs.jsonl (command, times, which runs worked).
 Any other option (e.g. --learning, --attacks, --eps, --variants) is passed on unchanged to
 the experiment script.
@@ -47,6 +53,7 @@ import csv
 import datetime as dt
 import json
 import os
+import re
 import statistics
 import subprocess
 import sys
@@ -61,18 +68,23 @@ SCRIPTS = {"repro": ROOT / "experiments" / "repro_baseline.py",
            "attack": ROOT / "experiments" / "under_attack.py",
            "radp": ROOT / "experiments" / "radp_defense.py",
            "loop": ROOT / "experiments" / "adaptation_loop.py",
-           "advtrain": ROOT / "experiments" / "adv_training.py"}
+           "advtrain": ROOT / "experiments" / "adv_training.py",
+           "cascade": ROOT / "experiments" / "cascade_eval.py"}
 OUTDIRS = {"repro": ROOT / "results" / "grid", "attack": ROOT / "results" / "attack_grid",
            "radp": ROOT / "results" / "radp_grid", "loop": ROOT / "results" / "loop_grid",
-           "advtrain": ROOT / "results" / "advtrain_grid"}
+           "advtrain": ROOT / "results" / "advtrain_grid",
+           "cascade": ROOT / "results" / "cascade_grid"}
 REPRO_METRICS = ["accuracy", "precision", "recall", "f1", "fpr", "throughput_sps"]
 ATTACK_METRICS = ["accuracy", "recall", "f1", "fpr", "asr", "evasion_gain", "drifts_total"]
 RADP_METRICS = ["rad_flag_ddos", "benign_deleted", "asr_no_radp", "e2e_asr", "recovered_acc",
                 "blocked_acc", "benign_lost"]
 ARMS = ["ARF-ADWIN", "ARF-DDM", "SRP-ADWIN", "SRP-DDM", "KNN-ADWIN"]
 LOOP_METRICS = (["accuracy", "fpr", "asr", "poison_gain", "evasion_gain", "n_skipped"]
-                + [f"sel_{a}" for a in ARMS])
+                + [f"sel_{a}" for a in ARMS]
+                + ["audited_attacker_share", "fpr_frame_window", "fpr_after_window", "n_frame_learned",
+                   "n_audited"])
 ADV_METRICS = ["accuracy", "fpr", "recall", "asr", "clean_miss", "evasion_gain"]
+CASCADE_METRICS = ["asr", "fpr", "accuracy", "caught_s1_misses", "evaded_volume", "drift_coverage"]
 PRINTED = {"loop": 6}   # the loop summary prints its first metrics; the CSV has all of them
 
 
@@ -137,20 +149,40 @@ def _summarise_repro(datasets, seeds, outdir: Path, tag: str) -> None:
     _write_csv(rows, outdir / ("summary" + (f"_{tag}" if tag else "") + ".csv"))
 
 
-def _summarise_scenarios(datasets, seeds, outdir: Path, tag: str, exp: str) -> None:
+def _on_disk(outdir: Path, tag: str) -> dict:
+    """{dataset: sorted seeds} of the result files with exactly this tag in a grid folder."""
+    found = {}
+    for f in outdir.glob("*.json") if outdir.exists() else []:
+        m = re.fullmatch(r"(.+?)_seed(\d+)(?:_(.+))?\.json", f.name)
+        if m and (m.group(3) or "") == tag:
+            found.setdefault(m.group(1), set()).add(int(m.group(2)))
+    return {d: sorted(s) for d, s in found.items()}
+
+
+def _complete(datasets, seeds, outdir: Path, tag: str, order=()):
+    """v14c: [(dataset, seeds)] for the summary: every dataset with result files of this tag
+    (config order), each with all its seeds on disk. A grid run on one dataset (e.g. CIC-IDS2017
+    with --tag s15) then keeps the other datasets' rows in summary_<exp>_<tag>.csv."""
+    disk = _on_disk(outdir, tag)
+    names = set(disk) | set(datasets)
+    ordered = [d for d in order if d in names] + sorted(names - set(order))
+    return [(d, sorted(set(disk.get(d, [])) | (set(seeds) if d in datasets else set()))) for d in ordered]
+
+
+def _summarise_scenarios(datasets, seeds, outdir: Path, tag: str, exp: str, order=()) -> None:
     """Attack, RADP and loop grids: mean +/- std over seeds per
-    (dataset, [RAD | policy,] scenario, learning)."""
+    (dataset, [RAD | policy,] scenario, learning), over every dataset and seed of this tag on disk."""
     metrics = {"attack": ATTACK_METRICS, "radp": RADP_METRICS, "loop": LOOP_METRICS,
-               "advtrain": ADV_METRICS}[exp]
-    key = {"radp": "rad", "loop": "policy", "advtrain": "at"}.get(exp, "")
+               "advtrain": ADV_METRICS, "cascade": CASCADE_METRICS}[exp]
+    key = {"radp": "rad", "loop": "policy", "advtrain": "at", "cascade": "chain"}.get(exp, "")
     shown = PRINTED.get(exp, len(metrics))
     rows = []
     print(f"\n=== {exp} grid summary (mean +/- std over seeds) ===")
     print(f"  {'dataset':<16} {key:<20} {'scenario':<28} {'learning':<11} "
           f"{'seeds':>5}  " + "  ".join(f"{m[:15]:>15}" for m in metrics[:shown]))
-    for d in datasets:
+    for d, dseeds in _complete(datasets, seeds, outdir, tag, order):
         groups = defaultdict(list)
-        for s in seeds:
+        for s in dseeds:
             p = outdir / f"{_name(d, s, tag)}.json"
             if p.exists():
                 for r in json.load(open(p))["scenarios"]:
@@ -191,7 +223,10 @@ def _record(args, extra, datasets, outdir: Path, started: str, runs, minutes: fl
 def main() -> int:
     ap = argparse.ArgumentParser(description="Run an experiment over datasets x seeds in parallel.")
     ap.add_argument("--exp", default="repro", choices=sorted(SCRIPTS))
-    ap.add_argument("--data", nargs="+", required=True)
+    ap.add_argument("--data", nargs="+", default=None, help="datasets to run (not needed with --summarise)")
+    ap.add_argument("--summarise", action="store_true",
+                    help="run nothing: rewrite summary_<exp>[_<tag>].csv from every result file of "
+                         "this tag on disk (all datasets and seeds)")
     ap.add_argument("--seeds", nargs="+", type=int, default=[1, 2, 3])
     ap.add_argument("--jobs", type=int, default=4)
     ap.add_argument("--limit", type=int, default=None)
@@ -208,6 +243,23 @@ def main() -> int:
 
     cfg = yaml.safe_load(open(args.config))
     known = cfg.get("datasets", {})
+    if args.summarise:   # v14c: summary only, from the result files already on disk
+        outdir = Path(args.outdir) if args.outdir else OUTDIRS[args.exp]
+        disk = _on_disk(outdir, args.tag)
+        if not disk:
+            print(f"[grid] no result files with tag {args.tag!r} in {outdir}")
+            return 1
+        print(f"[grid] summarising {args.exp}{' [' + args.tag + ']' if args.tag else ''} from disk: "
+              + ", ".join(f"{d} ({len(s)} seeds)" for d, s in disk.items()))
+        if args.exp == "repro":
+            names = [d for d in known if d in disk] + sorted(set(disk) - set(known))
+            _summarise_repro(names, sorted({s for v in disk.values() for s in v}), outdir, args.tag)
+        else:
+            _summarise_scenarios([], [], outdir, args.tag, args.exp, order=list(known))
+        return 0
+    if not args.data:
+        print("[grid] --data is required (or use --summarise)")
+        return 1
     datasets = []
     for d in args.data:  # fail fast, before launching anything
         if d == "synthetic":
@@ -250,7 +302,7 @@ def main() -> int:
     if args.exp == "repro":
         _summarise_repro(datasets, args.seeds, outdir, args.tag)
     else:
-        _summarise_scenarios(datasets, args.seeds, outdir, args.tag, args.exp)
+        _summarise_scenarios(datasets, args.seeds, outdir, args.tag, args.exp, order=list(known))
     _record(args, extra, datasets, outdir, started, runs, minutes)
     if args.push:
         print("\n[grid] --push: journalling, committing and pushing the results")

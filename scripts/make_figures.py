@@ -14,17 +14,29 @@ exists:
     fig_audit_tradeoff  S4: what strict (and IW-strict) buy and cost per verified-label budget
     fig_advtrain        adversarial-training baseline: evasion (repaired attacks, no labels) and
                         false alarms on clean traffic, per training variant
+    v14 (exp/conference):
+    fig_cascade         chain of detectors: evasion left after each chain (MABTSE, + online MLP,
+                        + host-graph GNN full / drifting hosts, + matched control) and false alarms
+    fig_framing         framing (benign-looking flows labelled DDoS): false alarms during and after
+                        the campaign per update policy (strict, IW-strict, consensus, ...)
+    fig_hsj             label-only HopSkipJump: evasion vs query budget, raw and valid-traffic queries
   tables (booktabs; add \\usepackage{booktabs} to the paper):
     tab_repro, tab_attack, tab_radp, tab_loop, tab_audit, tab_advtrain
+    v14: tab_cascade, tab_graph_adaptive (spoofing / thinning attacker, evaded volume),
+    tab_framing, tab_adaptive (distilled / adversarially trained surrogate, HopSkipJump),
+    tab_audits (random / uncertainty / mixed audit allocation), tab_lowbudget (5% and 2% audits)
 
-Bars and lines show the mean over seeds. Every seed is drawn as a small dot when its JSON is
-present; where it is not, an error bar shows +/- one standard deviation instead. Tables give
+Every figure gets one panel per dataset present (IoTID20, IoTID20 (P2), CICIoT2023, CIC-IDS2017).
+Results tagged s15 (15 seeds) win over the untagged 3-seed ones (--prefer '' to use the 3-seed
+ones). Bars and lines show the mean over seeds. Every seed is drawn as a small dot when its JSON
+is present; where it is not, an error bar shows +/- one standard deviation instead. Tables give
 mean +/- std exactly as in the summary CSVs. Missing inputs are skipped with a message, so it
 can be re-run as results arrive.
 
 Usage (repo root, msaad environment active; needs matplotlib, see SETUP.md):
     python scripts\\make_figures.py
     python scripts\\make_figures.py --results results --out results\\paper
+    python scripts\\make_figures.py --prefer ""          (the 3-seed results of the course version)
 """
 from __future__ import annotations
 
@@ -53,14 +65,19 @@ INK2 = "#52514e"
 MARK = ["o", "s", "^", "D", "v"]
 HATCH = ["", "////", "....", "xxxx", "\\\\\\\\"]
 W1, W2 = 3.5, 7.16           # IEEE single / double column width (inches)
-NAMES = {"iotid20": "IoTID20", "ciciot2023": "CICIoT2023", "synthetic": "Synthetic"}
+NAMES = {"iotid20": "IoTID20", "iotid20_campaign": "IoTID20 (P2)", "ciciot2023": "CICIoT2023",
+         "cicids2017": "CIC-IDS2017", "synthetic": "Synthetic"}
 ATK = {"fgsm": "FGSM", "bim": "BIM", "pgd": "PGD", "cw": "C&W"}
 PAPER = {"iotid20": {"accuracy": 99.50, "precision": 99.47, "recall": 100.0, "f1": 99.74},
          "ciciot2023": {"accuracy": 99.28, "precision": 98.88, "recall": 96.53, "f1": 97.98}}
 # S4 update policies keep one colour, marker and line style in every figure.
-POL_SLOT = {"vanilla": 0, "audit": 1, "guard": 2, "strict": 3, "iwstrict": 4}
-POL_LS = {"vanilla": "-", "audit": (0, (5, 2)), "guard": "-.", "strict": "-", "iwstrict": (0, (2, 1.2))}
-POL_NAME = {"vanilla": "vanilla", "audit": "audit", "guard": "guard", "strict": "strict", "iwstrict": "IW-strict"}
+POL_SLOT = {"vanilla": 0, "audit": 1, "guard": 2, "strict": 3, "iwstrict": 4,
+            "consensus": 1, "iwconsensus": 2, "noiseaware": 0}
+POL_LS = {"vanilla": "-", "audit": (0, (5, 2)), "guard": "-.", "strict": "-", "iwstrict": (0, (2, 1.2)),
+          "consensus": (0, (1, 1)), "iwconsensus": (0, (3, 1, 1, 1)), "noiseaware": (0, (4, 2))}
+POL_NAME = {"vanilla": "vanilla", "audit": "audit", "guard": "guard", "strict": "strict", "iwstrict": "IW-strict",
+            "consensus": "consensus", "iwconsensus": "IW-consensus", "noiseaware": "noise-aware"}
+PREFER = "s15"   # result tag whose summaries win over the untagged 3-seed ones (--prefer)
 
 plt.rcParams.update({
     "font.size": 8, "axes.titlesize": 8, "axes.labelsize": 8, "legend.fontsize": 7,
@@ -175,7 +192,13 @@ def pol_label(p: str) -> str:
 
 
 def _q(learning: str):
-    return 0.0 if learning == "true" else (float(learning.split(":")[1]) if learning.startswith("poison:") else None)
+    """Poison share of a plain label source ('true' -> 0, 'poison:q' -> q); None for anything
+    else (framing, combinations), which the poisoning curves leave out."""
+    if learning == "true":
+        return 0.0
+    if learning.startswith("poison:") and "+" not in learning:
+        return float(learning.split(":")[1])
+    return None
 
 
 def find(rows, d, policy, scenario, q):
@@ -186,12 +209,23 @@ def find(rows, d, policy, scenario, q):
     return None
 
 
+def summary(folder: Path, base: str):
+    """(rows, tag): the preferred tagged summary (e.g. <base>_s15.csv) when it exists, else
+    the untagged one."""
+    if PREFER and (folder / f"{base}_{PREFER}.csv").exists():
+        return read(folder / f"{base}_{PREFER}.csv"), PREFER
+    return read(folder / f"{base}.csv"), ""
+
+
 def loop_rows(res: Path):
-    """(main grid rows, rows of every loop grid: main first, then summary_loop_<tag>.csv)."""
+    """(main grid rows, rows of every loop grid): the preferred grid (s15) first, then the
+    untagged one, then every other summary_loop_<tag>.csv; the first row of a run wins."""
     folder = res / "loop_grid"
-    main = read(folder / "summary_loop.csv") or []
+    main, _ = summary(folder, "summary_loop")
+    main = main or []
     rows, have = [], set()
-    for part in [main] + [read(f) or [] for f in sorted(folder.glob("summary_loop_*.csv"))]:
+    others = [read(f) or [] for f in sorted(folder.glob("summary_loop_*.csv")) if f.name != f"summary_loop_{PREFER}.csv"]
+    for part in [main, read(folder / "summary_loop.csv") or []] + others:
         for r in part:
             key = (r["dataset"], r["policy"], r["scenario"], r["learning"])
             if key not in have:
@@ -289,10 +323,10 @@ def repro_table(res: Path, out: Path):
 
 
 def attack_fig_and_table(res: Path, out: Path):
-    rows = read(res / "attack_grid" / "summary_attack.csv")
+    rows, tag = summary(res / "attack_grid", "summary_attack")
     if not rows:
         return
-    runs = seed_runs(res / "attack_grid", tags={""})
+    runs = seed_runs(res / "attack_grid", tags={tag})
     ds = datasets_in(rows)
     fig, axes = panels(len(ds))
     series = [("instant labels", "online", "attack_only"), ("no labels", "frozen", "attack_only"),
@@ -330,18 +364,24 @@ def attack_fig_and_table(res: Path, out: Path):
 
 
 def label_delay_fig(res: Path, out: Path):
-    lab = read(res / "attack_grid" / "summary_attack_labels.csv")
-    base = read(res / "attack_grid" / "summary_attack.csv")
+    pref, tag = summary(res / "attack_grid", "summary_attack")
+    if tag and any(r["learning"].startswith("delay:") for r in pref or []):
+        lab = base = pref                       # the 15-seed grid carries its own delays
+        runs_lab = runs_base = seed_runs(res / "attack_grid", tags={tag})
+    else:
+        lab = read(res / "attack_grid" / "summary_attack_labels.csv")
+        base = read(res / "attack_grid" / "summary_attack.csv")
+        runs_lab = seed_runs(res / "attack_grid", tags={"labels"})
+        runs_base = seed_runs(res / "attack_grid", tags={""})
     if not lab:
         return
-    runs_lab = seed_runs(res / "attack_grid", tags={"labels"})
-    runs_base = seed_runs(res / "attack_grid", tags={""})
+    has_self = any(r["learning"] == "self" for r in lab)
     ds = datasets_in(lab)
     fig, axes = panels(len(ds))
     for ax, d in zip(axes, ds):
         delays = sorted({int(r["learning"].split(":")[1]) for r in lab
                          if r["dataset"] == d and r["learning"].startswith("delay:")})
-        cats = ["instant"] + [f"{k:,}" for k in delays] + ["no labels", "self"]
+        cats = ["instant"] + [f"{k:,}" for k in delays] + ["no labels"] + (["self"] if has_self else [])
         x = np.arange(len(cats))
         atks = [a for a in ATK if pick(lab, dataset=d, scenario=f"{a}/attack_only")]
         for k, a in enumerate(atks):
@@ -356,15 +396,19 @@ def label_delay_fig(res: Path, out: Path):
             else:
                 pts.append(stat(pick(base, dataset=d, scenario=sc, learning="frozen"), runs_base, "asr",
                                 dataset=d, scenario=sc, learning="frozen"))
-            pts.append(stat(pick(lab, dataset=d, scenario=sc, learning="self"), runs_lab, "asr",
-                            dataset=d, scenario=sc, learning="self"))
+            if has_self:
+                pts.append(stat(pick(lab, dataset=d, scenario=sc, learning="self"), runs_lab, "asr",
+                                dataset=d, scenario=sc, learning="self"))
             m = np.array([p[0] if p[0] is not None else np.nan for p in pts])
-            ax.plot(x[:-1], m[:-1], color=C[k], marker=MARK[k], label=ATK[a], zorder=3)
-            ax.plot(x[-1:], m[-1:], color=C[k], marker=MARK[k], linestyle="none", zorder=3)
+            n_line = len(x) - 1 if has_self else len(x)
+            ax.plot(x[:n_line], m[:n_line], color=C[k], marker=MARK[k], label=ATK[a], zorder=3)
+            if has_self:
+                ax.plot(x[-1:], m[-1:], color=C[k], marker=MARK[k], linestyle="none", zorder=3)
             off = (k - (len(atks) - 1) / 2) * 0.16      # each attack's seed dots beside its mean
             for xi, (mm, ss, vals) in zip(x, pts):
                 spread_marks(ax, xi + off, mm, ss, vals, 0.05, color=C[k], size=4, alpha=0.6)
-        ax.axvline(x[-1] - 0.5, color=GREY, linewidth=0.6, linestyle=":")
+        if has_self:
+            ax.axvline(x[-1] - 0.5, color=GREY, linewidth=0.6, linestyle=":")
         ax.set_xticks(x, cats)
         ax.set_xlabel("label delay (flows)")
         ax.set_title(NAMES.get(d, d))
@@ -603,10 +647,10 @@ def at_label(v: str) -> str:
 
 
 def advtrain_fig_and_table(res: Path, out: Path):
-    rows = read(res / "advtrain_grid" / "summary_advtrain.csv")
+    rows, tag = summary(res / "advtrain_grid", "summary_advtrain")
     if not rows:
         return
-    runs = seed_runs(res / "advtrain_grid")
+    runs = seed_runs(res / "advtrain_grid", tags={tag})
     ds = datasets_in(rows)
     variants = []
     for r in rows:
@@ -661,15 +705,230 @@ def advtrain_fig_and_table(res: Path, out: Path):
               header, body, "ll" + "c" * (len(header) - 2))
 
 
+# ---- v14: chain of detectors, framing, adaptive evasion, audit allocation, low budgets ----
+CHAIN_ORDER = ["S1", "S1+S2", "S1+S3:ctx", "S1+S3:gnn_full", "S1+S3:gnn_drift", "S1+S2+S3:gnn_drift"]
+CHAIN_NAME = {"S1": "MABTSE", "S1+S2": "+ online MLP", "S1+S3:ctx": "+ host-feature MLP (control)",
+              "S1+S3:gnn_full": "+ GNN, full graph", "S1+S3:gnn_drift": "+ GNN, drifting hosts",
+              "S1+S2+S3:gnn_drift": "+ MLP + GNN, drifting hosts"}
+
+
+def cascade_fig_and_table(res: Path, out: Path):
+    rows, tag = summary(res / "cascade_grid", "summary_cascade")
+    if not rows:
+        return
+    runs = seed_runs(res / "cascade_grid", tags={tag})
+    ds = datasets_in(rows)
+    fig, axes = panels(len(ds))
+    body = []
+    for ax, d in zip(axes, ds):
+        chains = [c for c in CHAIN_ORDER if pick(rows, dataset=d, chain=c, scenario="clean", learning="frozen")]
+        groups = [("PGD", "pgd/attack_only/feasible", "asr"), ("C&W", "cw/attack_only/feasible", "asr"),
+                  ("false alarms\n(clean)", "clean", "fpr")]
+        groups = [g for g in groups if pick(rows, dataset=d, scenario=g[1], learning="frozen")]
+        x = np.arange(len(groups)).astype(float)
+        x[-1] += 0.3
+        w = 0.84 / max(1, len(chains))
+        for k, c in enumerate(chains):
+            pts = [stat(pick(rows, dataset=d, chain=c, scenario=sc, learning="frozen"), runs, met,
+                        dataset=d, chain=c, scenario=sc, learning="frozen") for _, sc, met in groups]
+            xs = x + (k - (len(chains) - 1) / 2) * w
+            means = [p[0] if p[0] is not None else np.nan for p in pts]
+            slot = k % len(C)
+            ax.bar(xs, means, w * 0.92, color=C[slot], hatch=HATCH[slot] if k < len(C) else "///",
+                   edgecolor="white", linewidth=0.4, label=CHAIN_NAME.get(c, c))
+            for xi, (m, sd, vals) in zip(xs, pts):
+                spread_marks(ax, xi, m, sd, vals, w * 0.28)
+        ax.axvline(x[-1] - 0.65, color=GREY, linewidth=0.6, linestyle=":")
+        ax.set_xticks(x, [g[0] for g in groups])
+        ax.set_title(NAMES.get(d, d))
+        for c in chains:
+            cells = [esc(NAMES.get(d, d)), esc(CHAIN_NAME.get(c, c))]
+            for sc in ("pgd/attack_only/feasible", "cw/attack_only/feasible"):
+                cells.append(fmt(*ms(pick(rows, dataset=d, chain=c, scenario=sc, learning="frozen"), "asr")))
+            cells.append(fmt(*ms(pick(rows, dataset=d, chain=c, scenario="clean", learning="frozen"), "fpr")))
+            cells.append(fmt(*ms(pick(rows, dataset=d, chain=c, scenario="pgd/attack_only/feasible",
+                                      learning="frozen"), "caught_s1_misses")))
+            pz = pick(rows, dataset=d, chain=c, scenario="pgd/attack_only/feasible",
+                      learning="delay:1000|poison:1.0|strict:0.1")
+            pv = pick(rows, dataset=d, chain=c, scenario="pgd/attack_only/feasible",
+                      learning="delay:1000|poison:1.0|vanilla")
+            cells += [fmt(*ms(pv, "asr")), fmt(*ms(pz, "asr"))]
+            body.append(cells)
+    axes[0].set_ylabel("Evading DDoS / flagged benign (%)")
+    top_legend(fig, axes, ncol=3)
+    save(fig, out, "fig_cascade")
+    write_tex(out, "tab_cascade", "Chain of detectors, repaired attacks, no labels (frozen) unless stated: evasion "
+              "rate (\\%), false alarms on clean traffic, share of the flows MABTSE misses that the chain "
+              "catches, and evasion under full label poisoning with labels 1{,}000 flows late (paper's rule "
+              "vs strict, 10\\% audits). Mean $\\pm$ std over seeds.", "tab:cascade",
+              ["Dataset", "Chain", "PGD", "C\\&W", "FPR", "Caught", "Poisoned, vanilla", "Poisoned, strict"],
+              body, "llcccccc")
+    # graph-aware attacker: evaded volume (share of the full attack's flows that get through)
+    body2 = []
+    for d in ds:
+        scens = [r["scenario"] for r in rows if r["dataset"] == d and r["learning"] == "frozen"
+                 and r["chain"] == "S1" and (r["scenario"] == "pgd/attack_only/feasible"
+                                             or "/spoof:" in r["scenario"] or "/thin:" in r["scenario"])]
+        if len(scens) < 2:
+            continue
+        for sc in dict.fromkeys(scens):
+            rho = float(sc.split("thin:")[1]) if "/thin:" in sc else 1.0
+            cells = [esc(NAMES.get(d, d)), esc(sc.replace("pgd/attack_only/feasible", "repaired PGD").replace("/", " "))]
+            for c in ("S1", "S1+S3:gnn_full", "S1+S3:gnn_drift", "S1+S3:ctx"):
+                m, sd = ms(pick(rows, dataset=d, chain=c, scenario=sc, learning="frozen"), "asr")
+                cells.append("--" if m is None else f"{rho * m:.2f}")
+            body2.append(cells)
+    if body2:
+        write_tex(out, "tab_graph_adaptive", "Graph-aware attacker against the chain (no labels): evaded volume, "
+                  "the share (\\%) of the full attack's flows that get through (rate $\\times$ evasion rate). "
+                  "spoof: random source addresses; thin: the attacker sends only that share of its flows.",
+                  "tab:graph_adaptive", ["Dataset", "Attacker", "MABTSE", "+ GNN full", "+ GNN drift", "+ control"],
+                  body2, "llcccc")
+
+
+def framing_fig_and_table(res: Path, out: Path):
+    folder = res / "loop_grid"
+    rows = read(folder / "summary_loop_frame.csv")
+    if not rows:
+        return
+    runs = seed_runs(folder, tags={"frame"})
+    ds = datasets_in(rows)
+    pols = list(dict.fromkeys(r["policy"] for r in rows if r["policy"] != "frozen"))
+    srcs = [("true", 0.0)] + sorted({(r["learning"], float(r["learning"].split(":")[1])) for r in rows
+                                     if r["learning"].startswith("frame:")}, key=lambda t: t[1])
+    fig, axes = plt.subplots(2, len(ds), figsize=(W2, 3.9), squeeze=False, sharex=True, sharey="row",
+                             constrained_layout=True)
+    x = np.arange(len(srcs))
+    body = []
+    for j, d in enumerate(ds):
+        for p in pols:
+            st = pol_style(p)
+            for row_i, met in ((0, "fpr"), (1, "fpr_after_window")):
+                pts = []
+                for lab, _ in srcs:
+                    m_ = "fpr" if (met == "fpr_after_window" and lab == "true") else met
+                    pts.append(stat(pick(rows, dataset=d, policy=p, scenario="clean", learning=lab), runs, m_,
+                                    dataset=d, policy=p, scenario="clean", learning=lab))
+                ys = np.array([q[0] if q[0] is not None else np.nan for q in pts])
+                ax = axes[row_i][j]
+                ax.plot(x, ys, label=pol_label(p), **st)
+                for xi, (m, sd, vals) in zip(x, pts):
+                    spread_marks(ax, xi, m, sd, vals, 0.06, color=st["color"], size=4, alpha=0.6)
+            cells = [esc(NAMES.get(d, d)), esc(pol_label(p))]
+            for lab, _ in srcs:
+                cells.append(fmt(*ms(pick(rows, dataset=d, policy=p, scenario="clean", learning=lab), "fpr")))
+            comb = pick(rows, dataset=d, policy=p, scenario="pgd/attack_only/feasible", learning="poison:1.0+frame:0.05")
+            cells += [fmt(*ms(comb, "asr")), fmt(*ms(comb, "fpr"))]
+            body.append(cells)
+        axes[0][j].set_title(NAMES.get(d, d))
+        axes[1][j].set_xticks(x, ["none"] + [f"{100 * r:g}%" for _, r in srcs[1:]])
+        axes[1][j].set_xlabel("framing flows per test flow")
+    axes[0][0].set_ylabel("false alarms (%)")
+    axes[1][0].set_ylabel("false alarms after\nthe campaign (%)")
+    top_legend(fig, axes, ncol=len(pols))
+    save(fig, out, "fig_framing")
+    write_tex(out, "tab_framing", "Framing (availability poisoning through the trusted direction): false alarms "
+              "(\\%) on genuine benign flows for each framing rate, and evasion / false alarms under evasion + "
+              "full poisoning + 5\\% framing. Mean $\\pm$ std over seeds.", "tab:framing",
+              ["Dataset", "Policy"] + ["FPR, " + ("no framing" if r == 0 else f"{100 * r:g}\\%") for _, r in srcs]
+              + ["ASR, all three", "FPR, all three"], body, "ll" + "c" * (len(srcs) + 2))
+
+
+def adaptive_evasion_fig_and_table(res: Path, out: Path):
+    folder = res / "advtrain_grid"
+    runs = seed_runs(folder, tags={"adaptive"})
+    if not runs:
+        return
+    hs = [r for r in runs if r.get("attack") == "hsj" and r.get("asr_feasible_by_budget")]
+    ds = list(dict.fromkeys(r["dataset"] for r in runs))
+    if hs:
+        fig, axes = panels(len(ds))
+        for ax, d in zip(axes, ds):
+            for k, v in enumerate(dict.fromkeys(r["at"] for r in hs if r["dataset"] == d)):
+                for space, ls in (("feasible", "-"), ("raw", (0, (3, 2)))):
+                    rr = [r for r in hs if r["dataset"] == d and r["at"] == v]
+                    budgets = sorted({int(b) for r in rr for b in r[f"asr_{space}_by_budget"]})
+                    vals = [[r[f"asr_{space}_by_budget"].get(str(b)) for r in rr] for b in budgets]
+                    m = [np.mean([u for u in vv if u is not None]) if any(u is not None for u in vv) else np.nan
+                         for vv in vals]
+                    ax.plot(budgets, m, color=C[k], linestyle=ls, marker=MARK[k],
+                            label=f"{at_label(v)}, {'valid traffic' if space == 'feasible' else 'any feature values'}")
+                    for b, vv in zip(budgets, vals):
+                        dots(ax, b, [u for u in vv if u is not None], b * 0.04, color=C[k], size=4, alpha=0.5)
+            ax.set_xscale("log")
+            ax.set_xlabel("queries per flow")
+            ax.set_title(NAMES.get(d, d))
+        axes[0].set_ylabel("flows evading (%)")
+        top_legend(fig, axes, ncol=2)
+        save(fig, out, "fig_hsj")
+    body = []
+    for d in ds:
+        for v in dict.fromkeys(r["at"] for r in runs if r["dataset"] == d):
+            cells = [esc(NAMES.get(d, d)), esc(at_label(v))]
+            for sc in ("pgd/attack_only/feasible", "pgd-distill/attack_only/feasible", "pgd-atsur/attack_only/feasible"):
+                vals = per_seed(runs, "asr", dataset=d, at=v, scenario=sc, learning="frozen")
+                cells.append("--" if not vals else fmt(float(np.mean(vals)), float(np.std(vals, ddof=1)) if len(vals) > 1 else None))
+            for key in ("asr_raw", "asr_raw_after_repair", "asr_feasible"):
+                vals = [r[key] for r in hs if r["dataset"] == d and r["at"] == v and r.get(key) is not None]
+                cells.append("--" if not vals else fmt(float(np.mean(vals)), float(np.std(vals, ddof=1)) if len(vals) > 1 else None))
+            body.append(cells)
+    write_tex(out, "tab_adaptive", "Adaptive evasion (repaired PGD unless stated), no labels: plain transfer, a "
+              "surrogate distilled from the detector's verdicts, an adversarially trained surrogate, and "
+              "label-only HopSkipJump (2{,}000 queries per flow) in the raw feature space, after repairing its "
+              "result, and with valid-traffic queries only. Evasion rate (\\%), mean $\\pm$ std over seeds.",
+              "tab:adaptive", ["Dataset", "Detector", "Transfer", "Distilled", "AT surrogate", "HSJ raw",
+                               "HSJ raw, repaired", "HSJ valid"], body, "llcccccc")
+
+
+def audits_lowbudget_tables(res: Path, out: Path):
+    folder = res / "loop_grid"
+    sets = [("random", f"summary_loop_{PREFER}.csv"), ("uncertain", "summary_loop_audits.csv"),
+            ("mixed", "summary_loop_auditsmix.csv")]
+    body = []
+    have = {m: read(folder / f) for m, f in sets if (folder / f).exists()}
+    if len(have) >= 2:
+        for d in datasets_in(next(iter(have.values()))):
+            for p in ("strict:0.1", "iwstrict:0.1"):
+                for mode, rows in have.items():
+                    a = pick(rows, dataset=d, policy=p, scenario="pgd/attack_only/feasible", learning="poison:1.0")
+                    t = pick(rows, dataset=d, policy=p, scenario="pgd/attack_only/feasible", learning="true")
+                    if a is None:
+                        continue
+                    body.append([esc(NAMES.get(d, d)), esc(pol_label(p)), mode, fmt(*ms(a, "asr")),
+                                 fmt(*ms(a, "audited_attacker_share")) if "audited_attacker_share_mean" in a else "--",
+                                 fmt(*ms(t, "fpr"))])
+        write_tex(out, "tab_audits", "Audit allocation: random, uncertainty-based or mixed audits (10\\% budget). "
+                  "Evasion under evasion + full poisoning, share of the attacker's flows that got audited, and "
+                  "false alarms under attack with true labels (\\%), mean $\\pm$ std over seeds.", "tab:audits",
+                  ["Dataset", "Policy", "Audits", "ASR", "Attacker flows audited", "FPR"], body, "lllccc")
+    low = read(folder / "summary_loop_lowbudget.csv")
+    if low:
+        body = []
+        for d in datasets_in(low):
+            for p in dict.fromkeys(r["policy"] for r in low if r["policy"] != "frozen"):
+                a = pick(low, dataset=d, policy=p, scenario="pgd/attack_only/feasible", learning="poison:1.0")
+                t = pick(low, dataset=d, policy=p, scenario="pgd/attack_only/feasible", learning="true")
+                c = pick(low, dataset=d, policy=p, scenario="clean", learning="true")
+                body.append([esc(NAMES.get(d, d)), esc(p), fmt(*ms(a, "asr")), fmt(*ms(c, "fpr")), fmt(*ms(t, "fpr"))])
+        write_tex(out, "tab_lowbudget", "Small audit budgets, weight clipping (iwstrict:a:cap) and the noise-aware "
+                  "baseline: evasion under evasion + full poisoning, false alarms on clean traffic and under attack "
+                  "with true labels (\\%), mean $\\pm$ std over seeds.", "tab:lowbudget",
+                  ["Dataset", "Policy", "ASR", "FPR clean", "FPR attack"], body, "llccc")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Paper figures and tables from the grid results.")
     ap.add_argument("--results", default=str(ROOT / "results"))
     ap.add_argument("--out", default=None, help="default: <results>\\paper")
+    ap.add_argument("--prefer", default="s15", help="result tag whose summaries win (default s15; '' = 3-seed)")
     args = ap.parse_args()
+    global PREFER
+    PREFER = args.prefer
     res = Path(args.results)
     out = Path(args.out) if args.out else res / "paper"
     for step in (repro_table, attack_fig_and_table, label_delay_fig, radp_fig_and_table, loop_figs_and_table,
-                 audit_tradeoff, advtrain_fig_and_table):
+                 audit_tradeoff, advtrain_fig_and_table, cascade_fig_and_table, framing_fig_and_table,
+                 adaptive_evasion_fig_and_table, audits_lowbudget_tables):
         try:
             step(res, out)
         except Exception as exc:  # one broken input must not stop the others

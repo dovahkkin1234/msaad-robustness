@@ -1,0 +1,23 @@
+\begin{table*}[t]
+\centering
+\caption{Paired statistics over seeds (advtrain): mean with 95\% bootstrap CI, the median per-seed difference to the baseline, two-sided Wilcoxon signed-rank test (Holm-corrected within each comparison) and the matched-pairs rank-biserial correlation $r$.}}
+\label{tab:stats_advtrain}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lllcccccc}
+\toprule
+Comparison & Dataset & Condition & $n$ & Mean [95\% CI] & Baseline mean & Median $\Delta$ & $p_\mathrm{Holm}$ & $r$ \\
+\midrule
+ASR (\%), repaired attacks, no labels: adversarial training vs none & CICIoT2023 & at:pgd (bim) & 15 & 0.03 [0.01, 0.05] & 48.65 & -73.62 & 0.0005 & -1.00 \\
+ & CICIoT2023 & at:pgd (cw) & 15 & 0.04 [0.02, 0.05] & 47.69 & -53.40 & 0.0005 & -1.00 \\
+ & CICIoT2023 & at:pgd (fgsm) & 15 & 0.02 [0.00, 0.04] & 47.27 & -61.51 & 0.0005 & -1.00 \\
+ & CICIoT2023 & at:pgd (pgd) & 15 & 0.03 [0.01, 0.05] & 48.52 & -73.57 & 0.0005 & -1.00 \\
+ & IoTID20 & at:pgd (bim) & 15 & 0.08 [0.02, 0.17] & 17.00 & -16.74 & 0.0005 & -1.00 \\
+ & IoTID20 & at:pgd (cw) & 15 & 0.70 [0.16, 1.58] & 11.25 & -11.76 & 0.0005 & -1.00 \\
+ & IoTID20 & at:pgd (fgsm) & 15 & 0.05 [0.02, 0.08] & 17.55 & -16.93 & 0.0005 & -1.00 \\
+ & IoTID20 & at:pgd (pgd) & 15 & 0.12 [0.03, 0.25] & 17.32 & -16.92 & 0.0005 & -1.00 \\
+FPR (\%), clean traffic, no labels: adversarial training vs none & CICIoT2023 & at:pgd & 15 & 14.13 [10.77, 18.00] & 6.41 & +7.21 & 0.0013 & +0.94 \\
+ & IoTID20 & at:pgd & 15 & 5.49 [5.10, 5.90] & 3.28 & +2.29 & 0.0001 & +1.00 \\
+\bottomrule
+\end{tabular}
+\end{table*}

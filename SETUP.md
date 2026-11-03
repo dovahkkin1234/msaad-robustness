@@ -18,7 +18,7 @@
 
 ```powershell
 New-Item -ItemType Directory -Force -Path "$HOME\Projects\CNS-Project" | Out-Null
-Expand-Archive "$HOME\Downloads\msaad-robustness-v13.zip" -DestinationPath "$HOME\Projects\CNS-Project" -Force
+Expand-Archive "$HOME\Downloads\msaad-robustness-v14c.zip" -DestinationPath "$HOME\Projects\CNS-Project" -Force
 Set-Location "$HOME\Projects\CNS-Project\msaad-robustness"
 Get-ChildItem
 ```
@@ -26,7 +26,7 @@ Get-ChildItem
 You should see `configs`, `experiments`, `scripts`, `src`, `tests` and the `.md` files.
 (If you prefer another location, change `$HOME\Projects\CNS-Project` everywhere.)
 
-**Updating an existing copy (e.g. v12 → v13):** run the same `Expand-Archive` line. The zip
+**Updating an existing copy (e.g. v14b → v14c):** run the same `Expand-Archive` line. The zip
 holds only code and documents, so your `data` and `results` folders are kept as they are.
 Once Step 15 is done, push each new version: `python scripts\push_run.py "Code v13: ..."`; git
 then shows exactly what changed. From v13 on the packages leave out `RUNS.md`, so extracting one
@@ -615,6 +615,198 @@ python experiments\run_grid.py --exp advtrain --data iotid20 ciciot2023 --jobs 3
 **3. Send me** `results\advtrain_grid\summary_advtrain.csv` and the terminal output (or just
 say it is pushed).
 
+# Step 17 — v14a: framing, audit allocation, low audit budgets, and paired statistics
+
+Branch `exp/conference` only (check with `git branch --show-current`). v14a adds to
+`experiments\adaptation_loop.py` (v13 runs are reproduced bit for bit):
+
+| Option | What it tests |
+|---|---|
+| `--labels frame:r` | **Framing / availability poisoning through the trusted direction**: the attacker's bots replay benign-looking flows that are (correctly) labelled DDoS; every policy that trusts DDoS labels learns them. Measured: false alarms on genuine benign traffic during and after the campaign. Combine with `+`, e.g. `poison:1.0+frame:0.05`. |
+| `--policies consensus:a`, `iwconsensus:a` | The defence against framing: an unverified DDoS label is learned only when the detector also says DDoS. Its price: slower adaptation to evasion. |
+| `--policies iwstrict:a:c` | IW-strict with at most c copies (weight clipping) for small audit budgets. |
+| `--policies noiseaware:a` | A trusted-audit noise-rate baseline (GLC-style): learns each unverified benign label with probability 1 - rho, rho estimated from audits. |
+| `--audits uncertain` / `mixed` | Audits chosen by the detector's uncertainty (or half random, half uncertain) instead of at random. An evading attacker's flows look confidently benign, so uncertainty-only audits never check them. |
+
+`scripts\stats.py` turns the per-seed results into paired statistics (bootstrap CIs, Wilcoxon
+signed-rank, Holm correction, effect sizes) for every headline comparison.
+
+**1. Self-check. PowerShell (Windows), `(msaad)` active, inside `msaad-robustness`:**
+
+```powershell
+python tests\loop_smoke_test.py
+```
+
+**2. The four v14a grids, 15 seeds each, pushed when each ends. Same terminal:**
+
+```powershell
+$s = 1..15
+$d = "iotid20", "ciciot2023"
+$g = "--exp", "loop", "--data"
+$lab = "true", "frame:0.02", "frame:0.1", "poison:1.0+frame:0.05"
+$pol = "vanilla", "strict:0.1", "iwstrict:0.1", "consensus:0.1", "iwconsensus:0.1"
+python experiments\run_grid.py $g $d --seeds $s --jobs 6 --tag frame --labels $lab --policies $pol --push
+$lab = "true", "poison:1.0"
+$pol = "strict:0.1", "iwstrict:0.1"
+python experiments\run_grid.py $g $d --seeds $s --jobs 6 --tag audits --audits uncertain --labels $lab --policies $pol --push
+python experiments\run_grid.py $g $d --seeds $s --jobs 6 --tag auditsmix --audits mixed --labels $lab --policies $pol --push
+$pol = "strict:0.1", "noiseaware:0.1", "strict:0.05", "iwstrict:0.05", "iwstrict:0.05:5"
+$pol += "iwstrict:0.05:10", "strict:0.02", "iwstrict:0.02:10"
+python experiments\run_grid.py $g $d --seeds $s --jobs 6 --tag lowbudget --labels $lab --policies $pol --push
+```
+
+PowerShell passes each element of an array variable (`$d`, `$lab`, `$pol`) as its own argument.
+
+**3. Statistics for everything that has finished. Same terminal:**
+
+```powershell
+python scripts\stats.py
+python scripts\push_run.py "Paired statistics (15 seeds)"
+```
+
+Tables land in `results\paper\stats_*.csv` and `stats_*.tex`.
+
+# Step 18 — v14b: the chain of detectors, adaptive attackers, and the third dataset
+
+Branch `exp/conference` only. Needs PyTorch (CPU build; it does not touch River or numpy).
+
+| File | What it does |
+|---|---|
+| `experiments\cascade_eval.py` | **Chain of detectors**: MABTSE (stage 1, identical to the attack grid), an online MLP (stage 2) and a host-graph neural network (stage 3) in three versions: `gnn_full`, `gnn_drift` (only the 2-hop neighbourhoods of hosts whose traffic just changed) and `ctx` (the matched control without message passing). A later stage only re-checks flows the earlier ones let through. Also a graph-aware attacker: `spoof:k` (spread over many sources) and `thin:rho` (send fewer flows). |
+| `src\models\online_mlp.py` | The online MLP (PyTorch, River-style). |
+| `src\models\graph_stage.py` | Window host graphs, the graph-attention network, the matched control, per-host drift detection. |
+| `src\attacks\decision.py` | Label-only HopSkipJump (queries only the detector's verdicts). |
+| `experiments\adv_training.py --adaptive distill atsur hsj` | Adaptive attackers against the plain and adversarially trained detectors: a surrogate distilled from the detector's own verdicts, an adversarially trained surrogate, and HopSkipJump with raw and with valid-traffic queries. |
+| `src\data\context.py` | Host addresses and timestamps for the graph and for label delays in seconds (`delaysec:T`). |
+
+**1. Install PyTorch (once). PowerShell (Windows), `(msaad)` active:**
+
+```powershell
+python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+```
+
+**2. Self-checks. PowerShell (Windows), `(msaad)` active, inside `msaad-robustness`:**
+
+```powershell
+python tests\cascade_smoke_test.py
+python tests\smoke_test.py
+```
+
+Both must end with PASS.
+
+**3. The v14b grids. Same terminal:**
+
+```powershell
+$s = 1..15
+$d = "iotid20_campaign", "ciciot2023"
+python experiments\run_grid.py --exp cascade --data $d --seeds $s --jobs 6 --tag s15 --push
+$v = "none", "at:pgd"
+$a = "distill", "atsur", "hsj"
+$c5 = "--data", "iotid20", "ciciot2023", "--seeds", "1", "2", "3", "4", "5", "--jobs", "6"
+python experiments\run_grid.py --exp advtrain $c5 --tag adaptive --variants $v --learning frozen --adaptive $a --push
+```
+
+- The chain uses IoTID20 in campaign order (`iotid20_campaign`): the file order is shuffled,
+  so its windows would not be time windows. CICIoT2023 has no host addresses: stages 1-2 only.
+- Expect about 4 hours for the chain grid and 1.5 hours for the adaptive grid with 6 jobs.
+
+**4. The third dataset: corrected CIC-IDS2017 (Engelen et al., WTMC 2021).** Download the
+improved CIC-IDS2017 from https://intrusion-detection.distrinet-research.be/WTMC2021/tools_datasets.html
+(the Friday file), put it at `data\cicids2017\friday.csv`, then run the inspector and send
+Claude the report (column names, label values and timestamp format are confirmed from it):
+
+```powershell
+python scripts\inspect_dataset.py .\data\cicids2017\friday.csv
+```
+
+Done on 3 Nov; the report set the configuration. Continue with Step 19.
+
+# Step 19 — v14c: CIC-IDS2017, the third dataset
+
+Branch `exp/conference` only. What v14c changes (IoTID20 and CICIoT2023 streams are identical
+with it, so extracting it while their grids run does not change their results):
+
+| File | Change |
+|---|---|
+| `configs\base.yaml` | `cicids2017` set from the inspector report: dropped columns, timestamp format, and a replay window of 20:31–21:26 around the flood (20:56:31–21:16:10 on the file's clock). |
+| `experiments\under_attack.py`, `repro_baseline.py` | Now honour `time_window` and `exclude_values`. Before, only the chain did, so on CIC-IDS2017 the other scripts would have replayed the whole day. |
+| `experiments\run_grid.py` | A summary now covers every dataset and seed with the grid's tag on disk, so a CIC-IDS2017 grid with `--tag s15` keeps the IoTID20 and CICIoT2023 rows. `--summarise` rewrites a summary without running anything. |
+| `scripts\check_stream.py` | What a configured stream contains: the train/test split, classes per part, clock times, label delays in seconds, the attacking hosts. Trains nothing. |
+| `scripts\per_seed.py` | The per-seed values behind one summary line, with the median, the IQR and how many seeds sit at either end. |
+| `scripts\stats.py` | A `cascade` preset: each chain vs MABTSE alone, the GNN vs its matched control, the graph-aware attacker, strict vs vanilla inside the chain. |
+| `scripts\make_figures.py` | Prefers the 15-seed results; adds the chain, framing, adaptive-attack, audit-allocation and low-budget figures and tables; one panel per dataset. |
+
+**1. The data (done on 3 Nov).** The WTMC 2021 download (`dataset.zip`) holds one CSV per
+weekday; only Friday is needed. PowerShell (Windows), `(msaad)` active, inside
+`msaad-robustness`; this copies out the one file without unpacking the rest:
+
+```powershell
+New-Item -ItemType Directory -Force -Path data\cicids2017 | Out-Null
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+$z = [System.IO.Compression.ZipFile]::OpenRead("$HOME\Downloads\dataset.zip")
+$e = $z.Entries | Where-Object { $_.Name -eq "Friday-WorkingHours.csv" }
+[System.IO.Compression.ZipFileExtensions]::ExtractToFile($e, (Join-Path $PWD.Path "data\cicids2017\friday.csv"), $true)
+$z.Dispose()
+```
+
+**2. Update the code and self-check.** Same kind of window (a new one if a grid is running):
+
+```powershell
+Expand-Archive "$HOME\Downloads\msaad-robustness-v14c.zip" -DestinationPath "$HOME\Projects\CNS-Project" -Force
+python tests\smoke_test.py
+python tests\cascade_smoke_test.py
+python scripts\push_run.py "Code v14c: CIC-IDS2017 configured, time-window fix, stream check, chain statistics"
+```
+
+**3. Check the stream (about a minute):**
+
+```powershell
+python scripts\check_stream.py --data cicids2017
+```
+
+Expect 30,000 rows; the training part ending inside the flood (around 21:09); a test DDoS share
+of roughly 75–85%; `context loader: same rows and labels (OK)`; every DDoS flow from
+172.16.0.1; and `[check] OK` at the end. Send Claude the output.
+
+**4. The CIC-IDS2017 grids, 15 seeds, each pushed when it ends. Same window:**
+
+```powershell
+$s = 1..15
+$c = "--data", "cicids2017", "--jobs", "6", "--tag", "s15", "--push"
+$lrn = "online", "frozen", "delay:1000", "delay:5000", "delaysec:60", "delaysec:300"
+$lab = "true", "poison:0.25", "poison:0.5", "poison:1.0"
+$pol = "vanilla", "audit:0.1", "guard:0.1", "strict:0.1", "iwstrict:0.1", "iwstrict:0.2"
+python experiments\run_grid.py --exp attack $c --seeds $s --attacks pgd cw --perturb attack_only --learning $lrn
+python experiments\run_grid.py --exp loop $c --seeds $s --labels $lab --policies $pol
+python experiments\run_grid.py --exp advtrain $c --seeds $s --variants none at:pgd
+python experiments\run_grid.py --exp cascade $c --seeds $s
+```
+
+- The same settings as the IoTID20 and CICIoT2023 15-seed grids, plus label delays in seconds
+  (`delaysec:60`, `delaysec:300`; the test stream covers about 17 minutes of traffic).
+- Next to another grid this means 12 runs at once. If Task Manager shows memory above about
+  85%, stop this window (Ctrl+C), set `$c[3] = "3"` (three runs at a time) and start the same
+  line again: finished runs are skipped.
+- On an idle laptop: about 1, 2.5, 1 and 2 hours with 6 jobs; longer next to another grid.
+
+**5. When every grid has finished: complete summaries, statistics and figures. Same window:**
+
+```powershell
+foreach ($e in "attack", "loop", "advtrain", "cascade") { python experiments\run_grid.py --exp $e --tag s15 --summarise }
+python scripts\stats.py
+python scripts\make_figures.py
+python scripts\push_run.py "15-seed summaries, statistics and figures, three datasets"
+```
+
+`--summarise` matters when two grids with the same tag ran side by side: whichever finished last
+wrote the summary, and an older copy of `run_grid.py` leaves out datasets it did not run.
+
+**6. A result with a large spread, seed by seed** (example: frozen transfer on CICIoT2023):
+
+```powershell
+python scripts\per_seed.py --exp attack --tag s15 --data ciciot2023 --scenario pgd/attack_only/feasible --learning frozen
+```
+
 # Troubleshooting
 
 | Symptom | Fix |
@@ -630,6 +822,11 @@ say it is pushed).
 | `options [...] are not used by the repro experiment` | `--learning`, `--attacks`, `--labels` etc. only apply with `--exp attack`, `--exp radp` or `--exp loop`. |
 | `unknown --learning mode` | Use `online`, `frozen`, `self` or `delay:D` with a whole number, e.g. `delay:1000`. |
 | `unknown --labels value` / `unknown --policies value` | Use `true` or `poison:q`, and `vanilla`, `audit:a`, `guard:a`, `strict:a` or `iwstrict:a`, with q and a between 0 and 1 (e.g. `poison:0.5`, `strict:0.1`). `iwstrict` needs v10. |
+| `ModuleNotFoundError: No module named 'torch'` | Step 18, part 1 (CPU build of PyTorch). |
+| `delaysec:T needs ...` | Label delays in seconds need a time-ordered dataset with a timestamp in its `context` config (CIC-IDS2017), and v14c (older code loads different rows for the timestamps). |
+| `[check] ... the context loader returns different rows` | The code is older than v14c: extract v14c (Step 19, part 2). |
+| `[grid] --data is required (or use --summarise)` | Add `--data ...`, or `--summarise` to only rewrite a summary from finished runs. |
+| A summary CSV lacks a dataset you ran | Two grids with the same tag finished in the wrong order: `python experiments\run_grid.py --exp <exp> --tag <tag> --summarise`. |
 | `unknown variant` (adv_training.py) | Use `none` or `at:` followed by attacks joined with `+`, e.g. `at:pgd`, `at:fgsm+bim+pgd+cw`. |
 | `ModuleNotFoundError: No module named 'matplotlib'` | Run the one-time install in Step 14. |
 | `[push] git is not installed or not on PATH` | Step 15, part 1. |

@@ -34,6 +34,36 @@ Defender update policies:
             learning a single unverified benign label, so the poisoning guarantee is kept.
   frozen    no learning at all (one run per scenario): the reference that learning should
             never be worse than.
+  v14 additions (v13 runs are unchanged, bit for bit):
+  iwstrict:a:c  iwstrict with at most c copies per audited benign flow (weight clipping; the
+            default cap is 20). Controls the variance of the 1/a weight at small audit shares.
+  consensus:a   strict:a, and an unverified "DDoS" label is learned only when the detector's
+            own verdict is DDoS too (both label directions need agreement or an audit). The
+            defence against framing (below); its cost is slower adaptation to evasion.
+  iwconsensus:a[:c]  consensus with iwstrict's benign re-weighting.
+  noiseaware:a  a trusted-audit noise-rate baseline in the spirit of GLC (Hendrycks et al.
+            2018) and class-conditional noise correction (Natarajan et al. 2013): audited flows
+            that arrived with a benign label estimate rho = P(truly DDoS | labelled benign)
+            (Beta(1,1) prior); every unverified benign label is learned with probability
+            1 - rho. It behaves like vanilla when labels are clean and like strict when they are
+            poisoned, without being told which.
+
+Label sources (--labels): "true", "poison:q", and v14's "frame:r" (framing / availability
+poisoning through the trusted direction, after Paragraph, Newsome et al. RAID 2006): the
+attacker's bots send benign-looking flows (replays of benign training flows, valid traffic by
+construction), r per test flow, during the first --frame-span of the test stream. They come
+from attacker hosts, so the labeller (correctly) calls them DDoS, and every policy that trusts
+DDoS labels learns them: the target is the false-alarm rate on genuine benign traffic.
+Combine with '+', e.g. "poison:1.0+frame:0.05". Framing flows are excluded from every metric
+(FPR and ASR are measured on genuine flows only); fpr_frame_window / fpr_after_window show the
+damage during the campaign and whether the detector recovers after it.
+
+Audit allocation (--audits): "random" (default: each flow audited with probability a, unseen
+by the attacker), "uncertain" (the a share of flows whose verdict is least certain, chosen
+online by a budget controller), or "mixed" (half of the budget each way). Uncertainty-only
+audits never look at flows the detector is confident about, which is exactly where an evading
+attacker puts its flows (the audit-aware attacker needs no extra knowledge: evasion already
+makes its flows confidently benign).
 
 Reports, per scenario x label source x policy: accuracy, recall, F1, false-alarm rate (FPR),
 ASR (attacker flows classified benign) overall and per tenth of the test stream,
@@ -51,14 +81,18 @@ Usage (repo root, msaad environment active):
     python experiments\\adaptation_loop.py --data iotid20 --limit 3000
     python experiments\\adaptation_loop.py --data iotid20 --labels true poison:0.25 poison:1.0 --policies vanilla guard:0.05
     python experiments\\adaptation_loop.py --data iotid20 --policies strict:0.1 iwstrict:0.1 --tag iw
+    python experiments\\adaptation_loop.py --data iotid20 --labels true frame:0.05 --policies strict:0.1 consensus:0.1 --tag frame
+    python experiments\\adaptation_loop.py --data iotid20 --labels poison:1.0 --policies strict:0.1 --audits uncertain --tag audits
 Options: --seed K, --limit N, --train-frac F, --eps E, --attacks ..., --variants raw feasible,
-         --labels ..., --policies ..., --no-progress, --tag T, --out PATH
+         --labels ..., --policies ..., --audits random|uncertain|mixed, --frame-span F,
+         --no-progress, --tag T, --out PATH
 Defaults come from the attack: and loop: sections of configs/base.yaml.
 Outputs results\\loop\\<data>_seed<k>[_<tag>].json and .csv (one row per run).
 """
 from __future__ import annotations
 
 import argparse
+import collections
 import copy
 import csv
 import datetime as dt
@@ -88,9 +122,11 @@ from src.utils.seeding import seed_everything  # noqa: E402
 
 LABELS = ("true", "poison:0.5", "poison:1.0")
 POLICIES = ("vanilla", "audit:0.1", "guard:0.1", "strict:0.1")
-KINDS = ("audit", "guard", "strict", "iwstrict")
-IW_CAP = 20        # iwstrict: at most this many copies of one audited benign flow
+KINDS = ("audit", "guard", "strict", "iwstrict", "consensus", "iwconsensus", "noiseaware")
+IW_KINDS = ("iwstrict", "iwconsensus")
+IW_CAP = 20        # iwstrict: at most this many copies of one audited benign flow (default cap)
 VARIANTS = ("raw", "feasible")
+AUDIT_MODES = ("random", "uncertain", "mixed")
 
 
 def _rate(spec: str, what: str) -> float:
@@ -104,28 +140,56 @@ def _rate(spec: str, what: str) -> float:
 
 
 def parse_labels(spec: str) -> float:
-    """'true' -> 0.0; 'poison:q' -> q (share of the attacker's flows labelled benign)."""
+    """Poison share q of a label source: 'true' -> 0.0; 'poison:q' -> q (the share of the
+    attacker's flows labelled benign); parts joined by '+' are combined (see parse_source)."""
+    return parse_source(spec)[0]
+
+
+def parse_source(spec: str):
+    """A label source -> (q, r): q = poisoned share of the attacker's flows, r = framing flows
+    per test flow. 'true', 'poison:q', 'frame:r' and '+' combinations such as
+    'poison:1.0+frame:0.05'."""
     if spec == "true":
-        return 0.0
-    if spec.startswith("poison:"):
-        return _rate(spec, "--labels value")
-    raise SystemExit(f"[loop] unknown --labels value {spec!r}: use true or poison:q (e.g. poison:0.5)")
+        return 0.0, 0.0
+    q, r = 0.0, 0.0
+    for part in spec.split("+"):
+        if part.startswith("poison:"):
+            q = _rate(part, "--labels value")
+        elif part.startswith("frame:"):
+            r = _rate(part, "--labels value")
+        elif part != "true":
+            raise SystemExit(f"[loop] unknown --labels value {spec!r}: use true, poison:q, frame:r or "
+                             "a '+' combination (e.g. poison:1.0+frame:0.05)")
+    return q, r
 
 
 def parse_policy(spec: str):
-    """'vanilla' -> ('vanilla', 0); 'audit:a' / 'guard:a' / 'strict:a' / 'iwstrict:a' -> (kind, a)."""
+    """'vanilla' -> ('vanilla', 0, cap); '<kind>:a' -> (kind, a, IW_CAP); 'iwstrict:a:c' and
+    'iwconsensus:a:c' -> (kind, a, c) with c = the copy cap."""
     if spec == "vanilla":
-        return "vanilla", 0.0
-    kind = spec.split(":", 1)[0]
-    if kind in KINDS and ":" in spec:
-        return kind, _rate(spec, "--policies value")
-    raise SystemExit(f"[loop] unknown --policies value {spec!r}: use vanilla, audit:a, guard:a, strict:a "
-                     "or iwstrict:a")
+        return "vanilla", 0.0, IW_CAP
+    parts = spec.split(":")
+    kind = parts[0]
+    if kind in KINDS and len(parts) in (2, 3):
+        a = _rate(f"{kind}:{parts[1]}", "--policies value")
+        cap = IW_CAP
+        if len(parts) == 3:
+            if kind not in IW_KINDS:
+                raise SystemExit(f"[loop] {spec!r}: only iwstrict and iwconsensus take a copy cap")
+            try:
+                cap = int(parts[2])
+            except ValueError:
+                cap = 0
+            if cap < 1:
+                raise SystemExit(f"[loop] {spec!r}: the copy cap must be a whole number >= 1")
+        return kind, a, cap
+    raise SystemExit(f"[loop] unknown --policies value {spec!r}: use vanilla, audit:a, guard:a, strict:a, "
+                     "iwstrict:a[:cap], consensus:a, iwconsensus:a[:cap] or noiseaware:a")
 
 
-def iw_copies(audit_rate: float) -> int:
-    """How many times iwstrict learns one audited benign flow: round(1/a), capped at IW_CAP."""
-    return max(1, min(IW_CAP, int(round(1.0 / audit_rate)))) if audit_rate > 0 else 1
+def iw_copies(audit_rate: float, cap: int = IW_CAP) -> int:
+    """How many times iwstrict learns one audited benign flow: round(1/a), capped at `cap`."""
+    return max(1, min(cap, int(round(1.0 / audit_rate)))) if audit_rate > 0 else 1
 
 
 def _mask(seed: int, salt: int, rate: float, n: int) -> np.ndarray:
@@ -135,22 +199,41 @@ def _mask(seed: int, salt: int, rate: float, n: int) -> np.ndarray:
 
 
 def replay(model: MABTSE, S, y, names, att, policy: str, audit_rate: float, flip, audit,
-           per_arm: bool, label: str, progress: bool) -> dict:
-    """One test-stream replay under one label source (flip mask) and update policy."""
+           per_arm: bool, label: str, progress: bool, cap: int = IW_CAP, frame=None,
+           audit_mode: str = "random", seed: int = 0) -> dict:
+    """One test-stream replay under one label source (flip mask) and update policy.
+
+    frame: optional mask of injected framing flows (labelled DDoS, the truth for bot traffic).
+    audit_mode: "random" uses the precomputed `audit` mask; "uncertain" audits the least
+    certain verdicts (target share audit_rate, online budget controller); "mixed" = the
+    precomputed mask at half the rate OR uncertainty at the other half (the caller passes the
+    half-rate mask)."""
     m = copy.deepcopy(model)
     learners = m.learners
     d0 = drift_counts(learners)
     n = len(y)
+    frame = np.zeros(n, dtype=bool) if frame is None else frame
     preds = np.zeros(n, dtype=int)
+    audited = np.zeros(n, dtype=bool)
     arm_preds = {a: np.zeros(n, dtype=int) for a in m.names} if per_arm else None
     sel = Counter()
     cnt = Counter()
+    unc_target = {"uncertain": audit_rate, "mixed": audit_rate / 2.0}.get(audit_mode, 0.0)
+    # Uncertainty audits: a budget of unc_target audits per flow (credit), spent on flows whose
+    # uncertainty is in the top unc_target share of the last 500 verdicts (threshold refreshed
+    # every 50 flows). Long-run audit rate = unc_target exactly; ties degrade to even spacing.
+    u_hist = collections.deque(maxlen=500)
+    thr, credit = 0.0, 0.0
+    n_ben_lab, n_ben_wrong = 0, 0                            # noiseaware: audited benign-labelled flows
+    coin = np.random.default_rng([int(seed), 17])            # noiseaware's Bernoulli draws
     it = range(n)
     if progress:
         it = tqdm(it, desc=label, unit="smp", leave=False)
     for i in it:
         x = to_dict(S[i], names)
-        p = m.predict_one(x)
+        # predict_proba_one + argmax == predict_one (same single selector draw): v13-identical.
+        proba = m.predict_proba_one(x)
+        p = max(proba, key=proba.get) if proba else None
         preds[i] = 0 if p is None else int(p)
         for a in m._last_selected:
             sel[a] += 1
@@ -161,57 +244,131 @@ def replay(model: MABTSE, S, y, names, att, policy: str, audit_rate: float, flip
         if policy == "frozen":
             continue
         y_true = int(y[i])
-        lab = 0 if (att[i] and flip[i]) else y_true          # poisoned label for attacker flows
+        if frame[i]:
+            lab = 1                                          # framing flow: bot traffic, labelled DDoS
+        else:
+            lab = 0 if (att[i] and flip[i]) else y_true     # poisoned label for attacker flows
         if policy == "vanilla":
             m.learn_one(x, lab)
             cnt["learn"] += 1
             cnt["selector_updates"] += 1
             cnt["poisoned_learned"] += int(lab != y_true)
+            cnt["frame_learned"] += int(frame[i])
             continue
-        if audit[i]:                                         # verified label: the truth
+        is_audit = bool(audit[i])
+        if unc_target > 0:
+            p1 = float(proba.get(1, 0.0)) if proba else 0.5
+            u = 1.0 - abs(2.0 * p1 - 1.0)                    # 1 = coin flip, 0 = certain
+            u_hist.append(u)
+            if len(u_hist) % 50 == 0 or len(u_hist) < 50:
+                thr = float(np.quantile(np.fromiter(u_hist, float), 1.0 - unc_target))
+            credit = min(credit + unc_target, 50.0)
+            if not is_audit and credit >= 1.0 and u >= thr:
+                credit -= 1.0
+                is_audit = True
+        audited[i] = is_audit
+        if is_audit:                                         # verified label: the truth
             m.learn_one(x, y_true, update_selector=True)
-            reps = iw_copies(audit_rate) if (policy == "iwstrict" and y_true == 0) else 1
+            reps = iw_copies(audit_rate, cap) if (policy in IW_KINDS and y_true == 0) else 1
             for _ in range(reps - 1):                        # iwstrict: the 1/a benign flows it stands for
                 m.learn_one(x, y_true, update_selector=False)
             cnt["audited"] += 1
             cnt["learn"] += reps
             cnt["selector_updates"] += 1
-        elif (policy == "guard" and lab == 0 and preds[i] == 1) or (policy in ("strict", "iwstrict") and lab == 0):
-            cnt["skipped"] += 1                              # unverified benign label: not applied
+            cnt["frame_learned"] += int(frame[i])
+            if lab == 0:
+                n_ben_lab += 1
+                n_ben_wrong += int(y_true == 1)
+            continue
+        if policy == "noiseaware" and lab == 0:
+            rho = (n_ben_wrong + 1.0) / (n_ben_lab + 2.0)
+            skip = coin.random() < rho
+        else:
+            skip = ((policy == "guard" and lab == 0 and preds[i] == 1)
+                    or (policy in ("strict", "iwstrict", "consensus", "iwconsensus") and lab == 0)
+                    or (policy in ("consensus", "iwconsensus") and lab == 1 and preds[i] == 0))
+        if skip:
+            cnt["skipped"] += 1                              # unverified label not applied
             cnt["poisoned_blocked"] += int(lab != y_true)
+            cnt["frame_blocked"] += int(frame[i])
         else:
             m.learn_one(x, lab, update_selector=False)
             cnt["learn"] += 1
             cnt["poisoned_learned"] += int(lab != y_true)
+            cnt["frame_learned"] += int(frame[i])
     drifts = {k: v - d0.get(k, 0) for k, v in drift_counts(learners).items()}
     post = {a: round(m.alpha[a] / (m.alpha[a] + m.beta[a]), 4) for a in m.names}
     return {"preds": preds, "arm_preds": arm_preds, "sel": sel, "counts": cnt,
-            "drifts": drifts, "posterior_mean": post, "names": list(m.names)}
+            "drifts": drifts, "posterior_mean": post, "names": list(m.names), "audited": audited}
 
 
-def score(out: dict, y: np.ndarray, att: np.ndarray) -> dict:
+def score(out: dict, y: np.ndarray, att: np.ndarray, frame=None, pos=None, frame_end=None) -> dict:
+    """Metrics on the GENUINE flows (framing flows excluded). pos: each row's position in the
+    original test stream (for the per-tenth curves); frame_end: where the framing campaign
+    stops, in original positions."""
     preds = out["preds"]
+    n = len(y)
+    keep = np.ones(n, dtype=bool) if frame is None else ~frame
+    pos = np.arange(n) if pos is None else pos
     bm = BinaryMetrics()
-    for yt, yp in zip(y, preds):
+    for yt, yp in zip(y[keep], preds[keep]):
         bm.update(int(yt), int(yp))
     r = dict(bm.as_dict())
-    r["asr"] = share(att, preds == 0)
-    tenths = np.array_split(np.arange(len(y)), 10)
-    r["asr_by_tenth"] = [share(att[t], preds[t] == 0) for t in tenths]
-    steps = max(1, len(y))
+    a_k = att & keep
+    ben = (y == 0) & keep
+    r["asr"] = share(a_k, preds == 0)
+    n_orig = int(pos[keep].max()) + 1 if keep.any() else 1
+    bounds = np.cumsum([len(c) for c in np.array_split(np.arange(n_orig), 10)])   # as v13's array_split
+    tenth = np.clip(np.searchsorted(bounds, pos, side="right"), 0, 9)
+    r["asr_by_tenth"] = [share(a_k & (tenth == k), preds == 0) for k in range(10)]
+    r["fpr_by_tenth"] = [share(ben & (tenth == k), preds == 1) for k in range(10)]
+    if frame is not None and frame.any() and frame_end is not None:
+        r["fpr_frame_window"] = share(ben & (pos < frame_end), preds == 1)
+        r["fpr_after_window"] = share(ben & (pos >= frame_end), preds == 1)
+        r["frame_flagged"] = share(frame, preds == 1)
+    steps = max(1, n)
     for a in out["names"]:
         r[f"sel_{a}"] = round(100.0 * out["sel"][a] / steps, 2)
     c = out["counts"]
-    for k in ("learn", "selector_updates", "audited", "skipped", "poisoned_learned", "poisoned_blocked"):
+    for k in ("learn", "selector_updates", "audited", "skipped", "poisoned_learned", "poisoned_blocked",
+              "frame_learned", "frame_blocked"):
         r[f"n_{k}"] = int(c.get(k, 0))
+    r["audited_attacker_share"] = share(a_k, out["audited"]) if "audited" in out else None
     r["drifts_total"] = int(sum(out["drifts"].values()))
     r["drifts"] = out["drifts"]
     r["posterior_mean"] = out["posterior_mean"]
     if out["arm_preds"] is not None:
-        ben = y == 0
-        r["arm_asr"] = {a: share(att, v == 0) for a, v in out["arm_preds"].items()}
+        r["arm_asr"] = {a: share(a_k, v == 0) for a, v in out["arm_preds"].items()}
         r["arm_fpr"] = {a: share(ben, v == 1) for a, v in out["arm_preds"].items()}
     return r
+
+
+def frame_stream(S_sc, y_te, att, S_ben, n_frame: int, span_end: int, seed: int, salt: int):
+    """Insert n_frame framing flows (rows of S_ben, sampled with replacement) at random positions
+    before original position span_end. Returns (S, y, att, frame, pos, src) where src maps each
+    row to its original test index (-1 for framing rows)."""
+    rng = np.random.default_rng([int(seed), int(salt), 23])
+    n_te = len(y_te)
+    at = np.sort(rng.integers(0, max(1, span_end), size=n_frame))       # insert before these positions
+    rows = rng.integers(0, len(S_ben), size=n_frame)
+    order_src, order_frame_row = [], []
+    k = 0
+    for i in range(n_te):
+        while k < n_frame and at[k] <= i:
+            order_src.append(-1)
+            order_frame_row.append(rows[k])
+            k += 1
+        order_src.append(i)
+        order_frame_row.append(-1)
+    src = np.asarray(order_src, dtype=int)
+    frame = src < 0
+    fr = np.asarray(order_frame_row, dtype=int)
+    S = np.where(frame[:, None], S_ben[np.clip(fr, 0, None)], S_sc[np.clip(src, 0, None)])
+    y = np.where(frame, 1, y_te[np.clip(src, 0, None)])
+    a = np.where(frame, False, att[np.clip(src, 0, None)])
+    # each framing row takes the original position it was inserted before
+    pos = np.where(frame, np.maximum.accumulate(np.where(frame, -1, src)) + 1, src)
+    return S, y, a, frame, pos, src
 
 
 def main() -> int:
@@ -226,7 +383,12 @@ def main() -> int:
     ap.add_argument("--variants", nargs="+", default=None, choices=VARIANTS,
                     help="which attack versions to test: raw and/or feasible (repaired)")
     ap.add_argument("--labels", nargs="+", default=None, help="true and/or poison:q")
-    ap.add_argument("--policies", nargs="+", default=None, help="vanilla, audit:a, guard:a, strict:a, iwstrict:a")
+    ap.add_argument("--policies", nargs="+", default=None,
+                    help="vanilla, audit:a, guard:a, strict:a, iwstrict:a[:cap], consensus:a, iwconsensus:a[:cap], noiseaware:a")
+    ap.add_argument("--audits", default=None, choices=AUDIT_MODES,
+                    help="how audited flows are chosen: random (default), uncertain or mixed")
+    ap.add_argument("--frame-span", type=float, default=None,
+                    help="share of the test stream during which framing flows are sent (default 0.5)")
     ap.add_argument("--no-progress", action="store_true")
     ap.add_argument("--tag", default=None, help="suffix for the default output name")
     ap.add_argument("--out", default=None)
@@ -248,8 +410,15 @@ def main() -> int:
     variants = args.variants or L.get("variants", ["feasible"])
     label_specs = list(args.labels or L.get("labels", list(LABELS)))
     policy_specs = list(args.policies or L.get("policies", list(POLICIES)))
-    q_of = {s: parse_labels(s) for s in label_specs}
+    src_of = {s: parse_source(s) for s in label_specs}
+    q_of = {s: v[0] for s, v in src_of.items()}
     pol_of = {s: parse_policy(s) for s in policy_specs}
+    audit_mode = args.audits or L.get("audits", "random")
+    if audit_mode not in AUDIT_MODES:
+        sys.exit(f"[loop] unknown audit mode {audit_mode!r}; use {', '.join(AUDIT_MODES)}")
+    frame_span = args.frame_span if args.frame_span is not None else float(L.get("frame_span", 0.5))
+    if not 0.0 < frame_span <= 1.0:
+        sys.exit("[loop] --frame-span must be in (0, 1]")
     sur_kind = A.get("surrogate", "mlp")
     progress = not args.no_progress
     seed_everything(seed)
@@ -284,22 +453,41 @@ def main() -> int:
 
     # 2. Replays: one frozen run per scenario (with per-learner verdicts), then every
     #    label source x policy. Masks are shared by all runs (paired comparison).
+    # Masks live in ORIGINAL test positions, so the attacker's flows get the same flips and
+    # audits in every run (paired); framing flows draw their own masks.
     flips = {s: _mask(seed, 7, q, n_te) for s, q in q_of.items()}
-    audits = {s: _mask(seed, 11, a, n_te) for s, (_, a) in pol_of.items()}
+    mask_rate = (lambda a: a / 2.0) if audit_mode == "mixed" else (lambda a: a)
+    audits = {s: (_mask(seed, 11, mask_rate(a), n_te) if audit_mode != "uncertain"
+                  else np.zeros(n_te, dtype=bool)) for s, (_, a, _) in pol_of.items()}
+    S_ben = S[:n_tr][y[:n_tr] == 0]           # what the framing bots replay: benign TRAINING flows
+    span_end = int(round(frame_span * n_te))
     rows_out = []
     for sc in scen:
         runs = [("frozen", "frozen")] + [(ls, ps) for ls in label_specs for ps in policy_specs]
         for ls, ps in runs:
-            kind, a = ("frozen", 0.0) if ps == "frozen" else pol_of[ps]
+            kind, a, cap = ("frozen", 0.0, IW_CAP) if ps == "frozen" else pol_of[ps]
             flip = np.zeros(n_te, dtype=bool) if ls == "frozen" else flips[ls]
             audit = np.zeros(n_te, dtype=bool) if ps == "frozen" else audits[ps]
+            r_frame = 0.0 if ls == "frozen" else src_of[ls][1]
+            S_run, y_run, att_run, frame, pos = sc["S"], y_te, att, None, None
+            if r_frame > 0 and len(S_ben):
+                n_frame = int(round(r_frame * n_te))
+                S_run, y_run, att_run, frame, pos, src = frame_stream(
+                    sc["S"], y_te, att, S_ben, n_frame, span_end, seed, salt=int(round(r_frame * 10000)))
+                fsalt = 19 + int(round(r_frame * 10000))
+                flip = np.where(frame, False, flip[np.clip(src, 0, None)])
+                audit = np.where(frame, _mask(seed, fsalt, mask_rate(a), len(src)) if audit_mode != "uncertain"
+                                 else False, audit[np.clip(src, 0, None)])
             t = time.perf_counter()
-            out = replay(model, sc["S"], y_te, names, att, kind, a, flip, audit,
+            out = replay(model, S_run, y_run, names, att_run, kind, a, flip, audit,
                          per_arm=(ps == "frozen"), label=f"{sc['scenario']} {ls} {ps}",
-                         progress=progress)
+                         progress=progress, cap=cap, frame=frame, audit_mode=audit_mode, seed=seed)
             r = {"scenario": sc["scenario"], "attack": sc["attack"], "variant": sc["variant"],
                  "learning": ls, "policy": ps, "poison_q": 0.0 if ls == "frozen" else q_of[ls],
-                 "audit_rate": a, **score(out, y_te, att)}
+                 "frame_rate": r_frame, "audit_rate": a, "audit_mode": audit_mode,
+                 "iw_cap": cap if kind in IW_KINDS else None,
+                 **score(out, y_run, att_run, frame=frame, pos=pos,
+                         frame_end=span_end if frame is not None else None)}
             r["seconds"] = round(time.perf_counter() - t, 1)
             rows_out.append(r)
             print(f"[loop] {sc['scenario']:<26} {ls:<11} {ps:<10} acc {r['accuracy']:6.2f}  "
@@ -332,13 +520,13 @@ def main() -> int:
         "n_features": len(names), "test_ddos_share": round(100 * float(y_te.mean()), 2),
         "settings": {"limit": limit, "train_frac": train_frac, "eps": eps, "attacks": attacks,
                      "variants": variants, "labels": label_specs, "policies": policy_specs,
-                     "surrogate": sur_kind},
+                     "surrogate": sur_kind, "audits": audit_mode, "frame_span": frame_span},
         "attacks": attack_info, "scenarios": rows_out,
         "versions": versions, "elapsed_s": round(time.perf_counter() - t_start, 1),
         "finished_at": dt.datetime.now().isoformat(timespec="seconds"),
     }
     json.dump(result, open(out_path, "w"), indent=2, default=str)
-    nested = ("asr_by_tenth", "drifts", "posterior_mean", "arm_asr", "arm_fpr")
+    nested = ("asr_by_tenth", "fpr_by_tenth", "drifts", "posterior_mean", "arm_asr", "arm_fpr")
     flat = [{k: v for k, v in r.items() if k not in nested} for r in rows_out]
     fields = list(dict.fromkeys(k for r in flat for k in r))
     with open(out_path.with_suffix(".csv"), "w", newline="", encoding="utf-8") as fh:

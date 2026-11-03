@@ -25,8 +25,16 @@ in under_attack.py. For one dataset and one seed:
     clean_miss and evasion_gain as under_attack.py does, plus whether the attack was "seen"
     in training.
 
-Limitation (stated in the paper): the attacker is not adaptive, i.e. it does not re-train its
-surrogate against the adversarially trained detector. This is an offline evaluation on public
+v14 adds ADAPTIVE attackers (--adaptive), each evaluated against every trained detector:
+       distill    the attacker labels its own data by querying the deployed detector and trains
+                  its surrogate on those verdicts (model extraction), then crafts repaired PGD
+       atsur      the attacker adversarially trains its own surrogate (clean + PGD examples
+                  against itself) before crafting repaired PGD, so its gradients follow robust
+                  directions (answers "both surrogates are plain MLPs")
+       hsj        label-only HopSkipJump (src/attacks/decision.py) against the frozen detector
+                  itself, on a sample of attacker flows, then repaired; success is reported per
+                  query budget (250 / 500 / 1,000 / 2,000 queries per flow)
+Without --adaptive the attacker is the non-adaptive transfer attacker of v13 (unchanged). This is an offline evaluation on public
 benchmark CSVs; it does not generate or send any network traffic.
 
 Usage (repo root, msaad environment active):
@@ -40,6 +48,7 @@ Outputs results\\advtrain\\<data>_seed<k>[_<tag>].json and .csv (one row per var
 from __future__ import annotations
 
 import argparse
+import copy
 import csv
 import datetime as dt
 import json
@@ -58,6 +67,7 @@ sys.path.insert(0, str(ROOT / "experiments"))
 
 from under_attack import ATTACKS, build_scenarios, load, parse_learning, run_stream, share  # noqa: E402
 from src.attacks.constraints import ConstraintSet  # noqa: E402
+from src.attacks.decision import hsja_linf  # noqa: E402
 from src.attacks.evasion import run_attack  # noqa: E402
 from src.attacks.surrogate import Surrogate  # noqa: E402
 from src.data.matrix import running_minmax, to_dict  # noqa: E402
@@ -136,6 +146,76 @@ def train_detector(S, y, n_tr, names, copies, cfg, seed, label, progress):
     return model, n_learn
 
 
+def adaptive_scenario(name, sur_x, S_te, X_te, R_te, y_te, cs, eps, A, seed):
+    """Repaired PGD on the attacker's test flows, crafted on an adaptive attacker's surrogate."""
+    rows = y_te == 1
+    S_adv = run_attack("pgd", sur_x, S_te, y_te, rows, eps, params=A.get("pgd"), seed=seed)
+    S_rep, _ = repair(S_adv, S_te, X_te, R_te, cs)
+    S_rep = np.where(rows[:, None], S_rep, S_te)
+    return {"scenario": f"{name}/attack_only/feasible", "attack": name, "perturb": "attack_only",
+            "variant": "feasible", "S": S_rep, "rows": rows}
+
+
+def hsj_eval(model, names, S, y, n_tr, S_te, X_te, R_te, y_te, cs, eps, n_flows, budget, seed):
+    """Label-only HopSkipJump against a frozen copy of the detector, on n_flows attacker flows
+    the detector currently catches, in two versions:
+      raw       queries are arbitrary points of the scaled feature space (the usual setting);
+                success is then re-checked after repairing the final point to valid traffic
+      feasible  every query is repaired to valid traffic before the detector sees it (the
+                attacker can only send real flows), so every success is a valid flow
+    Success is reported per query budget."""
+    q = copy.deepcopy(model)
+    rng = np.random.default_rng([seed, 41])
+
+    def verdicts(Xb, nanmask):
+        Xb = np.array(Xb, dtype=float)
+        Xb[:, nanmask] = np.nan
+        return np.array([0 if (p := q.predict_one(to_dict(r, names))) is None else int(p) for r in Xb])
+
+    def repaired(Xb, i):
+        k = len(Xb)
+        S_rep, _ = repair(np.asarray(Xb, float), np.repeat(np.nan_to_num(S_te[i])[None, :], k, 0),
+                          np.repeat(X_te[i][None, :], k, 0), np.repeat(R_te[i][None, :], k, 0), cs)
+        return S_rep
+
+    att_idx = np.flatnonzero(y_te == 1)
+    caught = [i for i in rng.permutation(att_idx)[: 4 * n_flows]
+              if (q.predict_one(to_dict(S_te[i], names)) or 0) == 1][:n_flows]
+    ben0 = np.nan_to_num(S[:n_tr][y[:n_tr] == 0])
+    budgets = [b for b in (250, 500, 1000, 2000) if b <= budget] or [budget]
+    out = {"n_flows": len(caught)}
+    for space in ("raw", "feasible"):
+        first, final, used = [], [], []
+        for i in caught:
+            x0 = S_te[i]
+            nanmask = np.isnan(x0)
+            if space == "raw":
+                decide = lambda Xb, nm=nanmask: verdicts(Xb, nm)  # noqa: E731
+            else:
+                decide = lambda Xb, nm=nanmask, ii=i: verdicts(repaired(Xb, ii), nm)  # noqa: E731
+            order = np.argsort(np.max(np.abs(ben0 - np.nan_to_num(x0)), axis=1))[:10]
+            res = hsja_linf(decide, x0, ben0[order], eps, max_queries=budget,
+                            rng=np.random.default_rng([seed, 43, int(i)]), movable=~nanmask)
+            used.append(res["queries"])
+            first.append(res["first_success_query"] if res["success"] else None)
+            if res["success"] and space == "raw":          # does the raw-space evasion survive repair?
+                xr = repaired(res["x"][None, :], i)[0]
+                final.append(int(verdicts(xr[None, :], nanmask)[0] == 0))
+            else:
+                final.append(int(res["success"]))
+        n_ok = max(len(caught), 1)
+        by_b = {str(b): round(100.0 * sum(1 for f in first if f is not None and f <= b) / n_ok, 2) for b in budgets}
+        out[f"asr_{space}_by_budget"] = by_b
+        out[f"asr_{space}"] = by_b[str(budgets[-1])]
+        out[f"median_queries_{space}"] = int(np.median(used)) if used else None
+        if space == "raw":
+            out["asr_raw_after_repair"] = round(100.0 * sum(final) / n_ok, 2)
+    out["asr"] = out["asr_feasible"]          # the realistic attacker: valid traffic only
+    out["asr_by_budget"] = out["asr_feasible_by_budget"]
+    out["median_queries"] = out["median_queries_feasible"]
+    return out
+
+
 def wants(sc: dict, learning: str) -> bool:
     """Frozen covers every scenario; label modes that learn (as slow as online) cover clean and
     the repaired PGD and C&W attacks (BIM behaves like PGD; FGSM is the weakest attack)."""
@@ -154,6 +234,10 @@ def main() -> int:
     ap.add_argument("--learning", nargs="+", default=None,
                     help="label modes for the test stream: frozen, online, delay:D (default frozen delay:1000)")
     ap.add_argument("--copies", default=None, choices=["feasible", "raw"])
+    ap.add_argument("--adaptive", nargs="+", default=None, choices=["distill", "atsur", "hsj"],
+                    help="v14 adaptive attackers (default: none, the v13 transfer attacker only)")
+    ap.add_argument("--hsj-flows", type=int, default=None, help="attacker flows attacked by HopSkipJump (default 100)")
+    ap.add_argument("--hsj-queries", type=int, default=None, help="query budget per flow (default 2000)")
     ap.add_argument("--tag", default=None)
     ap.add_argument("--no-progress", action="store_true")
     ap.add_argument("--out", default=None)
@@ -176,6 +260,9 @@ def main() -> int:
     variants = list(args.variants or T.get("variants", list(VARIANTS)))
     learning_modes = list(args.learning or T.get("learning", list(LEARNING)))
     kind = args.copies or T.get("copies", "feasible")
+    adaptive = list(args.adaptive if args.adaptive is not None else T.get("adaptive", []))
+    hsj_n = args.hsj_flows or int(T.get("hsj_flows", 100))
+    hsj_q = args.hsj_queries or int(T.get("hsj_queries", 2000))
     off = int(T.get("defender_seed_offset", 1000))
     for v in variants:
         parse_variant(v)
@@ -208,6 +295,16 @@ def main() -> int:
     # 3. The defender's surrogate (its own seed) for crafting the training copies.
     sur_d = Surrogate(kind=sur_kind, seed=seed + off).fit(S[:n_tr], y[:n_tr])
 
+    # 3b. v14: an adversarially trained attacker surrogate (independent of the detector).
+    adapt_scen = []
+    if "atsur" in adaptive:
+        tr_att = y[:n_tr] == 1
+        adv_tr = run_attack("pgd", sur, S[:n_tr], y[:n_tr], tr_att, eps, params=A.get("pgd"), seed=seed + 7)
+        S_aug = np.vstack([S[:n_tr], adv_tr[tr_att]])
+        y_aug = np.concatenate([y[:n_tr], np.ones(int(tr_att.sum()), dtype=int)])
+        sur_at = Surrogate(kind=sur_kind, seed=seed).fit(S_aug, y_aug)
+        adapt_scen.append(adaptive_scenario("pgd-atsur", sur_at, S_te, X_te, R_te, y_te, cs, eps, A, seed))
+
     rows_out, train_info = [], {}
     att = y_te == 1
     for v in variants:
@@ -225,8 +322,26 @@ def main() -> int:
               + "".join(f"; {a}: fools own surrogate {p['fools_defender_surrogate']}%"
                         for a, p in cinfo.get("per_attack", {}).items()), flush=True)
 
+        # v14: detector-specific adaptive attackers (they query this detector).
+        v_scen = list(adapt_scen)
+        if "distill" in adaptive:
+            q = copy.deepcopy(model)
+            lab_hat = np.array([0 if (p := q.predict_one(to_dict(S[i], names))) is None else int(p)
+                                for i in range(n_tr)])
+            if len(np.unique(lab_hat)) == 2:
+                sur_x = Surrogate(kind=sur_kind, seed=seed).fit(S[:n_tr], lab_hat)
+                v_scen.append(adaptive_scenario("pgd-distill", sur_x, S_te, X_te, R_te, y_te, cs, eps, A, seed))
+        if "hsj" in adaptive:
+            r = hsj_eval(model, names, S, y, n_tr, S_te, X_te, R_te, y_te, cs, eps, hsj_n, hsj_q, seed)
+            r.update({"at": v, "scenario": "hsj/attack_only/feasible", "attack": "hsj", "variant": "feasible",
+                      "learning": "frozen", "seen": False})
+            rows_out.append(r)
+            print(f"[advtrain] {v:<20} hsj (label-only, {r['n_flows']} flows): raw-space {r['asr_raw_by_budget']} "
+                  f"(valid after repair {r['asr_raw_after_repair']}%); valid-traffic queries "
+                  f"{r['asr_feasible_by_budget']}", flush=True)
+
         clean_preds = {}
-        for sc in scen:
+        for sc in scen + v_scen:
             for learning in learning_modes:
                 if not wants(sc, learning):
                     continue
@@ -275,10 +390,11 @@ def main() -> int:
         "finished_at": dt.datetime.now().isoformat(timespec="seconds"),
     }
     json.dump(result, open(out, "w"), indent=2, default=str)
+    flat = [{k: (json.dumps(v) if isinstance(v, dict) else v) for k, v in r.items()} for r in rows_out]
     with open(out.with_suffix(".csv"), "w", newline="", encoding="utf-8") as fh:
-        w = csv.DictWriter(fh, fieldnames=list(rows_out[0].keys()))
+        w = csv.DictWriter(fh, fieldnames=list(dict.fromkeys(k for r in flat for k in r)))
         w.writeheader()
-        w.writerows(rows_out)
+        w.writerows(flat)
     print(f"\n[advtrain] done in {result['elapsed_s'] / 60:.1f} min; wrote {out} and {out.with_suffix('.csv').name}")
     return 0
 

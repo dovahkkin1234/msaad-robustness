@@ -1,0 +1,16 @@
+[loaders] file order, stride sampling: 334,569 rows pass the filter; taking 30,000 evenly spaced (about 1 in 11.2)
+[loaders] skipping non-numeric or NaN/inf values in 2 column(s), e.g. ['Flow_Byts/s', 'Flow_Pkts/s']
+[loop] iotid20: 30,000 rows x 79 features; train 20,100 / test 9,900 (test DDoS share 87.6%), seed 3
+[attack] pgd/attack_only: surrogate fooled on 65.62% of perturbed rows; infeasible 100.0%
+[loop] clean                      frozen      frozen     acc  99.62  fpr   2.36  asr    0.1  KNN sel    0.0  skipped     0  (87.6s)
+[loop] clean                      true        vanilla    acc  99.57  fpr   2.93  asr   0.08  KNN sel    0.0  skipped     0  (267.5s)
+[loop] clean                      true        strict:0.1 acc  99.60  fpr   3.10  asr   0.02  KNN sel    0.0  skipped  1088  (203.5s)
+[loop] clean                      true        iwstrict:0.1 acc  99.64  fpr   2.85  asr   0.01  KNN sel    0.0  skipped  1088  (262.3s)
+[loop] clean                      true        consensus:0.1 acc  99.53  fpr   3.42  asr   0.06  KNN sel    0.0  skipped  1093  (233.0s)
+[loop] clean                      true        iwconsensus:0.1 acc  99.60  fpr   3.10  asr   0.02  KNN sel    0.0  skipped  1090  (260.1s)
+[loop] clean                      frame:0.02  vanilla    acc  98.35  fpr  11.74  asr   0.22  KNN sel    0.0  skipped     0  (269.4s)
+[loop] clean                      frame:0.02  strict:0.1 acc  92.77  fpr  58.27  asr   0.01  KNN sel    0.0  skipped  1088  (237.1s)
+[loop] clean                      frame:0.02  iwstrict:0.1 acc  94.29  fpr  45.31  asr    0.1  KNN sel    0.0  skipped  1088  (266.0s)
+[loop] clean                      frame:0.02  consensus:0.1 acc  98.49  fpr  12.06  asr   0.01  KNN sel    0.0  skipped  1233  (197.9s)
+[loop] clean                      frame:0.02  iwconsensus:0.1 acc  99.47  fpr   4.07  asr   0.02  KNN sel    0.0  skipped  1243  (176.8s)
+[loop] clean                      frame:0.1   vanilla    acc  94.87  fpr  40.99  asr   0.06  KNN sel    0.0  skipped     0  (155.0s)
