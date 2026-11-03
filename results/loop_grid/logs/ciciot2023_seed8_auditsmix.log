@@ -1,0 +1,15 @@
+[loaders] file order, stride sampling: 883,690 rows pass the filter; taking 30,000 evenly spaced (about 1 in 29.5)
+[loop] ciciot2023: 30,000 rows x 46 features; train 20,100 / test 9,900 (test DDoS share 96.6%), seed 8
+[attack] pgd/attack_only: surrogate fooled on 5.31% of perturbed rows; infeasible 100.0%
+[loop] clean                      frozen      frozen     acc  99.72  fpr   4.50  asr   0.14  KNN sel    0.0  skipped     0  (14.0s)
+[loop] clean                      true        strict:0.1 acc  99.74  fpr   4.20  asr   0.13  KNN sel    0.0  skipped    14  (50.3s)
+[loop] clean                      true        iwstrict:0.1 acc  99.83  fpr   0.90  asr   0.15  KNN sel    0.0  skipped   148  (55.7s)
+[loop] clean                      poison:1.0  strict:0.1 acc  99.70  fpr   3.00  asr   0.21  KNN sel    0.0  skipped  8951  (9.2s)
+[loop] clean                      poison:1.0  iwstrict:0.1 acc  99.79  fpr   1.20  asr   0.18  KNN sel    0.0  skipped  8982  (15.0s)
+[loop] pgd/attack_only/feasible   frozen      frozen     acc   9.62  fpr   4.50  asr  93.37  KNN sel    0.0  skipped     0  (17.8s)
+[loop] pgd/attack_only/feasible   true        strict:0.1 acc  99.86  fpr   2.10  asr   0.07  KNN sel    0.0  skipped    58  (51.1s)
+[loop] pgd/attack_only/feasible   true        iwstrict:0.1 acc  99.92  fpr   0.00  asr   0.08  KNN sel    0.0  skipped   166  (52.8s)
+[loop] pgd/attack_only/feasible   poison:1.0  strict:0.1 acc  99.46  fpr   0.90  asr   0.52  KNN sel    0.0  skipped  9094  (9.3s)
+[loop] pgd/attack_only/feasible   poison:1.0  iwstrict:0.1 acc  99.43  fpr   0.90  asr   0.55  KNN sel    0.0  skipped  8958  (14.4s)
+
+[loop] done in 6.7 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\loop_grid\ciciot2023_seed8_auditsmix.json and ciciot2023_seed8_auditsmix.csv

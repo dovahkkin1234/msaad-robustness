@@ -1,0 +1,16 @@
+[loaders] file order, stride sampling: 334,569 rows pass the filter; taking 30,000 evenly spaced (about 1 in 11.2)
+[loaders] skipping non-numeric or NaN/inf values in 2 column(s), e.g. ['Flow_Byts/s', 'Flow_Pkts/s']
+[loop] iotid20: 30,000 rows x 79 features; train 20,100 / test 9,900 (test DDoS share 87.6%), seed 3
+[attack] pgd/attack_only: surrogate fooled on 65.62% of perturbed rows; infeasible 100.0%
+[loop] clean                      frozen      frozen     acc  99.62  fpr   2.36  asr    0.1  KNN sel    0.0  skipped     0  (26.0s)
+[loop] clean                      true        strict:0.1 acc  99.65  fpr   2.69  asr   0.02  KNN sel    0.0  skipped   909  (80.9s)
+[loop] clean                      true        iwstrict:0.1 acc  99.05  fpr   3.91  asr   0.53  KNN sel    0.0  skipped   967  (95.2s)
+[loop] clean                      poison:1.0  strict:0.1 acc  99.46  fpr   3.59  asr    0.1  KNN sel    0.0  skipped  8909  (16.0s)
+[loop] clean                      poison:1.0  iwstrict:0.1 acc  98.59  fpr   3.26  asr   1.15  KNN sel    0.0  skipped  8929  (30.8s)
+[loop] pgd/attack_only/feasible   frozen      frozen     acc  85.67  fpr   2.36  asr  16.03  KNN sel    0.0  skipped     0  (27.6s)
+[loop] pgd/attack_only/feasible   true        strict:0.1 acc  99.76  fpr   1.55  asr   0.06  KNN sel    0.0  skipped   897  (75.1s)
+[loop] pgd/attack_only/feasible   true        iwstrict:0.1 acc  99.83  fpr   0.57  asr   0.12  KNN sel    0.0  skipped   993  (86.6s)
+[loop] pgd/attack_only/feasible   poison:1.0  strict:0.1 acc  99.63  fpr   0.98  asr   0.29  KNN sel    0.0  skipped  8992  (16.6s)
+[loop] pgd/attack_only/feasible   poison:1.0  iwstrict:0.1 acc  99.62  fpr   0.57  asr   0.36  KNN sel    0.0  skipped  8954  (29.8s)
+
+[loop] done in 11.1 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\loop_grid\iotid20_seed3_auditsmix.json and iotid20_seed3_auditsmix.csv
