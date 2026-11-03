@@ -1,0 +1,11 @@
+[loaders] file order, stride sampling: 334,569 rows pass the filter; taking 30,000 evenly spaced (about 1 in 11.2)
+[loaders] skipping non-numeric or NaN/inf values in 2 column(s), e.g. ['Flow_Byts/s', 'Flow_Pkts/s']
+[loop] iotid20: 30,000 rows x 79 features; train 20,100 / test 9,900 (test DDoS share 87.6%), seed 13
+[attack] pgd/attack_only: surrogate fooled on 46.49% of perturbed rows; infeasible 100.0%
+[loop] clean                      frozen      frozen     acc  99.54  fpr   2.93  asr   0.12  KNN sel    0.0  skipped     0  (25.4s)
+[loop] clean                      true        strict:0.1 acc  99.51  fpr   3.91  asr   0.01  KNN sel    0.0  skipped  1108  (67.7s)
+[loop] clean                      true        noiseaware:0.1 acc  99.59  fpr   3.10  asr   0.03  KNN sel    0.0  skipped    27  (77.9s)
+[loop] clean                      true        strict:0.05 acc  99.51  fpr   3.83  asr   0.02  KNN sel    0.0  skipped  1173  (68.1s)
+[loop] clean                      true        iwstrict:0.05:5 acc  99.49  fpr   3.75  asr   0.05  KNN sel    0.0  skipped  1173  (70.5s)
+[loop] clean                      true        iwstrict:0.05:10 acc  99.51  fpr   3.75  asr   0.03  KNN sel    0.0  skipped  1173  (73.7s)
+[loop] clean                      true        strict:0.02 acc  99.46  fpr   4.16  asr   0.02  KNN sel    0.0  skipped  1204  (67.4s)

@@ -1,0 +1,26 @@
+[loaders] time window 2017-07-07 20:31:00 -> 2017-07-07 21:26:00: keeping 129,401 of 386,556 rows
+[loaders] time order: 129,401 rows pass the filter, sorted by Timestamp (2017-07-07 -> 2017-07-07); replaying 30,000 evenly spaced
+[loaders] skipping non-numeric or NaN/inf values in 6 column(s), e.g. ['Flow Bytes/s', 'Flow IAT Max', 'Flow IAT Mean', 'Flow IAT Min', 'Flow IAT Std', 'Flow Packets/s']
+[cascade] cicids2017: 30,000 rows x 79 features; train 20,100 / test 9,900; seed 6; graph stage on
+[cascade] 972 hosts; timestamps in time order
+[cascade] thresholds (added false alarms <= 1% on calibration benign flows): p2 0.003, gnn 0.873, ctx 0.240; params {'stage2_params': 7233, 'stage3_gnn_params': 96337, 'stage3_gnn_seconds': 26.2, 'stage3_ctx_params': 96209, 'stage3_ctx_seconds': 16.0}
+[attack] pgd/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 100.0%
+[attack] cw/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 99.95%
+[cascade] clean                                  frozen                           S1 asr   0.05 fpr   0.21 | S1+S2+S3:gnn_drift asr    0.0 fpr   8.96 | caught  100.0 | drift cover 95%  (26.9s)
+[cascade] clean                                  delay:1000|true|vanilla          S1 asr   0.05 fpr   0.12 | S1+S2+S3:gnn_drift asr    0.0 fpr   0.78 | caught  100.0 | drift cover 95%  (369.1s)
+[cascade] clean                                  delay:1000|poison:1.0|vanilla    S1 asr  86.94 fpr    0.0 | S1+S2+S3:gnn_drift asr  84.33 fpr    0.0 | caught    3.0 | drift cover 95%  (303.4s)
+[cascade] clean                                  delay:1000|poison:1.0|strict:0.1 S1 asr   0.05 fpr   0.16 | S1+S2+S3:gnn_drift asr    0.0 fpr   0.62 | caught  100.0 | drift cover 95%  (79.2s)
+[cascade] pgd/attack_only                        frozen                           S1 asr  29.51 fpr   0.21 | S1+S2+S3:gnn_drift asr    0.4 fpr   8.96 | caught  98.64 | drift cover 95%  (34.4s)
+[cascade] pgd/attack_only/feasible               frozen                           S1 asr  29.51 fpr   0.21 | S1+S2+S3:gnn_drift asr    0.4 fpr   8.96 | caught  98.64 | drift cover 95%  (34.4s)
+[cascade] pgd/attack_only/feasible               delay:1000|true|vanilla          S1 asr   3.58 fpr   0.21 | S1+S2+S3:gnn_drift asr    0.0 fpr   4.19 | caught  100.0 | drift cover 95%  (369.9s)
+[cascade] pgd/attack_only/feasible               delay:1000|poison:1.0|vanilla    S1 asr  90.57 fpr    0.0 | S1+S2+S3:gnn_drift asr  84.88 fpr   0.04 | caught   6.28 | drift cover 95%  (284.2s)
+[cascade] pgd/attack_only/feasible               delay:1000|poison:1.0|strict:0.1 S1 asr   3.68 fpr   0.16 | S1+S2+S3:gnn_drift asr    0.0 fpr  30.92 | caught  100.0 | drift cover 95%  (88.2s)
+[cascade] cw/attack_only                         frozen                           S1 asr   5.29 fpr   0.21 | S1+S2+S3:gnn_drift asr    0.0 fpr   8.96 | caught  100.0 | drift cover 95%  (33.0s)
+[cascade] cw/attack_only/feasible                frozen                           S1 asr   4.65 fpr   0.21 | S1+S2+S3:gnn_drift asr    0.0 fpr   8.96 | caught  100.0 | drift cover 95%  (33.5s)
+[cascade] cw/attack_only/feasible                delay:1000|true|vanilla          S1 asr   0.51 fpr   0.16 | S1+S2+S3:gnn_drift asr    0.0 fpr   1.97 | caught  100.0 | drift cover 95%  (376.2s)
+[cascade] cw/attack_only/feasible                delay:1000|poison:1.0|vanilla    S1 asr  87.51 fpr    0.0 | S1+S2+S3:gnn_drift asr  84.33 fpr    0.0 | caught   3.63 | drift cover 95%  (351.5s)
+[cascade] cw/attack_only/feasible                delay:1000|poison:1.0|strict:0.1 S1 asr   0.52 fpr   0.33 | S1+S2+S3:gnn_drift asr    0.0 fpr   2.14 | caught  100.0 | drift cover 95%  (90.6s)
+[cascade] pgd/attack_only/feasible/spoof:10      frozen                           S1 asr  29.51 fpr   0.21 | S1+S2+S3:gnn_drift asr   1.14 fpr   8.96 | caught  96.14 | drift cover 93%  (35.5s)
+[cascade] pgd/attack_only/feasible/thin:0.25     frozen                           S1 asr  28.22 fpr   0.21 | S1+S2+S3:gnn_drift asr    0.0 fpr  12.05 | caught  100.0 | drift cover 94%  (17.1s)
+
+[cascade] done in 55.8 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\cascade_grid\cicids2017_seed6_s15.json and cicids2017_seed6_s15.csv
