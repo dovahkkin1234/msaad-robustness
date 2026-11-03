@@ -94,6 +94,15 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results`: grid_runs.jsonl (changed)
   - `results/attack_grid`: 30 new CSV; 30 new JSON; 30 new log; summary_attack_s15.csv (new)
 
+### 2026-11-03 05:47 (UTC+05:30) - radp grid: iotid20, ciciot2023 x seeds 1, 2, 3, 4, 5
+
+- **Command:** `python experiments\run_grid.py --exp radp --data iotid20 ciciot2023 --seeds 1 2 3 4 5 --jobs 6 --push`
+- **Runs:** 4 ok, 0 failed, 6 already done; 17.2 min (2026-11-03 05:29:52 to 2026-11-03 05:47:04)
+- **Code version:** 4676ae2
+- **Results:**
+  - `results`: grid_runs.jsonl (changed)
+  - `results/radp_grid`: 4 new CSV; 4 new JSON; 4 new log; summary_radp.csv (changed)
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->
@@ -252,6 +261,10 @@ Reconstructed from the result files and the project notes; times are when the ru
 | 2026-11-03 05:29:22 | attack grid | ciciot2023 | 14 | s15 | 30,000 | 8.8 | `results/attack_grid/ciciot2023_seed14_s15.json` |
 | 2026-11-03 05:29:41 | attack grid | ciciot2023 | 13 | s15 | 30,000 | 9.2 | `results/attack_grid/ciciot2023_seed13_s15.json` |
 | 2026-11-03 05:29:48 | attack grid | ciciot2023 | 15 | s15 | 30,000 | 8.6 | `results/attack_grid/ciciot2023_seed15_s15.json` |
+| 2026-11-03 05:38:16 | RADP grid | ciciot2023 | 5 |  | 30,000 | 8.4 | `results/radp_grid/ciciot2023_seed5.json` |
+| 2026-11-03 05:38:23 | RADP grid | ciciot2023 | 4 |  | 30,000 | 8.5 | `results/radp_grid/ciciot2023_seed4.json` |
+| 2026-11-03 05:46:08 | RADP grid | iotid20 | 4 |  | 30,000 | 16.2 | `results/radp_grid/iotid20_seed4.json` |
+| 2026-11-03 05:47:04 | RADP grid | iotid20 | 5 |  | 30,000 | 17.2 | `results/radp_grid/iotid20_seed5.json` |
 
 Dataset reports: `results/inspect_IoT_Network_Intrusion_Dataset.txt`, `results/inspect_part-00000.txt`
 <!-- history:end -->
