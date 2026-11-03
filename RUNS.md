@@ -177,6 +177,15 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results`: grid_runs.jsonl (changed)
   - `results/loop_grid`: 3 changed log; 3 new CSV; 3 new JSON; summary_loop_s15.csv (changed)
 
+### 2026-11-03 22:26 (UTC+05:30) - advtrain grid [s15]: cicids2017 x seeds 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+
+- **Command:** `python experiments\run_grid.py --exp advtrain --data cicids2017 --jobs 3 --tag s15 --push --seeds 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 --variants none at:pgd`
+- **Runs:** 15 ok, 0 failed; 64.2 min (2026-11-03 21:22:20 to 2026-11-03 22:26:33)
+- **Code version:** a730a9d
+- **Results:**
+  - `results`: grid_runs.jsonl (changed)
+  - `results/advtrain_grid`: 15 new CSV; 15 new JSON; 15 new log; summary_advtrain_s15.csv (changed)
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->
@@ -499,6 +508,21 @@ Reconstructed from the result files and the project notes; times are when the ru
 | 2026-11-03 21:20:27 | loop grid | cicids2017 | 13 | s15 | 30,000 | 50.6 | `results/loop_grid/cicids2017_seed13_s15.json` |
 | 2026-11-03 21:21:38 | loop grid | cicids2017 | 14 | s15 | 30,000 | 51.1 | `results/loop_grid/cicids2017_seed14_s15.json` |
 | 2026-11-03 21:22:15 | loop grid | cicids2017 | 15 | s15 | 30,000 | 51.2 | `results/loop_grid/cicids2017_seed15_s15.json` |
+| 2026-11-03 21:35:08 | advtrain_grid | cicids2017 | 1 | s15 | 30,000 | 12.8 | `results/advtrain_grid/cicids2017_seed1_s15.json` |
+| 2026-11-03 21:35:11 | advtrain_grid | cicids2017 | 2 | s15 | 30,000 | 12.8 | `results/advtrain_grid/cicids2017_seed2_s15.json` |
+| 2026-11-03 21:35:16 | advtrain_grid | cicids2017 | 3 | s15 | 30,000 | 12.9 | `results/advtrain_grid/cicids2017_seed3_s15.json` |
+| 2026-11-03 21:47:46 | advtrain_grid | cicids2017 | 4 | s15 | 30,000 | 12.6 | `results/advtrain_grid/cicids2017_seed4_s15.json` |
+| 2026-11-03 21:47:59 | advtrain_grid | cicids2017 | 5 | s15 | 30,000 | 12.8 | `results/advtrain_grid/cicids2017_seed5_s15.json` |
+| 2026-11-03 21:48:05 | advtrain_grid | cicids2017 | 6 | s15 | 30,000 | 12.8 | `results/advtrain_grid/cicids2017_seed6_s15.json` |
+| 2026-11-03 22:00:40 | advtrain_grid | cicids2017 | 7 | s15 | 30,000 | 12.9 | `results/advtrain_grid/cicids2017_seed7_s15.json` |
+| 2026-11-03 22:00:42 | advtrain_grid | cicids2017 | 8 | s15 | 30,000 | 12.7 | `results/advtrain_grid/cicids2017_seed8_s15.json` |
+| 2026-11-03 22:00:49 | advtrain_grid | cicids2017 | 9 | s15 | 30,000 | 12.7 | `results/advtrain_grid/cicids2017_seed9_s15.json` |
+| 2026-11-03 22:13:24 | advtrain_grid | cicids2017 | 10 | s15 | 30,000 | 12.7 | `results/advtrain_grid/cicids2017_seed10_s15.json` |
+| 2026-11-03 22:13:35 | advtrain_grid | cicids2017 | 12 | s15 | 30,000 | 12.7 | `results/advtrain_grid/cicids2017_seed12_s15.json` |
+| 2026-11-03 22:13:36 | advtrain_grid | cicids2017 | 11 | s15 | 30,000 | 12.9 | `results/advtrain_grid/cicids2017_seed11_s15.json` |
+| 2026-11-03 22:26:09 | advtrain_grid | cicids2017 | 13 | s15 | 30,000 | 12.7 | `results/advtrain_grid/cicids2017_seed13_s15.json` |
+| 2026-11-03 22:26:27 | advtrain_grid | cicids2017 | 15 | s15 | 30,000 | 12.8 | `results/advtrain_grid/cicids2017_seed15_s15.json` |
+| 2026-11-03 22:26:32 | advtrain_grid | cicids2017 | 14 | s15 | 30,000 | 12.9 | `results/advtrain_grid/cicids2017_seed14_s15.json` |
 
 Dataset reports: `results/inspect_IoT_Network_Intrusion_Dataset.txt`, `results/inspect_friday.txt`, `results/inspect_part-00000.txt`
 <!-- history:end -->
