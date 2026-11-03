@@ -19,3 +19,17 @@
 [loop] pgd/attack_only/feasible   frozen      frozen     acc  26.31  fpr   3.00  asr  76.15  KNN sel    0.0  skipped     0  (18.9s)
 [loop] pgd/attack_only/feasible   true        strict:0.1 acc  99.23  fpr  21.32  asr   0.05  KNN sel    0.0  skipped   299  (45.1s)
 [loop] pgd/attack_only/feasible   true        noiseaware:0.1 acc  99.80  fpr   4.20  asr   0.06  KNN sel    0.0  skipped    30  (46.7s)
+[loop] pgd/attack_only/feasible   true        strict:0.05 acc  99.10  fpr  24.92  asr   0.06  KNN sel    0.0  skipped   320  (39.6s)
+[loop] pgd/attack_only/feasible   true        iwstrict:0.05:5 acc  99.57  fpr  11.11  asr   0.06  KNN sel    0.0  skipped   320  (38.6s)
+[loop] pgd/attack_only/feasible   true        iwstrict:0.05:10 acc  99.41  fpr  15.62  asr   0.06  KNN sel    0.0  skipped   320  (38.1s)
+[loop] pgd/attack_only/feasible   true        strict:0.02 acc  99.19  fpr  22.52  asr   0.05  KNN sel    0.0  skipped   326  (37.9s)
+[loop] pgd/attack_only/feasible   true        iwstrict:0.02:10 acc  99.49  fpr  13.21  asr   0.06  KNN sel    0.0  skipped   326  (37.8s)
+[loop] pgd/attack_only/feasible   poison:1.0  strict:0.1 acc  99.63  fpr   3.00  asr   0.28  KNN sel    0.0  skipped  8902  (7.9s)
+[loop] pgd/attack_only/feasible   poison:1.0  noiseaware:0.1 acc  96.36  fpr   3.60  asr   3.64  KNN sel    0.0  skipped  8570  (9.7s)
+[loop] pgd/attack_only/feasible   poison:1.0  strict:0.05 acc  98.95  fpr   7.51  asr   0.83  KNN sel    0.0  skipped  9393  (6.1s)
+[loop] pgd/attack_only/feasible   poison:1.0  iwstrict:0.05:5 acc  99.13  fpr   2.70  asr    0.8  KNN sel    0.0  skipped  9393  (6.3s)
+[loop] pgd/attack_only/feasible   poison:1.0  iwstrict:0.05:10 acc  99.13  fpr   3.00  asr   0.79  KNN sel    0.0  skipped  9393  (6.7s)
+[loop] pgd/attack_only/feasible   poison:1.0  strict:0.02 acc  98.12  fpr   4.80  asr   1.78  KNN sel    0.0  skipped  9695  (5.2s)
+[loop] pgd/attack_only/feasible   poison:1.0  iwstrict:0.02:10 acc  98.27  fpr   3.90  asr   1.65  KNN sel    0.0  skipped  9695  (5.6s)
+
+[loop] done in 14.3 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\loop_grid\ciciot2023_seed3_lowbudget.json and ciciot2023_seed3_lowbudget.csv

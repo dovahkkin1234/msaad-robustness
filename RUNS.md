@@ -196,6 +196,15 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results/cascade_grid`: 15 new CSV; 15 new JSON; 15 new log; summary_cascade_s15.csv (changed)
   - `results/loop_grid`: 12 new CSV; 12 new JSON; 18 new log
 
+### 2026-11-04 01:57 (UTC+05:30) - loop grid [lowbudget]: iotid20, ciciot2023 x seeds 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+
+- **Command:** `python experiments\run_grid.py --exp loop --data iotid20 ciciot2023 --seeds 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 --jobs 6 --tag lowbudget --labels true poison:1.0 --policies strict:0.1 noiseaware:0.1 strict:0.05 iwstrict:0.05:5 iwstrict:0.05:10 strict:0.02 iwstrict:0.02:10 --push`
+- **Runs:** 30 ok, 0 failed; 203.8 min (2026-11-03 22:33:23 to 2026-11-04 01:57:11)
+- **Code version:** fbfd874
+- **Results:**
+  - `results`: grid_runs.jsonl (changed)
+  - `results/loop_grid`: 6 changed log; 18 new CSV; 18 new JSON; 12 new log; summary_loop_lowbudget.csv (new)
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->
@@ -560,6 +569,24 @@ Reconstructed from the result files and the project notes; times are when the ru
 | 2026-11-04 01:21:44 | cascade_grid | cicids2017 | 13 | s15 | 30,000 | 12.8 | `results/cascade_grid/cicids2017_seed13_s15.json` |
 | 2026-11-04 01:22:15 | cascade_grid | cicids2017 | 14 | s15 | 30,000 | 12.9 | `results/cascade_grid/cicids2017_seed14_s15.json` |
 | 2026-11-04 01:22:19 | cascade_grid | cicids2017 | 15 | s15 | 30,000 | 12.8 | `results/cascade_grid/cicids2017_seed15_s15.json` |
+| 2026-11-04 01:25:20 | loop grid | ciciot2023 | 2 | lowbudget | 30,000 | 13.8 | `results/loop_grid/ciciot2023_seed2_lowbudget.json` |
+| 2026-11-04 01:25:27 | loop grid | ciciot2023 | 1 | lowbudget | 30,000 | 13.9 | `results/loop_grid/ciciot2023_seed1_lowbudget.json` |
+| 2026-11-04 01:26:06 | loop grid | ciciot2023 | 3 | lowbudget | 30,000 | 14.3 | `results/loop_grid/ciciot2023_seed3_lowbudget.json` |
+| 2026-11-04 01:32:38 | loop grid | iotid20 | 13 | lowbudget | 30,000 | 21.7 | `results/loop_grid/iotid20_seed13_lowbudget.json` |
+| 2026-11-04 01:32:49 | loop grid | iotid20 | 15 | lowbudget | 30,000 | 21.4 | `results/loop_grid/iotid20_seed15_lowbudget.json` |
+| 2026-11-04 01:33:29 | loop grid | iotid20 | 14 | lowbudget | 30,000 | 22.2 | `results/loop_grid/iotid20_seed14_lowbudget.json` |
+| 2026-11-04 01:37:32 | loop grid | ciciot2023 | 4 | lowbudget | 30,000 | 12.2 | `results/loop_grid/ciciot2023_seed4_lowbudget.json` |
+| 2026-11-04 01:37:43 | loop grid | ciciot2023 | 5 | lowbudget | 30,000 | 12.2 | `results/loop_grid/ciciot2023_seed5_lowbudget.json` |
+| 2026-11-04 01:38:08 | loop grid | ciciot2023 | 6 | lowbudget | 30,000 | 12.0 | `results/loop_grid/ciciot2023_seed6_lowbudget.json` |
+| 2026-11-04 01:44:58 | loop grid | ciciot2023 | 8 | lowbudget | 30,000 | 12.1 | `results/loop_grid/ciciot2023_seed8_lowbudget.json` |
+| 2026-11-04 01:45:08 | loop grid | ciciot2023 | 7 | lowbudget | 30,000 | 12.4 | `results/loop_grid/ciciot2023_seed7_lowbudget.json` |
+| 2026-11-04 01:45:35 | loop grid | ciciot2023 | 9 | lowbudget | 30,000 | 12.1 | `results/loop_grid/ciciot2023_seed9_lowbudget.json` |
+| 2026-11-04 01:49:25 | loop grid | ciciot2023 | 10 | lowbudget | 30,000 | 11.9 | `results/loop_grid/ciciot2023_seed10_lowbudget.json` |
+| 2026-11-04 01:49:37 | loop grid | ciciot2023 | 11 | lowbudget | 30,000 | 11.9 | `results/loop_grid/ciciot2023_seed11_lowbudget.json` |
+| 2026-11-04 01:49:53 | loop grid | ciciot2023 | 12 | lowbudget | 30,000 | 11.7 | `results/loop_grid/ciciot2023_seed12_lowbudget.json` |
+| 2026-11-04 01:56:42 | loop grid | ciciot2023 | 14 | lowbudget | 30,000 | 11.5 | `results/loop_grid/ciciot2023_seed14_lowbudget.json` |
+| 2026-11-04 01:56:59 | loop grid | ciciot2023 | 13 | lowbudget | 30,000 | 12.0 | `results/loop_grid/ciciot2023_seed13_lowbudget.json` |
+| 2026-11-04 01:57:11 | loop grid | ciciot2023 | 15 | lowbudget | 30,000 | 11.6 | `results/loop_grid/ciciot2023_seed15_lowbudget.json` |
 
 Dataset reports: `results/inspect_IoT_Network_Intrusion_Dataset.txt`, `results/inspect_friday.txt`, `results/inspect_part-00000.txt`
 <!-- history:end -->

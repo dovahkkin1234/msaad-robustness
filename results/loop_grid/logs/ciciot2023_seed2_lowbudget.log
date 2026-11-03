@@ -20,3 +20,16 @@
 [loop] pgd/attack_only/feasible   true        strict:0.1 acc  98.99  fpr  24.92  asr   0.18  KNN sel    0.0  skipped   306  (45.4s)
 [loop] pgd/attack_only/feasible   true        noiseaware:0.1 acc  99.80  fpr   3.00  asr    0.1  KNN sel    0.0  skipped    23  (45.6s)
 [loop] pgd/attack_only/feasible   true        strict:0.05 acc  98.45  fpr  42.34  asr   0.13  KNN sel    0.0  skipped   314  (42.2s)
+[loop] pgd/attack_only/feasible   true        iwstrict:0.05:5 acc  99.16  fpr  21.32  asr   0.13  KNN sel    0.0  skipped   314  (38.3s)
+[loop] pgd/attack_only/feasible   true        iwstrict:0.05:10 acc  99.29  fpr  17.42  asr   0.13  KNN sel    0.0  skipped   314  (37.6s)
+[loop] pgd/attack_only/feasible   true        strict:0.02 acc  97.69  fpr  65.47  asr   0.11  KNN sel    0.0  skipped   326  (36.6s)
+[loop] pgd/attack_only/feasible   true        iwstrict:0.02:10 acc  98.68  fpr  36.04  asr   0.11  KNN sel    0.0  skipped   326  (36.1s)
+[loop] pgd/attack_only/feasible   poison:1.0  strict:0.1 acc  98.96  fpr   8.71  asr   0.77  KNN sel    0.0  skipped  8953  (6.8s)
+[loop] pgd/attack_only/feasible   poison:1.0  noiseaware:0.1 acc  95.29  fpr   4.50  asr   4.71  KNN sel    0.0  skipped  8627  (9.3s)
+[loop] pgd/attack_only/feasible   poison:1.0  strict:0.05 acc  98.62  fpr  12.61  asr   0.99  KNN sel    0.0  skipped  9364  (5.2s)
+[loop] pgd/attack_only/feasible   poison:1.0  iwstrict:0.05:5 acc  98.87  fpr   6.01  asr   0.96  KNN sel    0.0  skipped  9364  (5.8s)
+[loop] pgd/attack_only/feasible   poison:1.0  iwstrict:0.05:10 acc  98.86  fpr   6.91  asr   0.94  KNN sel    0.0  skipped  9364  (6.3s)
+[loop] pgd/attack_only/feasible   poison:1.0  strict:0.02 acc  96.77  fpr   7.81  asr   3.07  KNN sel    0.0  skipped  9709  (4.2s)
+[loop] pgd/attack_only/feasible   poison:1.0  iwstrict:0.02:10 acc  96.85  fpr   9.01  asr   2.95  KNN sel    0.0  skipped  9709  (4.7s)
+
+[loop] done in 13.8 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\loop_grid\ciciot2023_seed2_lowbudget.json and ciciot2023_seed2_lowbudget.csv
