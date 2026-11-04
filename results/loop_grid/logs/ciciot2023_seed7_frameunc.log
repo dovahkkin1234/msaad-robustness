@@ -1,0 +1,25 @@
+[loaders] file order, stride sampling: 883,690 rows pass the filter; taking 30,000 evenly spaced (about 1 in 29.5)
+[loop] ciciot2023: 30,000 rows x 46 features; train 20,100 / test 9,900 (test DDoS share 96.6%), seed 7
+[attack] pgd/attack_only: surrogate fooled on 4.94% of perturbed rows; infeasible 100.0%
+[loop] clean                      frozen      frozen     acc  99.71  fpr   4.50  asr   0.15  KNN sel    0.0  skipped     0  (12.6s)
+[loop] clean                      true        strict:0.1 acc  99.68  fpr   5.41  asr   0.15  KNN sel    0.0  skipped    19  (41.3s)
+[loop] clean                      true        iwstrict:0.1 acc  99.78  fpr   0.90  asr    0.2  KNN sel    0.0  skipped   100  (47.9s)
+[loop] clean                      true        iwconsensus:0.1 acc  99.87  fpr   0.60  asr   0.11  KNN sel    0.0  skipped   131  (46.6s)
+[loop] clean                      frame:0.02  strict:0.1 acc  99.23  fpr  21.32  asr   0.05  KNN sel    0.0  skipped    27  (40.5s)
+[loop] clean                      frame:0.02  iwstrict:0.1 acc  99.58  fpr   8.11  asr   0.16  KNN sel    0.0  skipped    46  (50.2s)
+[loop] clean                      frame:0.02  iwconsensus:0.1 acc  99.54  fpr   9.61  asr   0.15  KNN sel    0.0  skipped    75  (49.9s)
+[loop] clean                      frame:0.1   strict:0.1 acc  97.52  fpr  72.67  asr   0.04  KNN sel    0.0  skipped   174  (41.5s)
+[loop] clean                      frame:0.1   iwstrict:0.1 acc  98.38  fpr  44.74  asr   0.11  KNN sel    0.0  skipped   142  (48.9s)
+[loop] clean                      frame:0.1   iwconsensus:0.1 acc  98.56  fpr  39.34  asr   0.13  KNN sel    0.0  skipped   127  (51.1s)
+[loop] pgd/attack_only/feasible   frozen      frozen     acc  94.49  fpr   4.50  asr   5.54  KNN sel    0.0  skipped     0  (13.4s)
+[loop] pgd/attack_only/feasible   true        strict:0.1 acc  99.83  fpr   2.40  asr   0.09  KNN sel    0.0  skipped    30  (40.8s)
+[loop] pgd/attack_only/feasible   true        iwstrict:0.1 acc  99.87  fpr   0.60  asr   0.11  KNN sel    0.0  skipped   115  (45.8s)
+[loop] pgd/attack_only/feasible   true        iwconsensus:0.1 acc  99.87  fpr   0.60  asr   0.11  KNN sel    0.0  skipped   115  (45.8s)
+[loop] pgd/attack_only/feasible   frame:0.02  strict:0.1 acc  99.32  fpr  18.62  asr   0.05  KNN sel    0.0  skipped    11  (40.5s)
+[loop] pgd/attack_only/feasible   frame:0.02  iwstrict:0.1 acc  99.80  fpr   5.11  asr   0.03  KNN sel    0.0  skipped   109  (47.5s)
+[loop] pgd/attack_only/feasible   frame:0.02  iwconsensus:0.1 acc  99.79  fpr   4.50  asr   0.06  KNN sel    0.0  skipped    68  (49.4s)
+[loop] pgd/attack_only/feasible   frame:0.1   strict:0.1 acc  98.20  fpr  53.15  asr   0.01  KNN sel    0.0  skipped   102  (41.7s)
+[loop] pgd/attack_only/feasible   frame:0.1   iwstrict:0.1 acc  98.86  fpr  33.93  asr    0.0  KNN sel    0.0  skipped   107  (50.6s)
+[loop] pgd/attack_only/feasible   frame:0.1   iwconsensus:0.1 acc  98.93  fpr  31.23  asr   0.02  KNN sel    0.0  skipped   129  (51.7s)
+
+[loop] done in 15.8 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\loop_grid\ciciot2023_seed7_frameunc.json and ciciot2023_seed7_frameunc.csv
