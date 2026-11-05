@@ -23,9 +23,9 @@ End-to-end ASR (\%) with RADP vs the frozen detector alone & CICIoT2023 & loao\_
  & CICIoT2023 & loao\_cw (cw/attack\_only) & 5 & 42.81 [12.93, 77.00] & 55.24 & -2.12 & 1.0000 & -1.00 \\
  & CICIoT2023 & rad (cw/attack\_only) & 5 & 0.43 [0.14, 0.71] & 55.24 & -69.96 & 1.0000 & -1.00 \\
  & CICIoT2023 & rad\_nogan (cw/attack\_only) & 5 & 0.45 [0.19, 0.88] & 55.24 & -69.83 & 1.0000 & -1.00 \\
- & CICIoT2023 & loao\_cw (cw/attack\_only/feasible) & 5 & 46.73 [13.99, 79.68] & 57.84 & -0.30 & 1.0000 & -1.00 \\
- & CICIoT2023 & rad (cw/attack\_only/feasible) & 5 & 0.63 [0.22, 1.04] & 57.84 & -76.04 & 1.0000 & -1.00 \\
- & CICIoT2023 & rad\_nogan (cw/attack\_only/feasible) & 5 & 0.93 [0.26, 1.60] & 57.84 & -77.11 & 1.0000 & -1.00 \\
+ & CICIoT2023 & loao\_cw (repaired C\&W) & 5 & 46.73 [13.99, 79.68] & 57.84 & -0.30 & 1.0000 & -1.00 \\
+ & CICIoT2023 & rad (repaired C\&W) & 5 & 0.63 [0.22, 1.04] & 57.84 & -76.04 & 1.0000 & -1.00 \\
+ & CICIoT2023 & rad\_nogan (repaired C\&W) & 5 & 0.93 [0.26, 1.60] & 57.84 & -77.11 & 1.0000 & -1.00 \\
  & CICIoT2023 & loao\_fgsm (fgsm/attack\_only) & 5 & 0.02 [0.00, 0.05] & 44.89 & -27.48 & 1.0000 & -1.00 \\
  & CICIoT2023 & rad (fgsm/attack\_only) & 5 & 0.02 [0.00, 0.05] & 44.89 & -27.48 & 1.0000 & -1.00 \\
  & CICIoT2023 & rad\_nogan (fgsm/attack\_only) & 5 & 0.00 [0.00, 0.01] & 44.89 & -27.47 & 1.0000 & -1.00 \\
@@ -35,9 +35,9 @@ End-to-end ASR (\%) with RADP vs the frozen detector alone & CICIoT2023 & loao\_
  & CICIoT2023 & loao\_pgd (pgd/attack\_only) & 5 & 0.00 [0.00, 0.01] & 44.21 & -27.46 & 1.0000 & -1.00 \\
  & CICIoT2023 & rad (pgd/attack\_only) & 5 & 0.01 [0.00, 0.04] & 44.21 & -27.46 & 1.0000 & -1.00 \\
  & CICIoT2023 & rad\_nogan (pgd/attack\_only) & 5 & 0.00 [0.00, 0.01] & 44.21 & -27.46 & 1.0000 & -1.00 \\
- & CICIoT2023 & loao\_pgd (pgd/attack\_only/feasible) & 5 & 0.51 [0.09, 1.04] & 56.23 & -75.30 & 1.0000 & -1.00 \\
- & CICIoT2023 & rad (pgd/attack\_only/feasible) & 5 & 0.51 [0.06, 1.27] & 56.23 & -76.06 & 1.0000 & -1.00 \\
- & CICIoT2023 & rad\_nogan (pgd/attack\_only/feasible) & 5 & 0.33 [0.08, 0.78] & 56.23 & -76.08 & 1.0000 & -1.00 \\
+ & CICIoT2023 & loao\_pgd (repaired PGD) & 5 & 0.51 [0.09, 1.04] & 56.23 & -75.30 & 1.0000 & -1.00 \\
+ & CICIoT2023 & rad (repaired PGD) & 5 & 0.51 [0.06, 1.27] & 56.23 & -76.06 & 1.0000 & -1.00 \\
+ & CICIoT2023 & rad\_nogan (repaired PGD) & 5 & 0.33 [0.08, 0.78] & 56.23 & -76.08 & 1.0000 & -1.00 \\
  & IoTID20 & loao\_bim (bim/attack\_only) & 5 & 0.00 [0.00, 0.00] & 13.77 & -13.73 & 1.0000 & -1.00 \\
  & IoTID20 & rad (bim/attack\_only) & 5 & 0.00 [0.00, 0.00] & 13.77 & -13.73 & 1.0000 & -1.00 \\
  & IoTID20 & rad\_nogan (bim/attack\_only) & 5 & 0.00 [0.00, 0.00] & 13.77 & -13.73 & 1.0000 & -1.00 \\
@@ -53,9 +53,9 @@ End-to-end ASR (\%) with RADP vs the frozen detector alone & CICIoT2023 & loao\_
  & IoTID20 & loao\_cw (cw/attack\_only) & 5 & 7.86 [4.16, 11.56] & 8.52 & -0.16 & 1.0000 & -1.00 \\
  & IoTID20 & rad (cw/attack\_only) & 5 & 3.91 [0.36, 8.02] & 8.52 & -5.48 & 1.0000 & -1.00 \\
  & IoTID20 & rad\_nogan (cw/attack\_only) & 5 & 3.08 [0.43, 7.13] & 8.52 & -6.98 & 1.0000 & -1.00 \\
- & IoTID20 & loao\_cw (cw/attack\_only/feasible) & 5 & 7.60 [3.65, 11.47] & 7.60 & +0.00 & 1.0000 & +0.00 \\
- & IoTID20 & rad (cw/attack\_only/feasible) & 5 & 6.57 [2.37, 10.77] & 7.60 & +0.00 & 1.0000 & -1.00 \\
- & IoTID20 & rad\_nogan (cw/attack\_only/feasible) & 5 & 4.47 [1.28, 8.24] & 7.60 & -0.50 & 1.0000 & -1.00 \\
+ & IoTID20 & loao\_cw (repaired C\&W) & 5 & 7.60 [3.65, 11.47] & 7.60 & +0.00 & 1.0000 & +0.00 \\
+ & IoTID20 & rad (repaired C\&W) & 5 & 6.57 [2.37, 10.77] & 7.60 & +0.00 & 1.0000 & -1.00 \\
+ & IoTID20 & rad\_nogan (repaired C\&W) & 5 & 4.47 [1.28, 8.24] & 7.60 & -0.50 & 1.0000 & -1.00 \\
  & IoTID20 & loao\_fgsm (fgsm/attack\_only) & 5 & 0.00 [0.00, 0.00] & 14.59 & -16.08 & 1.0000 & -1.00 \\
  & IoTID20 & rad (fgsm/attack\_only) & 5 & 0.00 [0.00, 0.00] & 14.59 & -16.08 & 1.0000 & -1.00 \\
  & IoTID20 & rad\_nogan (fgsm/attack\_only) & 5 & 0.00 [0.00, 0.00] & 14.59 & -16.08 & 1.0000 & -1.00 \\
@@ -65,9 +65,9 @@ End-to-end ASR (\%) with RADP vs the frozen detector alone & CICIoT2023 & loao\_
  & IoTID20 & loao\_pgd (pgd/attack\_only) & 5 & 0.00 [0.00, 0.00] & 13.78 & -12.67 & 1.0000 & -1.00 \\
  & IoTID20 & rad (pgd/attack\_only) & 5 & 0.00 [0.00, 0.00] & 13.78 & -12.67 & 1.0000 & -1.00 \\
  & IoTID20 & rad\_nogan (pgd/attack\_only) & 5 & 0.00 [0.00, 0.00] & 13.78 & -12.67 & 1.0000 & -1.00 \\
- & IoTID20 & loao\_pgd (pgd/attack\_only/feasible) & 5 & 11.17 [5.11, 17.23] & 15.96 & -1.07 & 1.0000 & -1.00 \\
- & IoTID20 & rad (pgd/attack\_only/feasible) & 5 & 12.98 [7.65, 17.36] & 15.96 & -1.48 & 1.0000 & -1.00 \\
- & IoTID20 & rad\_nogan (pgd/attack\_only/feasible) & 5 & 9.61 [4.23, 14.43] & 15.96 & -4.71 & 1.0000 & -1.00 \\
+ & IoTID20 & loao\_pgd (repaired PGD) & 5 & 11.17 [5.11, 17.23] & 15.96 & -1.07 & 1.0000 & -1.00 \\
+ & IoTID20 & rad (repaired PGD) & 5 & 12.98 [7.65, 17.36] & 15.96 & -1.48 & 1.0000 & -1.00 \\
+ & IoTID20 & rad\_nogan (repaired PGD) & 5 & 9.61 [4.23, 14.43] & 15.96 & -4.71 & 1.0000 & -1.00 \\
 \bottomrule
 \end{tabular}
 \end{table*}

@@ -242,6 +242,12 @@ Reconstructed from the result files and the project notes; times are when the ru
 
 - **Code version:** ed3e4bb; this commit also changes 7 code/document file(s): `PLAN.md`, `PLAN.pdf`, `README.md`, `SETUP.md`, `SETUP.pdf`, `scripts/make_figures.py`, `scripts/stats.py`
 
+### 2026-11-05 23:34 (UTC+05:30) - v14d statistics and figures: audit allocation and framing, three datasets
+
+- **Code version:** dd7790b
+- **Results:**
+  - `results/paper`: fig_advtrain.pdf (changed), fig_attack_asr.pdf (changed), fig_audit_tradeoff.pdf (changed), fig_audit_tradeoff.png (changed), fig_cascade.pdf (changed), fig_framing.pdf (changed), fig_framing.png (changed), fig_hsj.pdf (changed), fig_label_delay.pdf (changed), fig_loop_poison.pdf (changed), fig_loop_poison.png (changed), fig_loop_time.pdf (changed) and 13 more
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->
