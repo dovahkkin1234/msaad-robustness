@@ -229,6 +229,15 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results`: grid_runs.jsonl (changed)
   - `results/loop_grid`: 15 new CSV; 15 new JSON; 15 new log; summary_loop_frameunc.csv (changed)
 
+### 2026-11-05 18:02 (UTC+05:30) - loop grid [frame]: cicids2017 x seeds 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+
+- **Command:** `python experiments\run_grid.py --exp loop --data cicids2017 --jobs 6 --push --seeds 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 --tag frame --labels true frame:0.02 frame:0.1 --policies vanilla strict:0.1 iwstrict:0.1 iwconsensus:0.1`
+- **Runs:** 15 ok, 0 failed; 198.0 min (2026-11-05 14:44:01 to 2026-11-05 18:02:02)
+- **Code version:** 816c868
+- **Results:**
+  - `results`: grid_runs.jsonl (changed)
+  - `results/loop_grid`: 15 new CSV; 15 new JSON; 15 new log; summary_loop_frame.csv (changed)
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->
@@ -656,6 +665,21 @@ Reconstructed from the result files and the project notes; times are when the ru
 | 2026-11-04 18:13:15 | loop grid | cicids2017 | 13 | frameunc | 30,000 | 22.0 | `results/loop_grid/cicids2017_seed13_frameunc.json` |
 | 2026-11-04 18:13:44 | loop grid | cicids2017 | 15 | frameunc | 30,000 | 22.1 | `results/loop_grid/cicids2017_seed15_frameunc.json` |
 | 2026-11-04 18:13:55 | loop grid | cicids2017 | 14 | frameunc | 30,000 | 22.4 | `results/loop_grid/cicids2017_seed14_frameunc.json` |
+| 2026-11-05 16:57:52 | loop grid | cicids2017 | 1 | frame | 30,000 | 133.5 | `results/loop_grid/cicids2017_seed1_frame.json` |
+| 2026-11-05 16:58:56 | loop grid | cicids2017 | 4 | frame | 30,000 | 134.6 | `results/loop_grid/cicids2017_seed4_frame.json` |
+| 2026-11-05 16:59:02 | loop grid | cicids2017 | 5 | frame | 30,000 | 134.7 | `results/loop_grid/cicids2017_seed5_frame.json` |
+| 2026-11-05 16:59:41 | loop grid | cicids2017 | 2 | frame | 30,000 | 135.4 | `results/loop_grid/cicids2017_seed2_frame.json` |
+| 2026-11-05 17:01:06 | loop grid | cicids2017 | 3 | frame | 30,000 | 136.8 | `results/loop_grid/cicids2017_seed3_frame.json` |
+| 2026-11-05 17:02:14 | loop grid | cicids2017 | 6 | frame | 30,000 | 137.9 | `results/loop_grid/cicids2017_seed6_frame.json` |
+| 2026-11-05 17:36:12 | loop grid | cicids2017 | 10 | frame | 30,000 | 36.5 | `results/loop_grid/cicids2017_seed10_frame.json` |
+| 2026-11-05 17:36:12 | loop grid | cicids2017 | 7 | frame | 30,000 | 38.2 | `results/loop_grid/cicids2017_seed7_frame.json` |
+| 2026-11-05 17:36:15 | loop grid | cicids2017 | 8 | frame | 30,000 | 37.3 | `results/loop_grid/cicids2017_seed8_frame.json` |
+| 2026-11-05 17:36:39 | loop grid | cicids2017 | 9 | frame | 30,000 | 37.6 | `results/loop_grid/cicids2017_seed9_frame.json` |
+| 2026-11-05 17:36:54 | loop grid | cicids2017 | 12 | frame | 30,000 | 34.6 | `results/loop_grid/cicids2017_seed12_frame.json` |
+| 2026-11-05 17:37:15 | loop grid | cicids2017 | 11 | frame | 30,000 | 36.1 | `results/loop_grid/cicids2017_seed11_frame.json` |
+| 2026-11-05 18:01:56 | loop grid | cicids2017 | 13 | frame | 30,000 | 25.7 | `results/loop_grid/cicids2017_seed13_frame.json` |
+| 2026-11-05 18:01:56 | loop grid | cicids2017 | 14 | frame | 30,000 | 25.7 | `results/loop_grid/cicids2017_seed14_frame.json` |
+| 2026-11-05 18:02:02 | loop grid | cicids2017 | 15 | frame | 30,000 | 25.8 | `results/loop_grid/cicids2017_seed15_frame.json` |
 
 Dataset reports: `results/inspect_IoT_Network_Intrusion_Dataset.txt`, `results/inspect_friday.txt`, `results/inspect_part-00000.txt`
 <!-- history:end -->

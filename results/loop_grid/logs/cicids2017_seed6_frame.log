@@ -1,0 +1,33 @@
+[loaders] time window 2017-07-07 20:31:00 -> 2017-07-07 21:26:00: keeping 129,401 of 386,556 rows
+[loaders] time order: 129,401 rows pass the filter, sorted by Timestamp (2017-07-07 -> 2017-07-07); replaying 30,000 evenly spaced
+[loaders] skipping non-numeric or NaN/inf values in 6 column(s), e.g. ['Flow Bytes/s', 'Flow IAT Max', 'Flow IAT Mean', 'Flow IAT Min', 'Flow IAT Std', 'Flow Packets/s']
+[loop] cicids2017: 30,000 rows x 79 features; train 20,100 / test 9,900 (test DDoS share 75.4%), seed 6
+[attack] pgd/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 100.0%
+[loop] clean                      frozen      frozen     acc  99.91  fpr   0.21  asr   0.05  KNN sel    0.0  skipped     0  (105.8s)
+[loop] clean                      true        vanilla    acc  99.95  fpr   0.08  asr   0.04  KNN sel    0.0  skipped     0  (339.4s)
+[loop] clean                      true        strict:0.1 acc  99.92  fpr   0.21  asr   0.04  KNN sel    0.0  skipped  2174  (270.4s)
+[loop] clean                      true        iwstrict:0.1 acc  99.97  fpr   0.00  asr   0.04  KNN sel    0.0  skipped  2174  (346.7s)
+[loop] clean                      true        iwconsensus:0.1 acc  99.96  fpr   0.00  asr   0.05  KNN sel    0.0  skipped  2178  (351.6s)
+[loop] clean                      frame:0.02  vanilla    acc  99.17  fpr   3.21  asr   0.05  KNN sel    0.0  skipped     0  (376.5s)
+[loop] clean                      frame:0.02  strict:0.1 acc  94.24  fpr  23.36  asr   0.03  KNN sel    0.0  skipped  2174  (293.3s)
+[loop] clean                      frame:0.02  iwstrict:0.1 acc  97.49  fpr   9.79  asr   0.13  KNN sel    0.0  skipped  2174  (266.1s)
+[loop] clean                      frame:0.02  iwconsensus:0.1 acc  99.89  fpr   0.29  asr   0.05  KNN sel    0.0  skipped  2355  (309.4s)
+[loop] clean                      frame:0.1   vanilla    acc  98.22  fpr   7.11  asr   0.04  KNN sel    0.0  skipped     0  (256.0s)
+[loop] clean                      frame:0.1   strict:0.1 acc  93.26  fpr  27.38  asr   0.01  KNN sel    0.0  skipped  2174  (295.8s)
+[loop] clean                      frame:0.1   iwstrict:0.1 acc  95.88  fpr  16.16  asr    0.2  KNN sel    0.0  skipped  2174  (317.2s)
+[loop] clean                      frame:0.1   iwconsensus:0.1 acc  95.79  fpr  15.05  asr   0.68  KNN sel    0.0  skipped  2377  (380.5s)
+[loop] pgd/attack_only/feasible   frozen      frozen     acc  77.69  fpr   0.21  asr  29.51  KNN sel    0.0  skipped     0  (134.9s)
+[loop] pgd/attack_only/feasible   true        vanilla    acc  99.96  fpr   0.12  asr   0.01  KNN sel    0.0  skipped     0  (346.9s)
+[loop] pgd/attack_only/feasible   true        strict:0.1 acc  99.84  fpr   0.62  asr   0.01  KNN sel    0.0  skipped  2174  (258.5s)
+[loop] pgd/attack_only/feasible   true        iwstrict:0.1 acc  99.96  fpr   0.12  asr   0.01  KNN sel    0.0  skipped  2174  (186.7s)
+[loop] pgd/attack_only/feasible   true        iwconsensus:0.1 acc  99.93  fpr   0.12  asr   0.05  KNN sel    0.0  skipped  2178  (179.2s)
+[loop] pgd/attack_only/feasible   frame:0.02  vanilla    acc  99.39  fpr   2.47  asr    0.0  KNN sel    0.0  skipped     0  (170.6s)
+[loop] pgd/attack_only/feasible   frame:0.02  strict:0.1 acc  95.14  fpr  19.78  asr    0.0  KNN sel    0.0  skipped  2174  (211.3s)
+[loop] pgd/attack_only/feasible   frame:0.02  iwstrict:0.1 acc  97.99  fpr   8.06  asr   0.04  KNN sel    0.0  skipped  2174  (349.2s)
+[loop] pgd/attack_only/feasible   frame:0.02  iwconsensus:0.1 acc  99.64  fpr   1.48  asr    0.0  KNN sel    0.0  skipped  2339  (349.5s)
+[loop] pgd/attack_only/feasible   frame:0.1   vanilla    acc  98.27  fpr   7.03  asr    0.0  KNN sel    0.0  skipped     0  (390.7s)
+[loop] pgd/attack_only/feasible   frame:0.1   strict:0.1 acc  92.77  fpr  29.44  asr    0.0  KNN sel    0.0  skipped  2174  (322.4s)
+[loop] pgd/attack_only/feasible   frame:0.1   iwstrict:0.1 acc  95.98  fpr  16.20  asr   0.05  KNN sel    0.0  skipped  2174  (383.8s)
+[loop] pgd/attack_only/feasible   frame:0.1   iwconsensus:0.1 acc  97.16  fpr  10.98  asr   0.19  KNN sel    0.0  skipped  2374  (378.0s)
+
+[loop] done in 137.9 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\loop_grid\cicids2017_seed6_frame.json and cicids2017_seed6_frame.csv
