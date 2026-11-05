@@ -18,7 +18,7 @@
 
 ```powershell
 New-Item -ItemType Directory -Force -Path "$HOME\Projects\CNS-Project" | Out-Null
-Expand-Archive "$HOME\Downloads\msaad-robustness-v14c.zip" -DestinationPath "$HOME\Projects\CNS-Project" -Force
+Expand-Archive "$HOME\Downloads\msaad-robustness-v14d.zip" -DestinationPath "$HOME\Projects\CNS-Project" -Force
 Set-Location "$HOME\Projects\CNS-Project\msaad-robustness"
 Get-ChildItem
 ```
@@ -26,7 +26,7 @@ Get-ChildItem
 You should see `configs`, `experiments`, `scripts`, `src`, `tests` and the `.md` files.
 (If you prefer another location, change `$HOME\Projects\CNS-Project` everywhere.)
 
-**Updating an existing copy (e.g. v14b → v14c):** run the same `Expand-Archive` line. The zip
+**Updating an existing copy (e.g. v14c → v14d):** run the same `Expand-Archive` line. The zip
 holds only code and documents, so your `data` and `results` folders are kept as they are.
 Once Step 15 is done, push each new version: `python scripts\push_run.py "Code v13: ..."`; git
 then shows exactly what changed. From v13 on the packages leave out `RUNS.md`, so extracting one
@@ -807,6 +807,63 @@ wrote the summary, and an older copy of `run_grid.py` leaves out datasets it did
 python scripts\per_seed.py --exp attack --tag s15 --data ciciot2023 --scenario pgd/attack_only/feasible --learning frozen
 ```
 
+# Step 20 — v14d: audit allocation and framing on three datasets, statistics and figures
+
+Branch `exp/conference` only. v14d changes analysis scripts and documents, not the experiments:
+every result so far stays valid, and nothing needs re-running.
+
+| File | Change |
+|---|---|
+| `scripts\stats.py` | A `frameunc` preset: uncertainty-directed vs random audits on all three datasets (false alarms and audits used under attack, evasion and false alarms under full poisoning, framing over the whole stream and after the campaign) and against vanilla; the combined attack once the optional run below exists. A comparison can now use several fields as its key and name the grids it reads; `vanilla` counts as "no audits". The RADP header names its baseline properly; a comparison with no runs yet says so. |
+| `scripts\make_figures.py` | `fig_framing_audits` (false alarms during and after framing: vanilla, IW-strict and IW-consensus with random and uncertainty audits, one panel per dataset) and `tab_framing_audits`; `tab_audits` now includes CIC-IDS2017 and the audits each run used. |
+| `PLAN.md` | Findings F17–F22 and the outcome of every prediction P1–P9. |
+
+**1. Update the code and self-check. Terminal CNS1 — PowerShell, `(msaad)` active, inside
+`msaad-robustness`** (any grid may keep running in another window):
+
+```powershell
+Expand-Archive "$HOME\Downloads\msaad-robustness-v14d.zip" -DestinationPath "$HOME\Projects\CNS-Project" -Force
+python tests\smoke_test.py
+python tests\loop_smoke_test.py
+python scripts\push_run.py "Code v14d: frameunc statistics, framing-vs-audits figure and table, F17-F22"
+```
+
+**2. Statistics and figures on what has finished. Same window:**
+
+```powershell
+python scripts\stats.py --preset frameunc audits frame radp
+python scripts\make_figures.py
+python scripts\push_run.py "v14d statistics and figures: audit allocation and framing, three datasets"
+```
+
+- `frameunc` writes `results\paper\stats_frameunc.csv` and `.tex`. Until part 3 has run, its
+  three combined-attack comparisons print `no matching runs yet (skipped)`: expected.
+- New outputs in `results\paper`: `fig_framing_audits.pdf/.png`, `tab_framing_audits.tex`, and
+  `tab_audits.tex` with CIC-IDS2017.
+
+**3. Optional, about 1–1.5 hours (e.g. overnight): the combined attack with uncertainty audits.**
+Evasion + full poisoning + 5% framing, uncertainty-directed audits, three datasets. It fills the
+last empty columns of `tab_framing_audits` and tests whether IW-consensus with uncertainty audits
+also holds when the attacker poisons and frames at once. Same window:
+
+```powershell
+$s = 1..15
+$pol = "vanilla", "strict:0.1", "iwstrict:0.1", "iwconsensus:0.1"
+$g = "--exp", "loop", "--audits", "uncertain", "--tag", "combounc", "--jobs", "6", "--push"
+python experiments\run_grid.py $g --data iotid20 ciciot2023 cicids2017 --seeds $s --labels poison:1.0+frame:0.05 --policies $pol
+python scripts\stats.py --preset frameunc
+python scripts\make_figures.py
+python scripts\push_run.py "Combined attack with uncertainty audits: statistics and figures"
+```
+
+- No `poison:1.0` on its own: under full poisoning no attack label reaches the consensus check,
+  so IW-consensus equals IW-strict by construction (the CIC-IDS2017 runs show identical numbers),
+  and strict and IW-strict with uncertainty audits already ran (`--tag audits`, `--tag frameunc`).
+- `vanilla` never audits, so its rows repeat the `frame` grid exactly; they are there so that
+  CIC-IDS2017 has a vanilla baseline under the combined attack.
+- If the two-command version Claude gave on 5 Nov is already running, let it finish: its extra
+  `poison:1.0` rows repeat earlier runs bit for bit, and the statistics read either version.
+
 # Troubleshooting
 
 | Symptom | Fix |
@@ -825,6 +882,8 @@ python scripts\per_seed.py --exp attack --tag s15 --data ciciot2023 --scenario p
 | `ModuleNotFoundError: No module named 'torch'` | Step 18, part 1 (CPU build of PyTorch). |
 | `delaysec:T needs ...` | Label delays in seconds need a time-ordered dataset with a timestamp in its `context` config (CIC-IDS2017), and v14c (older code loads different rows for the timestamps). |
 | `[check] ... the context loader returns different rows` | The code is older than v14c: extract v14c (Step 19, part 2). |
+| `stats.py` prints `no matching runs yet (skipped)` | That comparison's grid has not run yet (for `frameunc`: the optional combined-attack grid, Step 20 part 3). The other comparisons are complete. |
+| `fig_framing_audits` is missing | It needs both `summary_loop_frame.csv` and `summary_loop_frameunc.csv` in `results\loop_grid`; `make_figures.py` prints which one it lacks. |
 | `[grid] --data is required (or use --summarise)` | Add `--data ...`, or `--summarise` to only rewrite a summary from finished runs. |
 | A summary CSV lacks a dataset you ran | Two grids with the same tag finished in the wrong order: `python experiments\run_grid.py --exp <exp> --tag <tag> --summarise`. |
 | `unknown variant` (adv_training.py) | Use `none` or `at:` followed by attacks joined with `+`, e.g. `at:pgd`, `at:fgsm+bim+pgd+cw`. |

@@ -238,6 +238,10 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results`: grid_runs.jsonl (changed)
   - `results/loop_grid`: 15 new CSV; 15 new JSON; 15 new log; summary_loop_frame.csv (changed)
 
+### 2026-11-05 23:33 (UTC+05:30) - Code v14d: frameunc statistics, framing-vs-audits figure and table, F17-F22
+
+- **Code version:** ed3e4bb; this commit also changes 7 code/document file(s): `PLAN.md`, `PLAN.pdf`, `README.md`, `SETUP.md`, `SETUP.pdf`, `scripts/make_figures.py`, `scripts/stats.py`
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->

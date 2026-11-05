@@ -17,8 +17,12 @@ n = 6, 6.1e-5 at n = 15 -- three seeds can never be significant, fifteen can.
 Usage (repo root, msaad environment active):
     python scripts\\stats.py                      # every preset whose results exist (tag s15)
     python scripts\\stats.py --preset loop        # one preset (loop, attack, advtrain, cascade, frame,
-                                                  # audits, lowbudget, radp)
+                                                  # audits, frameunc, lowbudget, radp)
     python scripts\\stats.py --tag ""             # the untagged 3-seed grids instead
+v14d: the frameunc preset compares uncertainty-directed with random audits on all three datasets
+(under attack, under full poisoning, under framing during and after the campaign, and under the
+combined attack once the optional combounc grid exists) and against vanilla. A comparison's key or
+split may list several fields (shown joined by " | "), and may name the grids ("tags") it reads.
 Outputs results\\paper\\stats_<preset>.csv and stats_<preset>.tex (booktabs), and prints the tables.
 """
 from __future__ import annotations
@@ -91,6 +95,70 @@ PRESETS = {
          "where": {"scenario": "pgd/attack_only/feasible", "learning": "true"},
          "where_in": {"policy": ["strict:0.1", "iwstrict:0.1"]}},
     ]},
+    # v14d: uncertainty-directed audits on all three datasets, and framing with random vs uncertainty
+    # audits. Random audits come from the s15 and frame grids, uncertainty audits from the audits,
+    # frameunc and (optional) combounc grids; each comparison names the grids it reads ("tags").
+    # A configuration repeated in two grids gives bit-identical results, so overlap is harmless.
+    # vanilla never audits: its audit mode is recorded as "none" (see load_rows).
+    "frameunc": {"folder": "loop_grid", "stem_tag": "",
+                 "tags": {"s15": {"audit_mode": "random"}, "frame": {"audit_mode": "random"}, "audits": {},
+                          "frameunc": {}, "combounc": {}},
+                 "comparisons": [
+        {"name": "Audits: FPR (%) under attack, true labels, uncertainty vs random audits", "metric": "fpr",
+         "key": "audit_mode", "baseline": "random", "split": "policy", "tags": ["frame", "frameunc"],
+         "where": {"scenario": "pgd/attack_only/feasible", "learning": "true"},
+         "where_in": {"policy": ["strict:0.1", "iwstrict:0.1", "iwconsensus:0.1"]}},
+        {"name": "Audits: audits used under attack, true labels, uncertainty vs random audits (budget check)",
+         "metric": "n_audited", "key": "audit_mode", "baseline": "random", "split": "policy",
+         "tags": ["frame", "frameunc"], "where": {"scenario": "pgd/attack_only/feasible", "learning": "true"},
+         "where_in": {"policy": ["strict:0.1", "iwstrict:0.1", "iwconsensus:0.1"]}},
+        {"name": "Audits: FPR (%) under attack, true labels, uncertainty audits vs vanilla", "metric": "fpr",
+         "key": ["policy", "audit_mode"], "baseline": "vanilla | none", "tags": ["frame", "frameunc"],
+         "only": ["strict:0.1 | uncertain", "iwstrict:0.1 | uncertain", "iwconsensus:0.1 | uncertain"],
+         "where": {"scenario": "pgd/attack_only/feasible", "learning": "true"}},
+        {"name": "Audits: ASR (%), evasion + full poisoning, uncertainty vs random audits", "metric": "asr",
+         "key": "audit_mode", "baseline": "random", "split": "policy",
+         "tags": ["s15", "audits", "frameunc", "combounc"],
+         "where": {"scenario": "pgd/attack_only/feasible", "learning": "poison:1.0"},
+         "where_in": {"policy": ["strict:0.1", "iwstrict:0.1"]}},
+        {"name": "Audits: FPR (%), evasion + full poisoning, uncertainty vs random audits", "metric": "fpr",
+         "key": "audit_mode", "baseline": "random", "split": "policy",
+         "tags": ["s15", "audits", "frameunc", "combounc"],
+         "where": {"scenario": "pgd/attack_only/feasible", "learning": "poison:1.0"},
+         "where_in": {"policy": ["strict:0.1", "iwstrict:0.1"]}},
+        {"name": "Framing: FPR (%) over the whole stream, uncertainty vs random audits", "metric": "fpr",
+         "key": "audit_mode", "baseline": "random", "split": ["policy", "learning", "scenario"],
+         "tags": ["frame", "frameunc"],
+         "where_in": {"learning": ["frame:0.02", "frame:0.1"],
+                      "policy": ["strict:0.1", "iwstrict:0.1", "iwconsensus:0.1"]}},
+        {"name": "Framing: FPR (%) after the campaign, uncertainty vs random audits", "metric": "fpr_after_window",
+         "key": "audit_mode", "baseline": "random", "split": ["policy", "learning", "scenario"],
+         "tags": ["frame", "frameunc"],
+         "where_in": {"learning": ["frame:0.02", "frame:0.1"],
+                      "policy": ["strict:0.1", "iwstrict:0.1", "iwconsensus:0.1"]}},
+        {"name": "Framing: FPR (%) over the whole stream, uncertainty audits vs vanilla", "metric": "fpr",
+         "key": ["policy", "audit_mode"], "baseline": "vanilla | none", "split": ["learning", "scenario"],
+         "tags": ["frame", "frameunc"],
+         "only": ["strict:0.1 | uncertain", "iwstrict:0.1 | uncertain", "iwconsensus:0.1 | uncertain"],
+         "where_in": {"learning": ["frame:0.02", "frame:0.1"]}},
+        {"name": "Framing: FPR (%) after the campaign, uncertainty audits vs vanilla", "metric": "fpr_after_window",
+         "key": ["policy", "audit_mode"], "baseline": "vanilla | none", "split": ["learning", "scenario"],
+         "tags": ["frame", "frameunc"],
+         "only": ["strict:0.1 | uncertain", "iwstrict:0.1 | uncertain", "iwconsensus:0.1 | uncertain"],
+         "where_in": {"learning": ["frame:0.02", "frame:0.1"]}},
+        {"name": "Evasion + full poisoning + framing (5%): ASR (%), uncertainty vs random audits", "metric": "asr",
+         "key": "audit_mode", "baseline": "random", "split": "policy", "tags": ["frame", "combounc"],
+         "where": {"scenario": "pgd/attack_only/feasible", "learning": "poison:1.0+frame:0.05"},
+         "where_in": {"policy": ["strict:0.1", "iwstrict:0.1", "iwconsensus:0.1"]}},
+        {"name": "Evasion + full poisoning + framing (5%): FPR (%), uncertainty vs random audits", "metric": "fpr",
+         "key": "audit_mode", "baseline": "random", "split": "policy", "tags": ["frame", "combounc"],
+         "where": {"scenario": "pgd/attack_only/feasible", "learning": "poison:1.0+frame:0.05"},
+         "where_in": {"policy": ["strict:0.1", "iwstrict:0.1", "iwconsensus:0.1"]}},
+        {"name": "Evasion + full poisoning + framing (5%): ASR (%), uncertainty audits vs vanilla", "metric": "asr",
+         "key": ["policy", "audit_mode"], "baseline": "vanilla | none", "tags": ["frame", "combounc"],
+         "only": ["strict:0.1 | uncertain", "iwstrict:0.1 | uncertain", "iwconsensus:0.1 | uncertain"],
+         "where": {"scenario": "pgd/attack_only/feasible", "learning": "poison:1.0+frame:0.05"}},
+    ]},
     "lowbudget": {"folder": "loop_grid", "tag_default": "lowbudget", "comparisons": [
         {"name": "Weight clipping at 5% audits: FPR (%) under attack, true labels, vs strict", "metric": "fpr",
          "key": "policy", "baseline": "strict:0.05", "only": ["iwstrict:0.05", "iwstrict:0.05:5", "iwstrict:0.05:10"],
@@ -147,14 +215,19 @@ PRESETS = {
     ]},
     "radp": {"folder": "radp_grid", "tag_default": "", "comparisons": [
         {"name": "End-to-end ASR (%) with RADP vs the frozen detector alone", "metric": "e2e_asr",
-         "paired_metric": "asr_no_radp", "key": "rad", "where": {"learning": "frozen"}, "split": "scenario"},
+         "paired_metric": "asr_no_radp", "key": "rad", "where": {"learning": "frozen"}, "split": "scenario",
+         "baseline_label": "the same runs without RADP"},
     ]},
 }
 
 
+NO_AUDIT = ("vanilla", "frozen")   # policies that never audit: audit mode recorded as "none"
+
+
 def load_rows(folder: Path, tag: str, fill=None):
-    """Scenario rows of every <data>_seed<k>[_<tag>].json in folder, with dataset and seed.
-    fill: values for fields older result files lack (e.g. audit_mode = random for v13 runs)."""
+    """Scenario rows of every <data>_seed<k>[_<tag>].json in folder, with dataset, seed and the
+    file tag (_tag). fill: values for fields older result files lack (e.g. audit_mode = random
+    for v13 runs). Policies that never audit get audit_mode "none", whatever the grid's setting."""
     out = []
     for f in sorted(folder.glob("*.json")) if folder.exists() else []:
         m = re.fullmatch(r"(.+?)_seed(\d+)(?:_(.+))?\.json", f.name)
@@ -165,15 +238,27 @@ def load_rows(folder: Path, tag: str, fill=None):
         except (OSError, ValueError):
             continue
         for s in r.get("scenarios", []):
-            row = {**(fill or {}), **s, "dataset": r.get("dataset", m.group(1)), "seed": int(r.get("seed", m.group(2)))}
+            row = {**(fill or {}), **s, "dataset": r.get("dataset", m.group(1)), "seed": int(r.get("seed", m.group(2))),
+                   "_tag": tag}
             for k, v in (fill or {}).items():
                 if row.get(k) is None:
                     row[k] = v
+            if row.get("policy") in NO_AUDIT and "audit_mode" in row:
+                row["audit_mode"] = "none"
             out.append(row)
     return out
 
 
+def _val(row, fields):
+    """A row's value for one field, or ' | '-joined values for a list of fields (composite key)."""
+    if isinstance(fields, (list, tuple)):
+        return " | ".join(str(row.get(f)) for f in fields)
+    return row.get(fields)
+
+
 def _match(row, comp):
+    if "tags" in comp and row.get("_tag") not in comp["tags"]:
+        return False
     for k, v in comp.get("where", {}).items():
         if row.get(k) != v:
             return False
@@ -232,10 +317,10 @@ def run_comparison(rows, comp):
         v = r.get(metric)
         if v is None:
             continue
-        values[(r["dataset"], r.get(split) if split else "", r.get(key))][r["seed"]] = float(v)
+        sp = _val(r, split) if split else ""
+        values[(r["dataset"], sp, _val(r, key))][r["seed"]] = float(v)
         if comp.get("paired_metric") and r.get(comp["paired_metric"]) is not None:
-            values[(r["dataset"], r.get(split) if split else "", f"{r.get(key)} (without)")][r["seed"]] = \
-                float(r[comp["paired_metric"]])
+            values[(r["dataset"], sp, f"{_val(r, key)} (without)")][r["seed"]] = float(r[comp["paired_metric"]])
     results = []
     for (ds, sp, grp), by_seed in sorted(values.items(), key=lambda kv: (kv[0][0], str(kv[0][1]), str(kv[0][2]))):
         if comp.get("paired_metric"):
@@ -268,6 +353,12 @@ def run_comparison(rows, comp):
     return results
 
 
+def _short(text) -> str:
+    """Display form of a condition: composite values joined by commas, long scenario names shortened."""
+    return (str(text).replace(" | ", ", ").replace("pgd/attack_only/feasible", "repaired PGD")
+            .replace("cw/attack_only/feasible", "repaired C&W"))
+
+
 def fmt_p(p):
     return "--" if p is None else ("<1e-4" if p < 1e-4 else f"{p:.4f}")
 
@@ -293,7 +384,7 @@ def write_outputs(preset: str, results, out_dir: Path, tag: str):
     for r in results:
         comp = esc(r["comparison"]) if r["comparison"] != last else ""
         last = r["comparison"]
-        cond = esc(r["group"]) + (f" ({esc(r['split'])})" if r["split"] else "")
+        cond = esc(_short(r["group"])) + (f" ({esc(_short(r['split']))})" if r["split"] else "")
         lines.append(f"{comp} & {esc(NAMES.get(r['dataset'], r['dataset']))} & {cond} & {r['n']} & "
                      f"{r['mean']:.2f} [{r['ci_lo']:.2f}, {r['ci_hi']:.2f}] & {r['base_mean']:.2f} & "
                      f"{r['median_diff']:+.2f} & {fmt_p(r['p_holm'])} & {r['rank_biserial']:+.2f} \\\\")
@@ -331,14 +422,16 @@ def main() -> int:
             got = run_comparison(rows, comp)
             results += got
             if got:
-                print(f"\n  {comp['name']}  (baseline: {got[0]['baseline']})")
+                print(f"\n  {comp['name']}  (baseline: {_short(comp.get('baseline_label') or got[0]['baseline'])})")
+            else:
+                print(f"\n  {comp['name']}: no matching runs yet (skipped)")
             for r in got:
-                cond = r["group"] + (f" [{r['split']}]" if r["split"] else "")
+                cond = _short(r["group"]) + (f" [{_short(r['split'])}]" if r["split"] else "")
                 print(f"    {NAMES.get(r['dataset'], r['dataset']):<13} {cond:<34} n={r['n']:<3} "
                       f"{r['mean']:7.2f} [{r['ci_lo']:6.2f}, {r['ci_hi']:6.2f}]  base {r['base_mean']:7.2f}  "
                       f"med.d {r['median_diff']:+7.2f}  p_holm {fmt_p(r['p_holm']):>7}  r {r['rank_biserial']:+.2f}  "
                       f"lower/higher {r['wins_lower']}/{r['wins_higher']}")
-        write_outputs(preset, results, out_dir, tag)
+        write_outputs(preset, results, out_dir, P.get("stem_tag", tag))
     return 0
 
 

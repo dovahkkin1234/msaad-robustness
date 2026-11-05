@@ -20,11 +20,16 @@ exists:
     fig_framing         framing (benign-looking flows labelled DDoS): false alarms during and after
                         the campaign per update policy (strict, IW-strict, consensus, ...)
     fig_hsj             label-only HopSkipJump: evasion vs query budget, raw and valid-traffic queries
+    v14d:
+    fig_framing_audits  framing with random vs uncertainty-directed audits: false alarms over the whole
+                        stream and after the campaign, vanilla / IW-strict / IW-consensus, every dataset
   tables (booktabs; add \\usepackage{booktabs} to the paper):
     tab_repro, tab_attack, tab_radp, tab_loop, tab_audit, tab_advtrain
     v14: tab_cascade, tab_graph_adaptive (spoofing / thinning attacker, evaded volume),
     tab_framing, tab_adaptive (distilled / adversarially trained surrogate, HopSkipJump),
-    tab_audits (random / uncertainty / mixed audit allocation), tab_lowbudget (5% and 2% audits)
+    tab_audits (random / uncertainty / mixed audit allocation, now with CIC-IDS2017 and the audits
+    used), tab_lowbudget (5% and 2% audits)
+    v14d: tab_framing_audits (framing per policy and audit mode, recovery, audits used, combined attack)
 
 Every figure gets one panel per dataset present (IoTID20, IoTID20 (P2), CICIoT2023, CIC-IDS2017).
 Results tagged s15 (15 seeds) win over the untagged 3-seed ones (--prefer '' to use the 3-seed
@@ -834,6 +839,101 @@ def framing_fig_and_table(res: Path, out: Path):
               + ["ASR, all three", "FPR, all three"], body, "ll" + "c" * (len(srcs) + 2))
 
 
+# v14d: framing with random vs uncertainty-directed audits (frame and frameunc grids), all datasets.
+FRAME_SERIES = [("vanilla", "random", "vanilla (no audits)"),
+                ("iwstrict:0.1", "random", "IW-strict, random audits"),
+                ("iwstrict:0.1", "uncertain", "IW-strict, uncertainty audits"),
+                ("iwconsensus:0.1", "random", "IW-consensus, random audits"),
+                ("iwconsensus:0.1", "uncertain", "IW-consensus, uncertainty audits")]
+
+
+def first_ms(row_sets, metric, **kw):
+    """(mean, std) of a metric from the first row set that has a value for it."""
+    for rows in row_sets:
+        m, s = ms(pick(rows, **kw), metric)
+        if m is not None:
+            return m, s
+    return None, None
+
+
+def framing_audits_fig_and_table(res: Path, out: Path):
+    folder = res / "loop_grid"
+    if not (folder / "summary_loop_frame.csv").exists() or not (folder / "summary_loop_frameunc.csv").exists():
+        print("[figures] skipped: fig_framing_audits needs summary_loop_frame.csv and summary_loop_frameunc.csv")
+        return
+    rnd, unc = read(folder / "summary_loop_frame.csv"), read(folder / "summary_loop_frameunc.csv")
+    comb = read(folder / "summary_loop_combounc.csv") if (folder / "summary_loop_combounc.csv").exists() else []
+    runs = seed_runs(folder, tags={"frame", "frameunc"})
+    src = {"random": (rnd, "frame"), "uncertain": (unc, "frameunc")}
+    ds = [d for d in datasets_in(unc) if pick(rnd, dataset=d, policy="vanilla")]
+    rates = sorted({float(r["learning"].split(":")[1]) for r in unc if r["learning"].startswith("frame:")
+                    and pick(rnd, dataset=r["dataset"], learning=r["learning"])})
+    srcs = [("true", 0.0)] + [(f"frame:{r:g}", r) for r in rates]
+    if not ds or not rates:
+        return
+    fig, axes = plt.subplots(2, len(ds), figsize=(W2, 3.9), squeeze=False, sharex=True, constrained_layout=True)
+    x = np.arange(len(srcs), dtype=float)
+    for j, d in enumerate(ds):
+        for k, (p, mode, label) in enumerate(FRAME_SERIES):
+            rows, tag = src[mode]
+            st = pol_style(p)
+            filled = mode == "uncertain" or p == "vanilla"
+            off = (k - (len(FRAME_SERIES) - 1) / 2) * 0.07        # dodge, so overlapping lines stay visible
+            for i, met in enumerate(("fpr", "fpr_after_window")):
+                pts = []
+                for lab, _ in srcs:
+                    m_ = "fpr" if lab == "true" else met      # no campaign: after = the whole stream
+                    pts.append(stat(pick(rows, dataset=d, policy=p, scenario="clean", learning=lab), runs, m_,
+                                    dataset=d, policy=p, scenario="clean", learning=lab, tag=tag))
+                ys = np.array([q[0] if q[0] is not None else np.nan for q in pts])
+                ax = axes[i][j]
+                ax.plot(x + off, ys, color=st["color"], marker=st["marker"], linestyle="-" if filled else (0, (3, 2)),
+                        markerfacecolor=st["color"] if filled else "white", markeredgecolor=st["color"],
+                        label=label, zorder=6)
+                for xi, (m, sd, vals) in zip(x + off, pts):
+                    spread_marks(ax, xi, m, sd, vals, 0.025, color=st["color"], size=3, alpha=0.45)
+        axes[0][j].set_title(NAMES.get(d, d))
+        axes[1][j].set_xticks(x, ["none"] + [f"{100 * r:g}%" for r in rates])
+        axes[1][j].set_xlabel("framing flows per test flow")
+    axes[0][0].set_ylabel("false alarms,\nwhole stream (%)")
+    axes[1][0].set_ylabel("false alarms after\nthe campaign (%)")
+    top_legend(fig, axes, ncol=3)
+    save(fig, out, "fig_framing_audits")
+    body = []
+    top = f"frame:{rates[-1]:g}"
+    for d in ds:
+        for p, modes in (("vanilla", ("random",)), ("strict:0.1", ("random", "uncertain")),
+                         ("iwstrict:0.1", ("random", "uncertain")), ("iwconsensus:0.1", ("random", "uncertain"))):
+            for mode in modes:
+                rows, _ = src[mode]
+                if not pick(rows, dataset=d, policy=p, scenario="clean", learning="true"):
+                    continue
+                cells = [esc(NAMES.get(d, d)), esc(pol_label(p)), "--" if p == "vanilla" else mode]
+                for _, r in srcs[1:]:
+                    cells.append(fmt(*ms(pick(rows, dataset=d, policy=p, scenario="clean", learning=f"frame:{r:g}"),
+                                         "fpr")))
+                topr = pick(rows, dataset=d, policy=p, scenario="clean", learning=top)
+                cells.append(fmt(*ms(topr, "fpr_after_window")))
+                cells.append("--" if p == "vanilla" else fmt(*ms(topr, "n_audited"), d=0))
+                crow = (pick(rnd, dataset=d, policy=p, scenario="pgd/attack_only/feasible",
+                             learning="poison:1.0+frame:0.05") if mode == "random" or p == "vanilla" else
+                        pick(comb, dataset=d, policy=p, scenario="pgd/attack_only/feasible",
+                             learning="poison:1.0+frame:0.05"))
+                if crow is None and p == "vanilla":
+                    crow = pick(comb, dataset=d, policy=p, scenario="pgd/attack_only/feasible",
+                                learning="poison:1.0+frame:0.05")
+                cells += [fmt(*ms(crow, "asr")), fmt(*ms(crow, "fpr"))]
+                body.append(cells)
+    write_tex(out, "tab_framing_audits", "Framing with random vs uncertainty-directed audits (10\\% budget): false "
+              "alarms (\\%) on genuine benign flows over the whole stream for each framing rate, after a "
+              f"{100 * rates[-1]:g}\\% campaign, and the audits used during it; evasion and false alarms under "
+              "evasion + full poisoning + 5\\% framing (repaired PGD). Mean $\\pm$ std over seeds; -- = not run.",
+              "tab:framing_audits", ["Dataset", "Policy", "Audits"]
+              + [f"FPR, {100 * r:g}\\%" for r in rates] + [f"After {100 * rates[-1]:g}\\%", "Audits used",
+                                                            "ASR, all three", "FPR, all three"],
+              body, "lll" + "c" * (len(rates) + 4))
+
+
 def adaptive_evasion_fig_and_table(res: Path, out: Path):
     folder = res / "advtrain_grid"
     runs = seed_runs(folder, tags={"adaptive"})
@@ -882,25 +982,35 @@ def adaptive_evasion_fig_and_table(res: Path, out: Path):
 
 def audits_lowbudget_tables(res: Path, out: Path):
     folder = res / "loop_grid"
-    sets = [("random", f"summary_loop_{PREFER}.csv"), ("uncertain", "summary_loop_audits.csv"),
-            ("mixed", "summary_loop_auditsmix.csv")]
+    # v14d: each audit mode may draw on several grids (the first with a value wins): random audits from
+    # the main grid and the framing grid, uncertainty audits from the audits grid and, for datasets it
+    # lacks (CIC-IDS2017), the frameunc grid.
+    sets = [("random", [f"summary_loop_{PREFER}.csv", "summary_loop_frame.csv"]),
+            ("uncertain", ["summary_loop_audits.csv", "summary_loop_frameunc.csv"]),
+            ("mixed", ["summary_loop_auditsmix.csv"])]
     body = []
-    have = {m: read(folder / f) for m, f in sets if (folder / f).exists()}
+    have = {m: [read(folder / f) for f in fs if (folder / f).exists()] for m, fs in sets}
+    have = {m: v for m, v in have.items() if v}
     if len(have) >= 2:
-        for d in datasets_in(next(iter(have.values()))):
+        ds = list(dict.fromkeys(d for v in have.values() for rows in v for d in datasets_in(rows)))
+        for d in ds:
             for p in ("strict:0.1", "iwstrict:0.1"):
-                for mode, rows in have.items():
-                    a = pick(rows, dataset=d, policy=p, scenario="pgd/attack_only/feasible", learning="poison:1.0")
-                    t = pick(rows, dataset=d, policy=p, scenario="pgd/attack_only/feasible", learning="true")
-                    if a is None:
+                for mode, row_sets in have.items():
+                    kw_a = dict(dataset=d, policy=p, scenario="pgd/attack_only/feasible", learning="poison:1.0")
+                    kw_t = dict(dataset=d, policy=p, scenario="pgd/attack_only/feasible", learning="true")
+                    if first_ms(row_sets, "asr", **kw_a)[0] is None:
                         continue
-                    body.append([esc(NAMES.get(d, d)), esc(pol_label(p)), mode, fmt(*ms(a, "asr")),
-                                 fmt(*ms(a, "audited_attacker_share")) if "audited_attacker_share_mean" in a else "--",
-                                 fmt(*ms(t, "fpr"))])
+                    body.append([esc(NAMES.get(d, d)), esc(pol_label(p)), mode, fmt(*first_ms(row_sets, "asr", **kw_a)),
+                                 fmt(*first_ms(row_sets, "audited_attacker_share", **kw_a)),
+                                 fmt(*first_ms(row_sets, "fpr", **kw_t)),
+                                 fmt(*first_ms(row_sets, "n_audited", **kw_t), d=0)])
         write_tex(out, "tab_audits", "Audit allocation: random, uncertainty-based or mixed audits (10\\% budget). "
                   "Evasion under evasion + full poisoning, share of the attacker's flows that got audited, and "
-                  "false alarms under attack with true labels (\\%), mean $\\pm$ std over seeds.", "tab:audits",
-                  ["Dataset", "Policy", "Audits", "ASR", "Attacker flows audited", "FPR"], body, "lllccc")
+                  "false alarms under attack with true labels (\\%), with the audits that run used; mean $\\pm$ std "
+                  "over seeds. Random audits check about 10\\% of the attacker's flows by construction (-- = not "
+                  "recorded by the older runs).", "tab:audits",
+                  ["Dataset", "Policy", "Audits", "ASR", "Attacker flows audited", "FPR", "Audits used"], body,
+                  "lllcccc")
     low = read(folder / "summary_loop_lowbudget.csv")
     if low:
         body = []
@@ -928,7 +1038,7 @@ def main() -> int:
     out = Path(args.out) if args.out else res / "paper"
     for step in (repro_table, attack_fig_and_table, label_delay_fig, radp_fig_and_table, loop_figs_and_table,
                  audit_tradeoff, advtrain_fig_and_table, cascade_fig_and_table, framing_fig_and_table,
-                 adaptive_evasion_fig_and_table, audits_lowbudget_tables):
+                 framing_audits_fig_and_table, adaptive_evasion_fig_and_table, audits_lowbudget_tables):
         try:
             step(res, out)
         except Exception as exc:  # one broken input must not stop the others
