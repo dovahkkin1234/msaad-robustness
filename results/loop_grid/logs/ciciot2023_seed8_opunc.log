@@ -1,0 +1,11 @@
+[loaders] file order, stride sampling: 883,690 rows pass the filter; taking 30,000 evenly spaced (about 1 in 29.5)
+[loop] ciciot2023: 30,000 rows x 46 features; train 20,100 / test 9,900 (test DDoS share 96.6%), seed 8
+[attack] pgd/attack_only: surrogate fooled on 5.31% of perturbed rows; infeasible 100.0%
+[loop] clean                      frozen      frozen     acc  99.72  fpr   4.50  asr   0.14  KNN sel    0.0  skipped     0  (11.8s)
+[loop] clean                      true        iwstrict:0.1 acc  99.77  fpr   0.30  asr   0.23  KNN sel    0.0  skipped    91  (48.0s)
+[loop] clean                      true        iwconsensus:0.1 acc  99.80  fpr   0.30  asr    0.2  KNN sel    0.0  skipped    54  (49.1s)
+[loop] pgd/attack_only/feasible   frozen      frozen     acc   9.62  fpr   4.50  asr  93.37  KNN sel    0.0  skipped     0  (13.1s)
+[loop] pgd/attack_only/feasible   true        iwstrict:0.1 acc  99.95  fpr   0.00  asr   0.05  KNN sel    0.0  skipped   110  (45.1s)
+[loop] pgd/attack_only/feasible   true        iwconsensus:0.1 acc  99.74  fpr   2.10  asr    0.2  KNN sel    0.0  skipped   259  (39.4s)
+
+[loop] done in 5.0 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\loop_grid\ciciot2023_seed8_opunc.json and ciciot2023_seed8_opunc.csv

@@ -270,6 +270,15 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results`: grid_runs.jsonl (changed)
   - `results/loop_grid`: 45 new CSV; 45 new JSON; 45 new log; summary_loop_oprand.csv (new)
 
+### 2026-11-06 03:27 (UTC+05:30) - loop grid [opunc]: iotid20, ciciot2023, cicids2017 x seeds 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+
+- **Command:** `python experiments\run_grid.py --exp loop --labels true --jobs 6 --push --data iotid20 ciciot2023 cicids2017 --seeds 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 --tag opunc --audits uncertain --policies iwstrict:0.1 iwconsensus:0.1`
+- **Runs:** 45 ok, 0 failed; 77.6 min (2026-11-06 02:09:34 to 2026-11-06 03:27:13)
+- **Code version:** c529bd8
+- **Results:**
+  - `results`: grid_runs.jsonl (changed)
+  - `results/loop_grid`: 45 new CSV; 45 new JSON; 45 new log; summary_loop_opunc.csv (new)
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->
@@ -802,6 +811,51 @@ Reconstructed from the result files and the project notes; times are when the ru
 | 2026-11-06 02:05:39 | loop grid | cicids2017 | 13 | oprand | 30,000 | 8.9 | `results/loop_grid/cicids2017_seed13_oprand.json` |
 | 2026-11-06 02:05:51 | loop grid | cicids2017 | 14 | oprand | 30,000 | 8.9 | `results/loop_grid/cicids2017_seed14_oprand.json` |
 | 2026-11-06 02:06:18 | loop grid | cicids2017 | 15 | oprand | 30,000 | 9.0 | `results/loop_grid/cicids2017_seed15_oprand.json` |
+| 2026-11-06 02:42:39 | loop grid | iotid20 | 3 | opunc | 30,000 | 33.0 | `results/loop_grid/iotid20_seed3_opunc.json` |
+| 2026-11-06 02:42:57 | loop grid | iotid20 | 2 | opunc | 30,000 | 33.4 | `results/loop_grid/iotid20_seed2_opunc.json` |
+| 2026-11-06 02:43:41 | loop grid | iotid20 | 1 | opunc | 30,000 | 34.1 | `results/loop_grid/iotid20_seed1_opunc.json` |
+| 2026-11-06 02:43:46 | loop grid | iotid20 | 4 | opunc | 30,000 | 34.2 | `results/loop_grid/iotid20_seed4_opunc.json` |
+| 2026-11-06 02:43:50 | loop grid | iotid20 | 6 | opunc | 30,000 | 34.2 | `results/loop_grid/iotid20_seed6_opunc.json` |
+| 2026-11-06 02:43:57 | loop grid | iotid20 | 5 | opunc | 30,000 | 34.4 | `results/loop_grid/iotid20_seed5_opunc.json` |
+| 2026-11-06 02:51:59 | loop grid | iotid20 | 7 | opunc | 30,000 | 9.3 | `results/loop_grid/iotid20_seed7_opunc.json` |
+| 2026-11-06 02:52:05 | loop grid | iotid20 | 10 | opunc | 30,000 | 8.3 | `results/loop_grid/iotid20_seed10_opunc.json` |
+| 2026-11-06 02:52:06 | loop grid | iotid20 | 11 | opunc | 30,000 | 8.2 | `results/loop_grid/iotid20_seed11_opunc.json` |
+| 2026-11-06 02:52:06 | loop grid | iotid20 | 8 | opunc | 30,000 | 9.1 | `results/loop_grid/iotid20_seed8_opunc.json` |
+| 2026-11-06 02:52:06 | loop grid | iotid20 | 9 | opunc | 30,000 | 8.4 | `results/loop_grid/iotid20_seed9_opunc.json` |
+| 2026-11-06 02:52:10 | loop grid | iotid20 | 12 | opunc | 30,000 | 8.2 | `results/loop_grid/iotid20_seed12_opunc.json` |
+| 2026-11-06 02:57:04 | loop grid | ciciot2023 | 2 | opunc | 30,000 | 4.9 | `results/loop_grid/ciciot2023_seed2_opunc.json` |
+| 2026-11-06 02:57:06 | loop grid | ciciot2023 | 1 | opunc | 30,000 | 5.0 | `results/loop_grid/ciciot2023_seed1_opunc.json` |
+| 2026-11-06 02:57:14 | loop grid | ciciot2023 | 3 | opunc | 30,000 | 5.0 | `results/loop_grid/ciciot2023_seed3_opunc.json` |
+| 2026-11-06 03:00:07 | loop grid | iotid20 | 13 | opunc | 30,000 | 8.1 | `results/loop_grid/iotid20_seed13_opunc.json` |
+| 2026-11-06 03:00:25 | loop grid | iotid20 | 15 | opunc | 30,000 | 8.3 | `results/loop_grid/iotid20_seed15_opunc.json` |
+| 2026-11-06 03:00:34 | loop grid | iotid20 | 14 | opunc | 30,000 | 8.5 | `results/loop_grid/iotid20_seed14_opunc.json` |
+| 2026-11-06 03:02:06 | loop grid | ciciot2023 | 4 | opunc | 30,000 | 5.0 | `results/loop_grid/ciciot2023_seed4_opunc.json` |
+| 2026-11-06 03:02:07 | loop grid | ciciot2023 | 5 | opunc | 30,000 | 5.0 | `results/loop_grid/ciciot2023_seed5_opunc.json` |
+| 2026-11-06 03:02:13 | loop grid | ciciot2023 | 6 | opunc | 30,000 | 5.0 | `results/loop_grid/ciciot2023_seed6_opunc.json` |
+| 2026-11-06 03:05:14 | loop grid | ciciot2023 | 7 | opunc | 30,000 | 5.1 | `results/loop_grid/ciciot2023_seed7_opunc.json` |
+| 2026-11-06 03:05:25 | loop grid | ciciot2023 | 8 | opunc | 30,000 | 5.0 | `results/loop_grid/ciciot2023_seed8_opunc.json` |
+| 2026-11-06 03:05:37 | loop grid | ciciot2023 | 9 | opunc | 30,000 | 5.0 | `results/loop_grid/ciciot2023_seed9_opunc.json` |
+| 2026-11-06 03:06:58 | loop grid | ciciot2023 | 11 | opunc | 30,000 | 4.8 | `results/loop_grid/ciciot2023_seed11_opunc.json` |
+| 2026-11-06 03:07:03 | loop grid | ciciot2023 | 10 | opunc | 30,000 | 4.9 | `results/loop_grid/ciciot2023_seed10_opunc.json` |
+| 2026-11-06 03:07:12 | loop grid | ciciot2023 | 12 | opunc | 30,000 | 5.0 | `results/loop_grid/ciciot2023_seed12_opunc.json` |
+| 2026-11-06 03:10:16 | loop grid | ciciot2023 | 13 | opunc | 30,000 | 5.0 | `results/loop_grid/ciciot2023_seed13_opunc.json` |
+| 2026-11-06 03:10:24 | loop grid | ciciot2023 | 14 | opunc | 30,000 | 5.0 | `results/loop_grid/ciciot2023_seed14_opunc.json` |
+| 2026-11-06 03:10:41 | loop grid | ciciot2023 | 15 | opunc | 30,000 | 5.0 | `results/loop_grid/ciciot2023_seed15_opunc.json` |
+| 2026-11-06 03:13:33 | loop grid | cicids2017 | 1 | opunc | 30,000 | 6.6 | `results/loop_grid/cicids2017_seed1_opunc.json` |
+| 2026-11-06 03:13:44 | loop grid | cicids2017 | 2 | opunc | 30,000 | 6.7 | `results/loop_grid/cicids2017_seed2_opunc.json` |
+| 2026-11-06 03:13:51 | loop grid | cicids2017 | 3 | opunc | 30,000 | 6.6 | `results/loop_grid/cicids2017_seed3_opunc.json` |
+| 2026-11-06 03:16:41 | loop grid | cicids2017 | 4 | opunc | 30,000 | 6.4 | `results/loop_grid/cicids2017_seed4_opunc.json` |
+| 2026-11-06 03:16:53 | loop grid | cicids2017 | 5 | opunc | 30,000 | 6.5 | `results/loop_grid/cicids2017_seed5_opunc.json` |
+| 2026-11-06 03:17:03 | loop grid | cicids2017 | 6 | opunc | 30,000 | 6.3 | `results/loop_grid/cicids2017_seed6_opunc.json` |
+| 2026-11-06 03:20:04 | loop grid | cicids2017 | 7 | opunc | 30,000 | 6.5 | `results/loop_grid/cicids2017_seed7_opunc.json` |
+| 2026-11-06 03:20:32 | loop grid | cicids2017 | 9 | opunc | 30,000 | 6.7 | `results/loop_grid/cicids2017_seed9_opunc.json` |
+| 2026-11-06 03:20:42 | loop grid | cicids2017 | 8 | opunc | 30,000 | 6.9 | `results/loop_grid/cicids2017_seed8_opunc.json` |
+| 2026-11-06 03:23:19 | loop grid | cicids2017 | 10 | opunc | 30,000 | 6.6 | `results/loop_grid/cicids2017_seed10_opunc.json` |
+| 2026-11-06 03:23:28 | loop grid | cicids2017 | 11 | opunc | 30,000 | 6.6 | `results/loop_grid/cicids2017_seed11_opunc.json` |
+| 2026-11-06 03:23:37 | loop grid | cicids2017 | 12 | opunc | 30,000 | 6.5 | `results/loop_grid/cicids2017_seed12_opunc.json` |
+| 2026-11-06 03:26:28 | loop grid | cicids2017 | 13 | opunc | 30,000 | 6.4 | `results/loop_grid/cicids2017_seed13_opunc.json` |
+| 2026-11-06 03:27:00 | loop grid | cicids2017 | 14 | opunc | 30,000 | 6.4 | `results/loop_grid/cicids2017_seed14_opunc.json` |
+| 2026-11-06 03:27:12 | loop grid | cicids2017 | 15 | opunc | 30,000 | 6.5 | `results/loop_grid/cicids2017_seed15_opunc.json` |
 
 Dataset reports: `results/inspect_IoT_Network_Intrusion_Dataset.txt`, `results/inspect_friday.txt`, `results/inspect_part-00000.txt`
 <!-- history:end -->
