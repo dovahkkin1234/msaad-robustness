@@ -18,7 +18,7 @@
 
 ```powershell
 New-Item -ItemType Directory -Force -Path "$HOME\Projects\CNS-Project" | Out-Null
-Expand-Archive "$HOME\Downloads\msaad-robustness-v14d.zip" -DestinationPath "$HOME\Projects\CNS-Project" -Force
+Expand-Archive "$HOME\Downloads\msaad-robustness-v14e.zip" -DestinationPath "$HOME\Projects\CNS-Project" -Force
 Set-Location "$HOME\Projects\CNS-Project\msaad-robustness"
 Get-ChildItem
 ```
@@ -26,7 +26,7 @@ Get-ChildItem
 You should see `configs`, `experiments`, `scripts`, `src`, `tests` and the `.md` files.
 (If you prefer another location, change `$HOME\Projects\CNS-Project` everywhere.)
 
-**Updating an existing copy (e.g. v14c → v14d):** run the same `Expand-Archive` line. The zip
+**Updating an existing copy (e.g. v14d → v14e):** run the same `Expand-Archive` line. The zip
 holds only code and documents, so your `data` and `results` folders are kept as they are.
 Once Step 15 is done, push each new version: `python scripts\push_run.py "Code v13: ..."`; git
 then shows exactly what changed. From v13 on the packages leave out `RUNS.md`, so extracting one
@@ -864,6 +864,58 @@ python scripts\push_run.py "Combined attack with uncertainty audits: statistics 
 - If the two-command version Claude gave on 5 Nov is already running, let it finish: its extra
   `poison:1.0` rows repeat earlier runs bit for bit, and the statistics read either version.
 
+# Step 21 — v14e: matched operating points, and the combined-attack statistics
+
+Branch `exp/conference` only. Why: uncertainty audits cut false alarms (F18), but on IoTID20 and
+CICIoT2023 clean traffic they also miss slightly more attacks at the default threshold, so a
+reviewer can call the gain a shifted threshold. v14e records each flow's score and compares the
+audit modes at the same detection rate. Predictions, audits and every earlier metric are
+unchanged (checked bit for bit against v14d).
+
+| File | Change |
+|---|---|
+| `experiments\adaptation_loop.py` | Every run also reports ROC AUC, false alarms at 99 / 99.5 / 99.9% detection and detection at 0.1 / 1% false alarms (genuine flows, one threshold per run). |
+| `experiments\run_grid.py` | The loop summary CSV carries those fields. |
+| `scripts\stats.py` | An `oppoint` preset (audit modes at matched operating points, and against vanilla); `frameunc` now also tests the combined attack against vanilla and IW-consensus against IW-strict. |
+| `scripts\make_figures.py` | `tab_oppoint`. |
+| `PLAN.md` | F23 (combined attack) and prediction P10 (registered before the run). |
+
+**1. Update the code and self-check. Terminal CNS1 — PowerShell, `(msaad)` active, inside
+`msaad-robustness`:**
+
+```powershell
+Expand-Archive "$HOME\Downloads\msaad-robustness-v14e.zip" -DestinationPath "$HOME\Projects\CNS-Project" -Force
+python tests\smoke_test.py
+python tests\loop_smoke_test.py
+python scripts\push_run.py "Code v14e: operating points, oppoint statistics, F23"
+```
+
+**2. The two operating-point grids, true labels, 15 seeds, about 1–1.5 hours together. Same
+window:**
+
+```powershell
+$s = 1..15
+$g = "--exp", "loop", "--labels", "true", "--jobs", "6", "--push"
+$d = "iotid20", "ciciot2023", "cicids2017"
+python experiments\run_grid.py $g --data $d --seeds $s --tag oprand --policies vanilla iwstrict:0.1 iwconsensus:0.1
+python experiments\run_grid.py $g --data $d --seeds $s --tag opunc --audits uncertain --policies iwstrict:0.1 iwconsensus:0.1
+```
+
+Built-in check: the `fpr` and `asr` columns must equal the true-label rows of the `frame`
+(random) and `frameunc` (uncertainty) grids exactly, e.g. IoTID20 IW-strict under attack 3.52 / 0.11
+(random) and 0.45 / 0.14 (uncertain). Anything else means the code changed behaviour: stop and
+send Claude the output.
+
+**3. Statistics, figures, push. Same window:**
+
+```powershell
+python scripts\stats.py --preset oppoint frameunc
+python scripts\make_figures.py
+python scripts\push_run.py "Matched operating points and combined-attack statistics"
+```
+
+Send Claude the `oppoint` part of the statistics output (or `results\paper\stats_oppoint.csv`).
+
 # Troubleshooting
 
 | Symptom | Fix |
@@ -882,7 +934,7 @@ python scripts\push_run.py "Combined attack with uncertainty audits: statistics 
 | `ModuleNotFoundError: No module named 'torch'` | Step 18, part 1 (CPU build of PyTorch). |
 | `delaysec:T needs ...` | Label delays in seconds need a time-ordered dataset with a timestamp in its `context` config (CIC-IDS2017), and v14c (older code loads different rows for the timestamps). |
 | `[check] ... the context loader returns different rows` | The code is older than v14c: extract v14c (Step 19, part 2). |
-| `stats.py` prints `no matching runs yet (skipped)` | That comparison's grid has not run yet (for `frameunc`: the optional combined-attack grid, Step 20 part 3). The other comparisons are complete. |
+| `stats.py` prints `no matching runs yet (skipped)` | That comparison's grid has not run yet (`frameunc`: the combined-attack grid, Step 20 part 3; `oppoint`: the two Step 21 grids). The other comparisons are complete. |
 | `fig_framing_audits` is missing | It needs both `summary_loop_frame.csv` and `summary_loop_frameunc.csv` in `results\loop_grid`; `make_figures.py` prints which one it lacks. |
 | `[grid] --data is required (or use --summarise)` | Add `--data ...`, or `--summarise` to only rewrite a summary from finished runs. |
 | A summary CSV lacks a dataset you ran | Two grids with the same tag finished in the wrong order: `python experiments\run_grid.py --exp <exp> --tag <tag> --summarise`. |

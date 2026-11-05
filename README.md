@@ -13,7 +13,7 @@ nothing here generates traffic or runs against any live system.
 
 ---
 
-## What is here (stages S0–S4, adversarial training, detector chain, adaptive attacks, CIC-IDS2017, framing vs audit allocation — v14d)
+## What is here (stages S0–S4, adversarial training, detector chain, adaptive attacks, CIC-IDS2017, framing vs audit allocation, operating points — v14e)
 
 ```
 msaad-robustness/
@@ -28,11 +28,12 @@ msaad-robustness/
 │   ├── check_stream.py       # v14c: what a configured stream holds (split, classes, clock, hosts)
 │   ├── inspect_dataset.py    # columns, class counts, file order vs time order
 │   ├── make_figures.py       # paper figures (PDF/PNG, every seed as a dot) + LaTeX tables;
-│   │                         #   v14d: fig_framing_audits, tab_framing_audits
+│   │                         #   v14d: fig_framing_audits, tab_framing_audits, v14e: tab_oppoint
 │   ├── per_seed.py           # v14c: the per-seed values behind one summary line
 │   ├── push_run.py           # journal the latest run in RUNS.md, commit it, push to GitHub
 │   └── stats.py              # paired seed statistics: bootstrap CIs, Wilcoxon, Holm, effect sizes;
 │                             #   v14d: frameunc preset (audit allocation and framing, 3 datasets)
+│                             #   v14e: oppoint preset (matched operating points)
 ├── src/
 │   ├── data/
 │   │   ├── loaders.py        # CSV + synthetic streams; file / campaign / time replay orders

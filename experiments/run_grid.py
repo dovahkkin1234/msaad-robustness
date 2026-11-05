@@ -82,7 +82,8 @@ ARMS = ["ARF-ADWIN", "ARF-DDM", "SRP-ADWIN", "SRP-DDM", "KNN-ADWIN"]
 LOOP_METRICS = (["accuracy", "fpr", "asr", "poison_gain", "evasion_gain", "n_skipped"]
                 + [f"sel_{a}" for a in ARMS]
                 + ["audited_attacker_share", "fpr_frame_window", "fpr_after_window", "n_frame_learned",
-                   "n_audited"])
+                   "n_audited", "auc", "fpr_at_tpr99", "fpr_at_tpr995", "fpr_at_tpr999", "tpr_at_fpr01",
+                   "tpr_at_fpr1"])
 ADV_METRICS = ["accuracy", "fpr", "recall", "asr", "clean_miss", "evasion_gain"]
 CASCADE_METRICS = ["asr", "fpr", "accuracy", "caught_s1_misses", "evaded_volume", "drift_coverage"]
 PRINTED = {"loop": 6}   # the loop summary prints its first metrics; the CSV has all of them

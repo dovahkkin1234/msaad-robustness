@@ -30,6 +30,8 @@ exists:
     tab_audits (random / uncertainty / mixed audit allocation, now with CIC-IDS2017 and the audits
     used), tab_lowbudget (5% and 2% audits)
     v14d: tab_framing_audits (framing per policy and audit mode, recovery, audits used, combined attack)
+    v14e: tab_oppoint (audit allocation at matched operating points: FPR at 99.9% / 99% detection,
+    detection at 1% FPR, ROC AUC)
 
 Every figure gets one panel per dataset present (IoTID20, IoTID20 (P2), CICIoT2023, CIC-IDS2017).
 Results tagged s15 (15 seeds) win over the untagged 3-seed ones (--prefer '' to use the 3-seed
@@ -934,6 +936,34 @@ def framing_audits_fig_and_table(res: Path, out: Path):
               body, "lll" + "c" * (len(rates) + 4))
 
 
+def oppoint_table(res: Path, out: Path):
+    """v14e: the audit-allocation result at matched operating points (oprand / opunc grids)."""
+    folder = res / "loop_grid"
+    sets = [("random", folder / "summary_loop_oprand.csv"), ("uncertain", folder / "summary_loop_opunc.csv")]
+    if not all(f.exists() for _, f in sets):
+        print("[figures] skipped: tab_oppoint needs summary_loop_oprand.csv and summary_loop_opunc.csv")
+        return
+    have = {m: read(f) for m, f in sets}
+    body = []
+    for d in datasets_in(have["random"]):
+        for sc, sc_name in (("clean", "clean"), ("pgd/attack_only/feasible", "repaired PGD")):
+            for p, modes in (("vanilla", ("random",)), ("iwstrict:0.1", ("random", "uncertain")),
+                             ("iwconsensus:0.1", ("random", "uncertain"))):
+                for mode in modes:
+                    row = pick(have[mode], dataset=d, policy=p, scenario=sc, learning="true")
+                    if row is None:
+                        continue
+                    body.append([esc(NAMES.get(d, d)), sc_name, esc(pol_label(p)), "--" if p == "vanilla" else mode]
+                                + [fmt(*ms(row, k)) for k in ("fpr", "asr", "fpr_at_tpr999", "fpr_at_tpr99",
+                                                               "tpr_at_fpr1", "auc")])
+    write_tex(out, "tab_oppoint", "Audit allocation at matched operating points, true labels (10\\% budget): false "
+              "alarms and evasion at the default threshold; false alarms (\\%) with one threshold per run set "
+              "so that 99.9\\% or 99\\% of DDoS flows are caught; detection (\\%) at 1\\% false alarms; ROC AUC "
+              "(\\%). Scores are the ensemble's P(DDoS) before it learns each flow. Mean $\\pm$ std over seeds.",
+              "tab:oppoint", ["Dataset", "Traffic", "Policy", "Audits", "FPR", "ASR", "FPR at 99.9\\%",
+                              "FPR at 99\\%", "Det. at 1\\% FPR", "AUC"], body, "llll" + "c" * 6)
+
+
 def adaptive_evasion_fig_and_table(res: Path, out: Path):
     folder = res / "advtrain_grid"
     runs = seed_runs(folder, tags={"adaptive"})
@@ -1038,7 +1068,8 @@ def main() -> int:
     out = Path(args.out) if args.out else res / "paper"
     for step in (repro_table, attack_fig_and_table, label_delay_fig, radp_fig_and_table, loop_figs_and_table,
                  audit_tradeoff, advtrain_fig_and_table, cascade_fig_and_table, framing_fig_and_table,
-                 framing_audits_fig_and_table, adaptive_evasion_fig_and_table, audits_lowbudget_tables):
+                 framing_audits_fig_and_table, oppoint_table, adaptive_evasion_fig_and_table,
+                 audits_lowbudget_tables):
         try:
             step(res, out)
         except Exception as exc:  # one broken input must not stop the others

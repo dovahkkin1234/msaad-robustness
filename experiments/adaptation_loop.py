@@ -65,6 +65,12 @@ audits never look at flows the detector is confident about, which is exactly whe
 attacker puts its flows (the audit-aware attacker needs no extra knowledge: evasion already
 makes its flows confidently benign).
 
+v14e: every run also reports threshold-free operating points on the genuine flows: ROC AUC,
+the false-alarm rate at 99 / 99.5 / 99.9% detection and the detection rate at 0.1 / 1% false
+alarms (fields auc, fpr_at_tpr99, fpr_at_tpr995, fpr_at_tpr999, tpr_at_fpr01, tpr_at_fpr1, in %),
+so two policies can be compared at the same detection rate, not only at the default threshold.
+Nothing else changes: predictions, audits and every earlier metric are bit-identical.
+
 Reports, per scenario x label source x policy: accuracy, recall, F1, false-alarm rate (FPR),
 ASR (attacker flows classified benign) overall and per tenth of the test stream,
 poison_gain (ASR minus the same run with true labels), evasion_gain (ASR minus the clean
@@ -214,6 +220,7 @@ def replay(model: MABTSE, S, y, names, att, policy: str, audit_rate: float, flip
     n = len(y)
     frame = np.zeros(n, dtype=bool) if frame is None else frame
     preds = np.zeros(n, dtype=int)
+    scores = np.zeros(n, dtype=float)                        # v14e: P(DDoS) before learning (operating points)
     audited = np.zeros(n, dtype=bool)
     arm_preds = {a: np.zeros(n, dtype=int) for a in m.names} if per_arm else None
     sel = Counter()
@@ -235,6 +242,7 @@ def replay(model: MABTSE, S, y, names, att, policy: str, audit_rate: float, flip
         proba = m.predict_proba_one(x)
         p = max(proba, key=proba.get) if proba else None
         preds[i] = 0 if p is None else int(p)
+        scores[i] = float(proba.get(1, 0.0)) if proba else 0.0
         for a in m._last_selected:
             sel[a] += 1
         if per_arm:
@@ -299,7 +307,41 @@ def replay(model: MABTSE, S, y, names, att, policy: str, audit_rate: float, flip
     drifts = {k: v - d0.get(k, 0) for k, v in drift_counts(learners).items()}
     post = {a: round(m.alpha[a] / (m.alpha[a] + m.beta[a]), 4) for a in m.names}
     return {"preds": preds, "arm_preds": arm_preds, "sel": sel, "counts": cnt,
-            "drifts": drifts, "posterior_mean": post, "names": list(m.names), "audited": audited}
+            "drifts": drifts, "posterior_mean": post, "names": list(m.names), "audited": audited,
+            "scores": scores}
+
+
+def operating_points(scores: np.ndarray, y: np.ndarray) -> dict:
+    """v14e, threshold-free view of one run (genuine flows only): ROC AUC (%), the false-alarm
+    rate (%) at a fixed detection rate (99%, 99.5%, 99.9% of DDoS flows caught) and the
+    detection rate (%) at a fixed false-alarm rate (0.1%, 1%). Scores are the ensemble's
+    P(DDoS) for each flow before it learns from it; one global threshold per run (post hoc), so
+    two runs compare at the same detection rate instead of at the default 0.5 threshold.
+    Ties count conservatively (a threshold flags every flow with that score)."""
+    pos, neg = np.sort(scores[y == 1])[::-1], np.sort(scores[y == 0])[::-1]
+    if len(pos) == 0 or len(neg) == 0:
+        return {}
+    allv = np.concatenate([pos, neg])
+    order = np.argsort(allv, kind="mergesort")
+    _, inv, counts = np.unique(allv[order], return_inverse=True, return_counts=True)
+    ends = np.cumsum(counts)
+    avg = (ends - counts + 1 + ends) / 2.0                    # average rank of each tie group
+    ranks = np.empty(len(allv))
+    ranks[order] = avg[inv]
+    n1, n0 = len(pos), len(neg)
+    r = {"auc": round(100.0 * (ranks[:n1].sum() - n1 * (n1 + 1) / 2.0) / (n1 * n0), 3)}
+    for t, key in ((0.99, "fpr_at_tpr99"), (0.995, "fpr_at_tpr995"), (0.999, "fpr_at_tpr999")):
+        k = int(np.ceil(t * n1))
+        thr = pos[k - 1]                                     # flag score >= thr: at least t of DDoS caught
+        r[key] = round(100.0 * float((neg >= thr).mean()), 3)
+    for f, key in ((0.001, "tpr_at_fpr01"), (0.01, "tpr_at_fpr1")):
+        m_fp = int(np.floor(f * n0))                         # false alarms allowed
+        if m_fp >= n0:
+            r[key] = 100.0
+            continue
+        thr = neg[m_fp]                                      # flag score > thr: at most m_fp false alarms
+        r[key] = round(100.0 * float((pos > thr).mean()), 3)
+    return r
 
 
 def score(out: dict, y: np.ndarray, att: np.ndarray, frame=None, pos=None, frame_end=None) -> dict:
@@ -340,6 +382,8 @@ def score(out: dict, y: np.ndarray, att: np.ndarray, frame=None, pos=None, frame
     if out["arm_preds"] is not None:
         r["arm_asr"] = {a: share(a_k, v == 0) for a, v in out["arm_preds"].items()}
         r["arm_fpr"] = {a: share(ben, v == 1) for a, v in out["arm_preds"].items()}
+    if out.get("scores") is not None:                        # v14e: matched operating points
+        r.update(operating_points(out["scores"][keep], y[keep]))
     return r
 
 

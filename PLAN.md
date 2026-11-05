@@ -6,7 +6,7 @@
 > schedule in `MSAAD_Plan_Nov10.pdf` supersedes the one-week sprint table in §5 below;
 > the gap scan, novelty claim and pipeline stages here are unchanged.
 
-# Status and findings so far (5 Nov 2026)
+# Status and findings so far (6 Nov 2026)
 
 Research notes for the paper — facts and numbers to build on, not paper text.
 
@@ -26,7 +26,8 @@ Research notes for the paper — facts and numbers to build on, not paper text.
 | v14 on exp/conference: framing, audits, chain + GNN, adaptive attacks | **done, 15 seeds (adaptive: 5)** (F18–F22); predictions P1–P8 checked below |
 | v14 third dataset: CIC-IDS2017 (WTMC 2021), configured from the inspector | **done, 15 seeds**: attack, loop, adversarial training, chain, uncertainty audits, framing (F17–F19); P9 held |
 | Figures and tables | generated from the real results; v14d adds `fig_framing_audits`, `tab_framing_audits` and CIC-IDS2017 in `tab_audits` |
-| Optional (v14d): combined attack with uncertainty audits (`--tag combounc`, Step 20) | fills the last empty column of `tab_framing_audits` |
+| Combined attack with uncertainty audits (`--tag combounc`, Step 20) | **done, 15 seeds, three datasets (F23)** |
+| v14e: matched operating points (`--tag oprand`, `--tag opunc`, Step 21) | **to run**; prediction P10 registered below |
 
 **Where we stand (2 Nov).** Every planned experiment has run on both datasets with three
 seeds; the results can be frozen for the course paper now. The evaluation findings (F2–F7, F10–F13) are
@@ -58,7 +59,8 @@ in `RUNS.md` and pushed to the private repository (Step 15).
 | 15 | v14c: CIC-IDS2017 stream check, then attack, loop, adversarial training, chain (15 seeds) | Step 19 | check output, then the four summaries | done (F17) |
 | 15b | CIC-IDS2017 framing with random and uncertainty audits (`--tag frame`, `--tag frameunc`) | Step 19 | the per-seed JSONs (zip) | done 5 Nov (F18, F19) |
 | 16 | Paired statistics on everything finished (v14d adds the `frameunc` preset) | Step 20 | `results\paper\stats_*.csv` | `frameunc` run by Claude on the shared files, 5 Nov; re-run on the laptop |
-| 17 | Optional: combined attack (poisoning + 5% framing) with uncertainty audits, three datasets, ~1.5 h | Step 20 | the terminal output | optional |
+| 17 | Combined attack (poisoning + 5% framing) with uncertainty audits, three datasets, 55 min | Step 20 | the per-seed JSONs (zip) | done 6 Nov (F23) |
+| 18 | v14e: matched operating points, true labels, random and uncertainty audits, three datasets, ~1–1.5 h | Step 21 | the terminal output | to run (P10) |
 
 **Why #11.** The first question a reviewer asks of an evasion result is "why not adversarial
 training?". Three detectors per run, identical attacker: no adversarial training, trained on
@@ -103,6 +105,16 @@ and the consensus half of P1 led to the strongest new results (F18, F19); report
 | P7 | Distilled surrogate no better; HopSkipJump on valid traffic 25% / 51% (not most) on the plain detector, 14% / 2% on the AT one; repair kills raw evasions (31.6 → 4.0%) | partly |
 | P8 | Every large effect survives Holm; IW-strict's false-alarm gain over strict significant on all three datasets (p_Holm ≤ 0.0004) | held (stronger) |
 | P9 | Vanilla 99.95% vs strict 0.14% at q = 1; instant labels 0.02%; graph catch 98%; spoofing raises evasion to 17.8% | held |
+
+
+**P10 — matched operating points (registered 6 Nov, before the run).** F18's false-alarm drop
+comes with slightly more misses in two places at the default threshold (IW-strict on IoTID20
+clean traffic: 0.04 → 0.61% evasion; CICIoT2023 clean: 0.07 → 0.20%), so a reviewer can read it
+as a shifted threshold. Prediction: with one threshold per run set to catch the same share of
+DDoS flows, uncertainty audits still give IW-strict and IW-consensus fewer false alarms than
+random audits at 99% detection on all three datasets, and at 99.9% detection on CICIoT2023 and
+CIC-IDS2017; on IoTID20 clean traffic at 99.9% the gap shrinks and may vanish. ROC AUC is equal
+or higher with uncertainty audits.
 
 **Third dataset, confirmed by the inspector (3 Nov).** Corrected CIC-IDS2017 (Engelen et al.,
 WTMC 2021), Friday file: 547,915 flows, 84 columns; BENIGN 291,433, PortScan 159,151, DDoS 95,123,
@@ -571,8 +583,8 @@ Clean traffic, 10% framing (false alarms %, whole stream / after the campaign):
 - Under full poisoning alone IW-consensus equals IW-strict by construction (no attack labels
   reach the consensus check); the configuration that holds against poisoning and framing is
   IW-consensus with uncertainty audits. Its cost: under poisoning + 5% framing with random
-  audits it lets 1.8% (IoTID20) through vs 1.1% for IW-strict and 0.2% for strict. Whether
-  uncertainty audits close that gap is the optional `combounc` run (Step 20).
+  audits it lets 1.8% (IoTID20) through vs 1.1% for IW-strict and 0.2% for strict. Uncertainty
+  audits close most of that gap: 0.65% (F23).
 
 **F20 — Detector chain: model diversity helps; message passing does not beat a matched
 control (15 seeds).** No labels, repaired PGD, thresholds calibrated to 1% false alarms.
@@ -604,6 +616,34 @@ At 5% audits, capping IW-strict's copies at 5–10 halves its false alarms; at 2
 under full poisoning is 1.8–4.0% vs 0.4–0.9% at 10%. The noise-aware baseline (learns 1 − rho of
 unverified benign labels) lets 60% (IoTID20) and 5.6% (CICIoT2023) through under full poisoning,
 with clean false alarms near vanilla's.
+
+
+**F23 — The combined attack (evasion + full poisoning + 5% framing): IW-consensus with
+uncertainty audits is the one configuration that holds on every count (15 seeds, three
+datasets; run #17).** Repaired PGD; evasion % / false alarms %. Random audits from the `frame`
+grid (CIC-IDS2017's framing grid had no combined attack, so it has no random-audit row).
+
+| | IoTID20 | CICIoT2023 | CIC-IDS2017 |
+|---|---|---|---|
+| vanilla (no audits) | 99.74 / 8.75 | 99.93 / 29.83 | 99.95 / 3.51 |
+| strict, random → uncertain | 0.23 → 0.13 / 71.6 → 40.9 | 0.16 → 0.19 / 76.3 → 36.5 | 0.08 / 10.96 |
+| IW-strict, random → uncertain | 1.07 → 0.58 / 43.0 → 17.2 | 0.22 → 0.21 / 59.2 → 17.9 | 0.12 / 3.51 |
+| IW-consensus, random → uncertain | 1.81 → 0.65 / 22.6 → 5.2 | 0.35 → 0.35 / 50.4 → 13.8 | 0.15 / 1.95 |
+
+- Uncertainty vs random audits: fewer false alarms for every policy on IoTID20 and CICIoT2023
+  (p_Holm ≤ 0.0013, 15 of 15 seeds); less evasion on IoTID20 (p_Holm ≤ 0.011), unchanged on
+  CICIoT2023. Uncertainty audits close most of IW-consensus's evasion cost (1.81 → 0.65%).
+- Against vanilla: every audited policy cuts evasion from 99.7–99.95% to 0.08–0.65% (p_Holm ≤
+  0.004). Only IW-consensus also has fewer false alarms than vanilla on all three datasets
+  (p_Holm ≤ 0.006); IW-strict is lower on CICIoT2023, level on CIC-IDS2017 and higher on IoTID20
+  (17.2 vs 8.8%); strict is higher everywhere.
+- IW-consensus vs IW-strict, both with uncertainty audits: fewer false alarms under attack on all
+  three datasets (p_Holm ≤ 0.018; on unperturbed traffic significant on IoTID20 only), the same
+  evasion except on CICIoT2023 (0.35 vs 0.21%, p_Holm = 0.004).
+- The vanilla rows repeat the `frame` grid bit for bit (vanilla never audits).
+- **Recommended configuration for the paper: IW-consensus with uncertainty-directed audits
+  (10% budget).** It needs no knowledge of the attack type; its one measured cost is about 0.1
+  point of extra evasion on CICIoT2023 under the combined attack.
 
 **S4 design (v9) — what the adaptation-loop experiment tests.** F6 says MABTSE's robustness
 comes from learning true labels at once. S4 asks what happens when the label source is also

@@ -257,6 +257,10 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results`: grid_runs.jsonl (changed)
   - `results/loop_grid`: 45 new CSV; 45 new JSON; 45 new log; summary_loop_combounc.csv (new)
 
+### 2026-11-06 00:48 (UTC+05:30) - Code v14e: operating points, oppoint statistics, F23
+
+- **Code version:** 665e9c7; this commit also changes 9 code/document file(s): `PLAN.md`, `PLAN.pdf`, `README.md`, `SETUP.md`, `SETUP.pdf`, `experiments/adaptation_loop.py`, `experiments/run_grid.py`, `scripts/make_figures.py` ...
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->

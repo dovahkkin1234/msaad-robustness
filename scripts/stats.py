@@ -17,12 +17,15 @@ n = 6, 6.1e-5 at n = 15 -- three seeds can never be significant, fifteen can.
 Usage (repo root, msaad environment active):
     python scripts\\stats.py                      # every preset whose results exist (tag s15)
     python scripts\\stats.py --preset loop        # one preset (loop, attack, advtrain, cascade, frame,
-                                                  # audits, frameunc, lowbudget, radp)
+                                                  # audits, frameunc, oppoint, lowbudget, radp)
     python scripts\\stats.py --tag ""             # the untagged 3-seed grids instead
 v14d: the frameunc preset compares uncertainty-directed with random audits on all three datasets
 (under attack, under full poisoning, under framing during and after the campaign, and under the
 combined attack once the optional combounc grid exists) and against vanilla. A comparison's key or
 split may list several fields (shown joined by " | "), and may name the grids ("tags") it reads.
+v14e: frameunc also tests the combined attack against vanilla and IW-consensus against IW-strict;
+the oppoint preset compares audit modes at matched operating points (false alarms at a fixed
+detection rate, detection at a fixed false-alarm rate, ROC AUC) from the oprand / opunc grids.
 Outputs results\\paper\\stats_<preset>.csv and stats_<preset>.tex (booktabs), and prints the tables.
 """
 from __future__ import annotations
@@ -158,6 +161,44 @@ PRESETS = {
          "key": ["policy", "audit_mode"], "baseline": "vanilla | none", "tags": ["frame", "combounc"],
          "only": ["strict:0.1 | uncertain", "iwstrict:0.1 | uncertain", "iwconsensus:0.1 | uncertain"],
          "where": {"scenario": "pgd/attack_only/feasible", "learning": "poison:1.0+frame:0.05"}},
+        {"name": "Evasion + full poisoning + framing (5%): FPR (%), uncertainty audits vs vanilla", "metric": "fpr",
+         "key": ["policy", "audit_mode"], "baseline": "vanilla | none", "tags": ["frame", "combounc"],
+         "only": ["strict:0.1 | uncertain", "iwstrict:0.1 | uncertain", "iwconsensus:0.1 | uncertain"],
+         "where": {"scenario": "pgd/attack_only/feasible", "learning": "poison:1.0+frame:0.05"}},
+        # v14e: which IW policy to recommend once the attacker poisons and frames at once
+        {"name": "Combined attack, uncertainty audits: IW-consensus vs IW-strict, ASR (%)", "metric": "asr",
+         "key": ["policy", "audit_mode"], "baseline": "iwstrict:0.1 | uncertain", "tags": ["combounc"],
+         "only": ["iwconsensus:0.1 | uncertain"], "split": "scenario",
+         "where": {"learning": "poison:1.0+frame:0.05"}},
+        {"name": "Combined attack, uncertainty audits: IW-consensus vs IW-strict, FPR (%)", "metric": "fpr",
+         "key": ["policy", "audit_mode"], "baseline": "iwstrict:0.1 | uncertain", "tags": ["combounc"],
+         "only": ["iwconsensus:0.1 | uncertain"], "split": "scenario",
+         "where": {"learning": "poison:1.0+frame:0.05"}},
+    ]},
+    # v14e: matched operating points (threshold-free) for the audit-allocation result. The oprand
+    # (random audits, with vanilla) and opunc (uncertainty audits) grids repeat the true-label runs and
+    # add each run's ROC: does the false-alarm drop survive at the same detection rate?
+    "oppoint": {"folder": "loop_grid", "stem_tag": "", "tags": {"oprand": {}, "opunc": {}},
+                "comparisons": [
+        {"name": "Matched detection: FPR (%) at 99.9% of DDoS caught, uncertainty vs random audits",
+         "metric": "fpr_at_tpr999", "key": "audit_mode", "baseline": "random", "split": ["policy", "scenario"],
+         "where": {"learning": "true"}, "where_in": {"policy": ["iwstrict:0.1", "iwconsensus:0.1"]}},
+        {"name": "Matched detection: FPR (%) at 99% of DDoS caught, uncertainty vs random audits",
+         "metric": "fpr_at_tpr99", "key": "audit_mode", "baseline": "random", "split": ["policy", "scenario"],
+         "where": {"learning": "true"}, "where_in": {"policy": ["iwstrict:0.1", "iwconsensus:0.1"]}},
+        {"name": "Matched false alarms: detection (%) at 1% FPR, uncertainty vs random audits",
+         "metric": "tpr_at_fpr1", "key": "audit_mode", "baseline": "random", "split": ["policy", "scenario"],
+         "where": {"learning": "true"}, "where_in": {"policy": ["iwstrict:0.1", "iwconsensus:0.1"]}},
+        {"name": "ROC AUC (%), uncertainty vs random audits", "metric": "auc", "key": "audit_mode",
+         "baseline": "random", "split": ["policy", "scenario"], "where": {"learning": "true"},
+         "where_in": {"policy": ["iwstrict:0.1", "iwconsensus:0.1"]}},
+        {"name": "Matched detection: FPR (%) at 99.9% of DDoS caught, uncertainty audits vs vanilla",
+         "metric": "fpr_at_tpr999", "key": ["policy", "audit_mode"], "baseline": "vanilla | none",
+         "only": ["iwstrict:0.1 | uncertain", "iwconsensus:0.1 | uncertain"], "split": "scenario",
+         "where": {"learning": "true"}},
+        {"name": "ROC AUC (%), uncertainty audits vs vanilla", "metric": "auc", "key": ["policy", "audit_mode"],
+         "baseline": "vanilla | none", "only": ["iwstrict:0.1 | uncertain", "iwconsensus:0.1 | uncertain"],
+         "split": "scenario", "where": {"learning": "true"}},
     ]},
     "lowbudget": {"folder": "loop_grid", "tag_default": "lowbudget", "comparisons": [
         {"name": "Weight clipping at 5% audits: FPR (%) under attack, true labels, vs strict", "metric": "fpr",
