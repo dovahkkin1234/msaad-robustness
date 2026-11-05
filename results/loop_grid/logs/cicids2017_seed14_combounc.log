@@ -1,0 +1,17 @@
+[loaders] time window 2017-07-07 20:31:00 -> 2017-07-07 21:26:00: keeping 129,401 of 386,556 rows
+[loaders] time order: 129,401 rows pass the filter, sorted by Timestamp (2017-07-07 -> 2017-07-07); replaying 30,000 evenly spaced
+[loaders] skipping non-numeric or NaN/inf values in 6 column(s), e.g. ['Flow Bytes/s', 'Flow IAT Max', 'Flow IAT Mean', 'Flow IAT Min', 'Flow IAT Std', 'Flow Packets/s']
+[loop] cicids2017: 30,000 rows x 79 features; train 20,100 / test 9,900 (test DDoS share 75.4%), seed 14
+[attack] pgd/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 100.0%
+[loop] clean                      frozen      frozen     acc  99.89  fpr   0.29  asr   0.05  KNN sel    0.0  skipped     0  (20.6s)
+[loop] clean                      poison:1.0+frame:0.05 vanilla    acc  23.89  fpr   3.08  asr  99.89  KNN sel    0.0  skipped     0  (63.9s)
+[loop] clean                      poison:1.0+frame:0.05 strict:0.1 acc  96.98  fpr  12.05  asr   0.08  KNN sel    0.0  skipped  9284  (13.4s)
+[loop] clean                      poison:1.0+frame:0.05 iwstrict:0.1 acc  98.73  fpr   4.77  asr   0.13  KNN sel    0.0  skipped  9288  (33.3s)
+[loop] clean                      poison:1.0+frame:0.05 iwconsensus:0.1 acc  99.54  fpr   1.56  asr   0.11  KNN sel    0.0  skipped  9322  (33.1s)
+[loop] pgd/attack_only/feasible   frozen      frozen     acc  94.78  fpr   0.29  asr   6.83  KNN sel    0.0  skipped     0  (21.2s)
+[loop] pgd/attack_only/feasible   poison:1.0+frame:0.05 vanilla    acc  23.59  fpr   4.15  asr  99.95  KNN sel    0.0  skipped     0  (155.0s)
+[loop] pgd/attack_only/feasible   poison:1.0+frame:0.05 strict:0.1 acc  96.88  fpr  12.62  asr   0.03  KNN sel    0.0  skipped  9326  (12.7s)
+[loop] pgd/attack_only/feasible   poison:1.0+frame:0.05 iwstrict:0.1 acc  99.10  fpr   3.45  asr   0.07  KNN sel    0.0  skipped  9299  (31.8s)
+[loop] pgd/attack_only/feasible   poison:1.0+frame:0.05 iwconsensus:0.1 acc  99.35  fpr   2.55  asr   0.03  KNN sel    0.0  skipped  9407  (35.2s)
+
+[loop] done in 9.0 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\loop_grid\cicids2017_seed14_combounc.json and cicids2017_seed14_combounc.csv

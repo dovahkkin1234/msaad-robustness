@@ -248,6 +248,15 @@ Reconstructed from the result files and the project notes; times are when the ru
 - **Results:**
   - `results/paper`: fig_advtrain.pdf (changed), fig_attack_asr.pdf (changed), fig_audit_tradeoff.pdf (changed), fig_audit_tradeoff.png (changed), fig_cascade.pdf (changed), fig_framing.pdf (changed), fig_framing.png (changed), fig_hsj.pdf (changed), fig_label_delay.pdf (changed), fig_loop_poison.pdf (changed), fig_loop_poison.png (changed), fig_loop_time.pdf (changed) and 13 more
 
+### 2026-11-06 00:32 (UTC+05:30) - loop grid [combounc]: iotid20, ciciot2023, cicids2017 x seeds 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15
+
+- **Command:** `python experiments\run_grid.py --exp loop --audits uncertain --tag combounc --jobs 6 --push --data iotid20 ciciot2023 cicids2017 --seeds 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 --labels poison:1.0+frame:0.05 --policies vanilla strict:0.1 iwstrict:0.1 iwconsensus:0.1`
+- **Runs:** 45 ok, 0 failed; 54.8 min (2026-11-05 23:37:57 to 2026-11-06 00:32:47)
+- **Code version:** 09f7989
+- **Results:**
+  - `results`: grid_runs.jsonl (changed)
+  - `results/loop_grid`: 45 new CSV; 45 new JSON; 45 new log; summary_loop_combounc.csv (new)
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->
@@ -690,6 +699,51 @@ Reconstructed from the result files and the project notes; times are when the ru
 | 2026-11-05 18:01:56 | loop grid | cicids2017 | 13 | frame | 30,000 | 25.7 | `results/loop_grid/cicids2017_seed13_frame.json` |
 | 2026-11-05 18:01:56 | loop grid | cicids2017 | 14 | frame | 30,000 | 25.7 | `results/loop_grid/cicids2017_seed14_frame.json` |
 | 2026-11-05 18:02:02 | loop grid | cicids2017 | 15 | frame | 30,000 | 25.8 | `results/loop_grid/cicids2017_seed15_frame.json` |
+| 2026-11-05 23:45:57 | loop grid | iotid20 | 3 | combounc | 30,000 | 8.0 | `results/loop_grid/iotid20_seed3_combounc.json` |
+| 2026-11-05 23:46:02 | loop grid | iotid20 | 5 | combounc | 30,000 | 8.1 | `results/loop_grid/iotid20_seed5_combounc.json` |
+| 2026-11-05 23:46:04 | loop grid | iotid20 | 1 | combounc | 30,000 | 8.1 | `results/loop_grid/iotid20_seed1_combounc.json` |
+| 2026-11-05 23:46:04 | loop grid | iotid20 | 2 | combounc | 30,000 | 8.1 | `results/loop_grid/iotid20_seed2_combounc.json` |
+| 2026-11-05 23:46:09 | loop grid | iotid20 | 4 | combounc | 30,000 | 8.2 | `results/loop_grid/iotid20_seed4_combounc.json` |
+| 2026-11-05 23:46:09 | loop grid | iotid20 | 6 | combounc | 30,000 | 8.2 | `results/loop_grid/iotid20_seed6_combounc.json` |
+| 2026-11-05 23:54:07 | loop grid | iotid20 | 12 | combounc | 30,000 | 7.9 | `results/loop_grid/iotid20_seed12_combounc.json` |
+| 2026-11-05 23:54:07 | loop grid | iotid20 | 7 | combounc | 30,000 | 8.2 | `results/loop_grid/iotid20_seed7_combounc.json` |
+| 2026-11-05 23:54:15 | loop grid | iotid20 | 10 | combounc | 30,000 | 8.2 | `results/loop_grid/iotid20_seed10_combounc.json` |
+| 2026-11-05 23:54:15 | loop grid | iotid20 | 11 | combounc | 30,000 | 8.1 | `results/loop_grid/iotid20_seed11_combounc.json` |
+| 2026-11-05 23:54:17 | loop grid | iotid20 | 8 | combounc | 30,000 | 8.2 | `results/loop_grid/iotid20_seed8_combounc.json` |
+| 2026-11-05 23:54:17 | loop grid | iotid20 | 9 | combounc | 30,000 | 8.2 | `results/loop_grid/iotid20_seed9_combounc.json` |
+| 2026-11-05 23:59:03 | loop grid | ciciot2023 | 1 | combounc | 30,000 | 4.8 | `results/loop_grid/ciciot2023_seed1_combounc.json` |
+| 2026-11-05 23:59:03 | loop grid | ciciot2023 | 2 | combounc | 30,000 | 4.8 | `results/loop_grid/ciciot2023_seed2_combounc.json` |
+| 2026-11-05 23:59:11 | loop grid | ciciot2023 | 3 | combounc | 30,000 | 4.9 | `results/loop_grid/ciciot2023_seed3_combounc.json` |
+| 2026-11-06 00:02:14 | loop grid | iotid20 | 13 | combounc | 30,000 | 8.1 | `results/loop_grid/iotid20_seed13_combounc.json` |
+| 2026-11-06 00:02:16 | loop grid | iotid20 | 15 | combounc | 30,000 | 8.0 | `results/loop_grid/iotid20_seed15_combounc.json` |
+| 2026-11-06 00:02:26 | loop grid | iotid20 | 14 | combounc | 30,000 | 8.3 | `results/loop_grid/iotid20_seed14_combounc.json` |
+| 2026-11-06 00:03:49 | loop grid | ciciot2023 | 5 | combounc | 30,000 | 4.7 | `results/loop_grid/ciciot2023_seed5_combounc.json` |
+| 2026-11-06 00:03:53 | loop grid | ciciot2023 | 4 | combounc | 30,000 | 4.8 | `results/loop_grid/ciciot2023_seed4_combounc.json` |
+| 2026-11-06 00:03:57 | loop grid | ciciot2023 | 6 | combounc | 30,000 | 4.7 | `results/loop_grid/ciciot2023_seed6_combounc.json` |
+| 2026-11-06 00:06:57 | loop grid | ciciot2023 | 8 | combounc | 30,000 | 4.6 | `results/loop_grid/ciciot2023_seed8_combounc.json` |
+| 2026-11-06 00:07:01 | loop grid | ciciot2023 | 7 | combounc | 30,000 | 4.8 | `results/loop_grid/ciciot2023_seed7_combounc.json` |
+| 2026-11-06 00:07:15 | loop grid | ciciot2023 | 9 | combounc | 30,000 | 4.8 | `results/loop_grid/ciciot2023_seed9_combounc.json` |
+| 2026-11-06 00:08:36 | loop grid | ciciot2023 | 10 | combounc | 30,000 | 4.8 | `results/loop_grid/ciciot2023_seed10_combounc.json` |
+| 2026-11-06 00:08:38 | loop grid | ciciot2023 | 11 | combounc | 30,000 | 4.7 | `results/loop_grid/ciciot2023_seed11_combounc.json` |
+| 2026-11-06 00:08:45 | loop grid | ciciot2023 | 12 | combounc | 30,000 | 4.8 | `results/loop_grid/ciciot2023_seed12_combounc.json` |
+| 2026-11-06 00:11:43 | loop grid | ciciot2023 | 13 | combounc | 30,000 | 4.7 | `results/loop_grid/ciciot2023_seed13_combounc.json` |
+| 2026-11-06 00:11:46 | loop grid | ciciot2023 | 14 | combounc | 30,000 | 4.7 | `results/loop_grid/ciciot2023_seed14_combounc.json` |
+| 2026-11-06 00:12:00 | loop grid | ciciot2023 | 15 | combounc | 30,000 | 4.7 | `results/loop_grid/ciciot2023_seed15_combounc.json` |
+| 2026-11-06 00:16:08 | loop grid | cicids2017 | 1 | combounc | 30,000 | 7.5 | `results/loop_grid/cicids2017_seed1_combounc.json` |
+| 2026-11-06 00:16:08 | loop grid | cicids2017 | 3 | combounc | 30,000 | 7.4 | `results/loop_grid/cicids2017_seed3_combounc.json` |
+| 2026-11-06 00:16:11 | loop grid | cicids2017 | 2 | combounc | 30,000 | 7.5 | `results/loop_grid/cicids2017_seed2_combounc.json` |
+| 2026-11-06 00:19:14 | loop grid | cicids2017 | 5 | combounc | 30,000 | 7.4 | `results/loop_grid/cicids2017_seed5_combounc.json` |
+| 2026-11-06 00:19:27 | loop grid | cicids2017 | 4 | combounc | 30,000 | 7.7 | `results/loop_grid/cicids2017_seed4_combounc.json` |
+| 2026-11-06 00:19:28 | loop grid | cicids2017 | 6 | combounc | 30,000 | 7.4 | `results/loop_grid/cicids2017_seed6_combounc.json` |
+| 2026-11-06 00:23:38 | loop grid | cicids2017 | 9 | combounc | 30,000 | 7.4 | `results/loop_grid/cicids2017_seed9_combounc.json` |
+| 2026-11-06 00:23:43 | loop grid | cicids2017 | 8 | combounc | 30,000 | 7.6 | `results/loop_grid/cicids2017_seed8_combounc.json` |
+| 2026-11-06 00:23:47 | loop grid | cicids2017 | 7 | combounc | 30,000 | 7.6 | `results/loop_grid/cicids2017_seed7_combounc.json` |
+| 2026-11-06 00:26:55 | loop grid | cicids2017 | 10 | combounc | 30,000 | 7.7 | `results/loop_grid/cicids2017_seed10_combounc.json` |
+| 2026-11-06 00:27:02 | loop grid | cicids2017 | 12 | combounc | 30,000 | 7.6 | `results/loop_grid/cicids2017_seed12_combounc.json` |
+| 2026-11-06 00:27:06 | loop grid | cicids2017 | 11 | combounc | 30,000 | 7.6 | `results/loop_grid/cicids2017_seed11_combounc.json` |
+| 2026-11-06 00:32:40 | loop grid | cicids2017 | 15 | combounc | 30,000 | 8.9 | `results/loop_grid/cicids2017_seed15_combounc.json` |
+| 2026-11-06 00:32:41 | loop grid | cicids2017 | 13 | combounc | 30,000 | 9.0 | `results/loop_grid/cicids2017_seed13_combounc.json` |
+| 2026-11-06 00:32:47 | loop grid | cicids2017 | 14 | combounc | 30,000 | 9.0 | `results/loop_grid/cicids2017_seed14_combounc.json` |
 
 Dataset reports: `results/inspect_IoT_Network_Intrusion_Dataset.txt`, `results/inspect_friday.txt`, `results/inspect_part-00000.txt`
 <!-- history:end -->
