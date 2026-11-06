@@ -32,6 +32,7 @@ exists:
     v14d: tab_framing_audits (framing per policy and audit mode, recovery, audits used, combined attack)
     v14e: tab_oppoint (audit allocation at matched operating points: FPR at 99.9% / 99% detection,
     detection at 1% FPR, ROC AUC)
+    v14f: tab_oppoint also lists mixed audits when the opmix grid exists
 
 Every figure gets one panel per dataset present (IoTID20, IoTID20 (P2), CICIoT2023, CIC-IDS2017).
 Results tagged s15 (15 seeds) win over the untagged 3-seed ones (--prefer '' to use the 3-seed
@@ -944,11 +945,13 @@ def oppoint_table(res: Path, out: Path):
         print("[figures] skipped: tab_oppoint needs summary_loop_oprand.csv and summary_loop_opunc.csv")
         return
     have = {m: read(f) for m, f in sets}
+    if (folder / "summary_loop_opmix.csv").exists():      # v14f: mixed audits (run #19), when present
+        have["mixed"] = read(folder / "summary_loop_opmix.csv")
+    iw_modes = tuple(m for m in ("random", "uncertain", "mixed") if m in have)
     body = []
     for d in datasets_in(have["random"]):
         for sc, sc_name in (("clean", "clean"), ("pgd/attack_only/feasible", "repaired PGD")):
-            for p, modes in (("vanilla", ("random",)), ("iwstrict:0.1", ("random", "uncertain")),
-                             ("iwconsensus:0.1", ("random", "uncertain"))):
+            for p, modes in (("vanilla", ("random",)), ("iwstrict:0.1", iw_modes), ("iwconsensus:0.1", iw_modes)):
                 for mode in modes:
                     row = pick(have[mode], dataset=d, policy=p, scenario=sc, learning="true")
                     if row is None:

@@ -13,7 +13,7 @@ nothing here generates traffic or runs against any live system.
 
 ---
 
-## What is here (stages S0–S4, adversarial training, detector chain, adaptive attacks, CIC-IDS2017, framing vs audit allocation, operating points — v14e)
+## What is here (stages S0–S4, adversarial training, detector chain, adaptive attacks, CIC-IDS2017, framing vs audit allocation, operating points — v14f, final)
 
 ```
 msaad-robustness/

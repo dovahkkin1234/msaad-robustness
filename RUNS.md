@@ -294,6 +294,12 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results`: grid_runs.jsonl (changed)
   - `results/loop_grid`: 45 new CSV; 45 new JSON; 45 new log; summary_loop_opmix.csv (new)
 
+### 2026-11-06 22:32 (UTC+05:30) - v14f: final statistics, figures and tables for the paper
+
+- **Code version:** 8ef64d7; this commit also changes 7 code/document file(s): `PLAN.md`, `PLAN.pdf`, `README.md`, `SETUP.md`, `SETUP.pdf`, `scripts/make_figures.py`, `scripts/stats.py`
+- **Results:**
+  - `results/paper`: fig_advtrain.pdf (changed), fig_attack_asr.pdf (changed), fig_audit_tradeoff.pdf (changed), fig_cascade.pdf (changed), fig_framing.pdf (changed), fig_framing_audits.pdf (changed), fig_hsj.pdf (changed), fig_label_delay.pdf (changed), fig_loop_poison.pdf (changed), fig_loop_time.pdf (changed), fig_radp_detect.pdf (changed), fig_radp_e2e.pdf (changed) and 5 more
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->

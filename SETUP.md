@@ -18,7 +18,7 @@
 
 ```powershell
 New-Item -ItemType Directory -Force -Path "$HOME\Projects\CNS-Project" | Out-Null
-Expand-Archive "$HOME\Downloads\msaad-robustness-v14e.zip" -DestinationPath "$HOME\Projects\CNS-Project" -Force
+Expand-Archive "$HOME\Downloads\msaad-robustness-v14f.zip" -DestinationPath "$HOME\Projects\CNS-Project" -Force
 Set-Location "$HOME\Projects\CNS-Project\msaad-robustness"
 Get-ChildItem
 ```
@@ -26,7 +26,7 @@ Get-ChildItem
 You should see `configs`, `experiments`, `scripts`, `src`, `tests` and the `.md` files.
 (If you prefer another location, change `$HOME\Projects\CNS-Project` everywhere.)
 
-**Updating an existing copy (e.g. v14d → v14e):** run the same `Expand-Archive` line. The zip
+**Updating an existing copy (e.g. v14e → v14f):** run the same `Expand-Archive` line. The zip
 holds only code and documents, so your `data` and `results` folders are kept as they are.
 Once Step 15 is done, push each new version: `python scripts\push_run.py "Code v13: ..."`; git
 then shows exactly what changed. From v13 on the packages leave out `RUNS.md`, so extracting one
@@ -915,6 +915,28 @@ python scripts\push_run.py "Matched operating points and combined-attack statist
 ```
 
 Send Claude the `oppoint` part of the statistics output (or `results\paper\stats_oppoint.csv`).
+
+# Step 22 — v14f: final statistics, figures and tables (experiments complete)
+
+v14f is the final code for the paper. It changes no experiment: the statistics read the mixed-audit
+grid (`--tag opmix`), `tab_oppoint` lists mixed audits, and `PLAN.md` holds every finding
+(F1–F24). **Terminal CNS1 — PowerShell, `(msaad)` active, inside `msaad-robustness`:**
+
+```powershell
+Expand-Archive "$HOME\Downloads\msaad-robustness-v14f.zip" -DestinationPath "$HOME\Projects\CNS-Project" -Force
+python tests\smoke_test.py
+python scripts\stats.py
+python scripts\make_figures.py
+python scripts\push_run.py "v14f: final statistics, figures and tables for the paper"
+```
+
+`python scripts\stats.py` with no preset runs every preset (about a minute) and writes all
+`results\paper\stats_*.csv` and `.tex`; `make_figures.py` writes every figure and table. These are
+the files the paper uses. To share them, zip the folder:
+
+```powershell
+Compress-Archive -Path results\paper\* -DestinationPath "$HOME\Downloads\msaad_paper_outputs_final.zip" -Force
+```
 
 # Troubleshooting
 

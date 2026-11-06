@@ -25,7 +25,8 @@ combined attack once the optional combounc grid exists) and against vanilla. A c
 split may list several fields (shown joined by " | "), and may name the grids ("tags") it reads.
 v14e: frameunc also tests the combined attack against vanilla and IW-consensus against IW-strict;
 the oppoint preset compares audit modes at matched operating points (false alarms at a fixed
-detection rate, detection at a fixed false-alarm rate, ROC AUC) from the oprand / opunc grids.
+detection rate, detection at a fixed false-alarm rate, ROC AUC) from the oprand / opunc grids;
+v14f: and mixed audits (opmix grid) against random audits in the same families.
 Outputs results\\paper\\stats_<preset>.csv and stats_<preset>.tex (booktabs), and prints the tables.
 """
 from __future__ import annotations
@@ -178,7 +179,7 @@ PRESETS = {
     # v14e: matched operating points (threshold-free) for the audit-allocation result. The oprand
     # (random audits, with vanilla) and opunc (uncertainty audits) grids repeat the true-label runs and
     # add each run's ROC: does the false-alarm drop survive at the same detection rate?
-    "oppoint": {"folder": "loop_grid", "stem_tag": "", "tags": {"oprand": {}, "opunc": {}},
+    "oppoint": {"folder": "loop_grid", "stem_tag": "", "tags": {"oprand": {}, "opunc": {}, "opmix": {}},
                 "comparisons": [
         {"name": "Matched detection: FPR (%) at 99.9% of DDoS caught, uncertainty vs random audits",
          "metric": "fpr_at_tpr999", "key": "audit_mode", "baseline": "random", "split": ["policy", "scenario"],

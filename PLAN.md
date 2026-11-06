@@ -27,7 +27,9 @@ Research notes for the paper — facts and numbers to build on, not paper text.
 | v14 third dataset: CIC-IDS2017 (WTMC 2021), configured from the inspector | **done, 15 seeds**: attack, loop, adversarial training, chain, uncertainty audits, framing (F17–F19); P9 held |
 | Figures and tables | generated from the real results; v14d adds `fig_framing_audits`, `tab_framing_audits` and CIC-IDS2017 in `tab_audits` |
 | Combined attack with uncertainty audits (`--tag combounc`, Step 20) | **done, 15 seeds, three datasets (F23)** |
-| v14e: matched operating points (`--tag oprand`, `--tag opunc`, Step 21) | **to run**; prediction P10 registered below |
+| v14e: matched operating points (`--tag oprand`, `--tag opunc`, Step 21) | **done, 15 seeds, three datasets (F24)**; P10 partly held |
+| Mixed audits at matched operating points (`--tag opmix`) | **done (F24)**: behaves like uncertainty audits; no hedge |
+| **Experiments** | **complete (6 Nov); v14f is the final code. Remaining work: writing.** |
 
 **Where we stand (2 Nov).** Every planned experiment has run on both datasets with three
 seeds; the results can be frozen for the course paper now. The evaluation findings (F2–F7, F10–F13) are
@@ -60,7 +62,8 @@ in `RUNS.md` and pushed to the private repository (Step 15).
 | 15b | CIC-IDS2017 framing with random and uncertainty audits (`--tag frame`, `--tag frameunc`) | Step 19 | the per-seed JSONs (zip) | done 5 Nov (F18, F19) |
 | 16 | Paired statistics on everything finished (v14d adds the `frameunc` preset) | Step 20 | `results\paper\stats_*.csv` | `frameunc` run by Claude on the shared files, 5 Nov; re-run on the laptop |
 | 17 | Combined attack (poisoning + 5% framing) with uncertainty audits, three datasets, 55 min | Step 20 | the per-seed JSONs (zip) | done 6 Nov (F23) |
-| 18 | v14e: matched operating points, true labels, random and uncertainty audits, three datasets, ~1–1.5 h | Step 21 | the terminal output | to run (P10) |
+| 18 | v14e: matched operating points, true labels, random and uncertainty audits, three datasets, 2 × 78 min | Step 21 | the per-seed JSONs (zip) | done 6 Nov (F24) |
+| 19 | Mixed audits (half random, half uncertainty) at matched operating points, 198 min | Step 21, `--tag opmix --audits mixed` | the per-seed JSONs (zip) | done 6 Nov (F24): no hedge |
 
 **Why #11.** The first question a reviewer asks of an evasion result is "why not adversarial
 training?". Three detectors per run, identical attacker: no adversarial training, trained on
@@ -91,7 +94,7 @@ FANET project's discipline). Each is checked on 15 seeds unless stated.
 | P9 | CIC-IDS2017, third dataset (19; registered 3 Nov, before any run) | The label-channel results replicate on an independently labelled, time-ordered stream: with instant true labels evasion stays ≤ 1%; vanilla lets ≥ 95% through under evasion + full poisoning while strict and IW-strict keep it ≤ 2%; evasion grows with the label delay, in seconds as in flows. Frozen transfer evasion: no prediction (the first two datasets disagree, 17% vs 49%). In the chain, the host-graph stage catches most of MABTSE's misses (one source floods one victim, which stands out in the host graph) and spoofing many sources lowers that catch. |
 
 
-**Prediction outcomes (5 Nov).** Five held, three held in part, one was wrong. The wrong one (P2)
+**Prediction outcomes (5–6 Nov).** Of P1–P9, five held, three held in part, one was wrong; P10 held in part (below). The wrong one (P2)
 and the consensus half of P1 led to the strongest new results (F18, F19); report the misses.
 
 | # | Outcome | Verdict |
@@ -115,6 +118,10 @@ DDoS flows, uncertainty audits still give IW-strict and IW-consensus fewer false
 random audits at 99% detection on all three datasets, and at 99.9% detection on CICIoT2023 and
 CIC-IDS2017; on IoTID20 clean traffic at 99.9% the gap shrinks and may vanish. ROC AUC is equal
 or higher with uncertainty audits.
+
+*Outcome (6 Nov, F24): partly held.* Under attack it held, more strongly than predicted (99.9%
+and 99% detection, AUC). On IoTID20 clean traffic it was wrong: the gap does not shrink, it
+reverses (uncertainty audits are worse at matched detection, and AUC is lower).
 
 **Third dataset, confirmed by the inspector (3 Nov).** Corrected CIC-IDS2017 (Engelen et al.,
 WTMC 2021), Friday file: 547,915 flows, 84 columns; BENIGN 291,433, PortScan 159,151, DDoS 95,123,
@@ -644,6 +651,58 @@ grid (CIC-IDS2017's framing grid had no combined attack, so it has no random-aud
 - **Recommended configuration for the paper: IW-consensus with uncertainty-directed audits
   (10% budget).** It needs no knowledge of the attack type; its one measured cost is about 0.1
   point of extra evasion on CICIoT2023 under the combined attack.
+
+
+**F24 — Matched operating points (run #18, v14e): under attack, the audit result is not a
+shifted threshold; on unperturbed IoTID20 traffic it partly is.** True labels, 10% budget,
+15 seeds. One threshold per run (post hoc, over the whole test stream) is set to catch a fixed
+share of the genuine DDoS flows, so policies compare at the same detection rate. This measures
+ranking quality; it is not a deployable threshold. False alarms (%) at 99.9% detection, random →
+uncertainty audits:
+
+| | IoTID20 | CICIoT2023 | CIC-IDS2017 |
+|---|---|---|---|
+| Under attack (repaired PGD), IW-strict | 3.92 → 0.71 | 5.87 → 0.64 | 0.02 → 0.00 |
+| Under attack, IW-consensus | 9.40 → 1.81 | 10.91 → 1.58 | 0.02 → 0.00 |
+| Clean traffic, IW-strict | 3.46 → 10.39 | 8.65 → 5.81 | 0.01 → 0.01 |
+| Clean traffic, IW-consensus | 3.53 → 11.18 | 8.69 → 6.11 | 0.01 → 0.00 |
+| vanilla (no audits), under attack / clean | 2.18 / 2.90 | 2.38 / 7.55 | 0.01 / 0.00 |
+
+- Under attack the gain is real. With uncertainty audits, IoTID20 and CICIoT2023 show:
+  - fewer false alarms at 99.9% detection (p_Holm ≤ 0.006, 14–15 of 15 seeds), and at 99% on
+    IoTID20 (CICIoT2023 is already near zero there);
+  - higher detection at 1% false alarms (p_Holm ≤ 0.011) and higher ROC AUC (p_Holm ≤ 0.008).
+  - CIC-IDS2017 is at the ceiling in both modes (AUC 100.00%, false alarms at 99.9% detection
+    ≤ 0.02%).
+  - Against vanilla at 99.9% detection, IW-strict with uncertainty audits is lower on IoTID20
+    (0.71 vs 2.18%, p_Holm = 0.007) and CICIoT2023 (0.64 vs 2.38%, p_Holm = 0.048).
+- On clean IoTID20 traffic it reverses. Uncertainty audits are worse at matched detection:
+  - false alarms at 99.9% detection 3.5 → 10.4–11.2%, and at 99% detection 1.6 → 3.1–3.3%;
+  - AUC 99.84 → 99.75% (p_Holm ≤ 0.04).
+  - Their default-threshold gain there (4.21 → 3.92%) is a threshold shift, bought with 0.61%
+    evasion instead of 0.04%. On CICIoT2023 clean traffic they are better but not
+    significantly.
+- Under the combined attack (F23) no operating-point argument is needed on IoTID20: uncertainty
+  audits lower false alarms and evasion at once (on CICIoT2023, false alarms at equal evasion).
+- Likely mechanism (a hypothesis, not tested). IW-strict copies every audited benign flow 1/a
+  times, which is unbiased only when audits are random. Uncertainty audits pick boundary flows
+  deterministically, so the copies over-weight benign flows near the boundary: under attack those
+  are the flows that matter; on clean IoTID20 traffic they pull the boundary toward benign.
+  Importance-weighted active learning (Beygelzimer, Dasgupta and Langford, ICML 2009) audits with
+  a randomised probability p and weights by 1/p: the principled fix, for Future Work.
+- Mixed audits (run #19, half random and half uncertainty) are no hedge. They behave like
+  uncertainty audits:
+  - under attack they keep the gain (IoTID20 IW-strict 3.92 → 0.77%, CICIoT2023 5.87 → 0.60% at
+    99.9% detection; p_Holm ≤ 0.012);
+  - on clean IoTID20 traffic they show the same reversal (3.46 → 10.64%, AUC 99.84 → 99.72%);
+  - against uncertainty audits directly, nearly every difference is n.s.; the exceptions are less
+    clean-traffic evasion for IW-consensus (0.67 → 0.41%) and more false alarms at 99.9%
+    detection under attack for IW-consensus on IoTID20 (1.81 → 4.29%).
+  - Since half-random audits do not shrink the reversal, the weighting-bias explanation above is
+    at best partial; the paper states the mechanism as open.
+  Uncertainty-directed audits stay the recommendation.
+- For the paper: claim the audit gain under attack and at matched detection; state the IoTID20
+  clean-traffic reversal as a limitation, with the mechanism above as a hypothesis.
 
 **S4 design (v9) — what the adaptation-loop experiment tests.** F6 says MABTSE's robustness
 comes from learning true labels at once. S4 asks what happens when the label source is also
