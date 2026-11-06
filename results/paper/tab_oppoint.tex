@@ -1,0 +1,43 @@
+\begin{table*}[t]
+\centering
+\caption{Audit allocation at matched operating points, true labels (10\% budget): false alarms and evasion at the default threshold; false alarms (\%) with one threshold per run set so that 99.9\% or 99\% of DDoS flows are caught; detection (\%) at 1\% false alarms; ROC AUC (\%). Scores are the ensemble's P(DDoS) before it learns each flow. Mean $\pm$ std over seeds.}
+\label{tab:oppoint}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{llllcccccc}
+\toprule
+Dataset & Traffic & Policy & Audits & FPR & ASR & FPR at 99.9\% & FPR at 99\% & Det. at 1\% FPR & AUC \\
+\midrule
+IoTID20 & clean & vanilla & -- & 3.33 $\pm$ 0.63 & 0.05 $\pm$ 0.03 & 2.90 $\pm$ 0.73 & 1.47 $\pm$ 0.29 & 97.49 $\pm$ 1.27 & 99.92 $\pm$ 0.03 \\
+IoTID20 & clean & IW-strict 10\% & random & 4.21 $\pm$ 0.89 & 0.04 $\pm$ 0.02 & 3.46 $\pm$ 0.95 & 1.55 $\pm$ 0.38 & 96.64 $\pm$ 2.29 & 99.84 $\pm$ 0.06 \\
+IoTID20 & clean & IW-strict 10\% & uncertain & 3.92 $\pm$ 0.63 & 0.61 $\pm$ 0.14 & 10.39 $\pm$ 3.21 & 3.11 $\pm$ 0.70 & 94.78 $\pm$ 1.53 & 99.75 $\pm$ 0.09 \\
+IoTID20 & clean & IW-consensus 10\% & random & 4.16 $\pm$ 0.81 & 0.06 $\pm$ 0.03 & 3.53 $\pm$ 1.02 & 1.57 $\pm$ 0.35 & 96.31 $\pm$ 2.75 & 99.82 $\pm$ 0.07 \\
+IoTID20 & clean & IW-consensus 10\% & uncertain & 4.00 $\pm$ 0.59 & 0.67 $\pm$ 0.17 & 11.18 $\pm$ 3.90 & 3.30 $\pm$ 0.82 & 94.38 $\pm$ 1.38 & 99.75 $\pm$ 0.07 \\
+IoTID20 & repaired PGD & vanilla & -- & 2.17 $\pm$ 0.69 & 0.10 $\pm$ 0.03 & 2.18 $\pm$ 0.85 & 0.42 $\pm$ 0.33 & 99.63 $\pm$ 0.37 & 99.97 $\pm$ 0.02 \\
+IoTID20 & repaired PGD & IW-strict 10\% & random & 3.52 $\pm$ 0.74 & 0.11 $\pm$ 0.03 & 3.92 $\pm$ 1.35 & 0.73 $\pm$ 0.41 & 99.25 $\pm$ 0.54 & 99.95 $\pm$ 0.03 \\
+IoTID20 & repaired PGD & IW-strict 10\% & uncertain & 0.45 $\pm$ 0.14 & 0.14 $\pm$ 0.05 & 0.71 $\pm$ 0.57 & 0.04 $\pm$ 0.05 & 99.94 $\pm$ 0.04 & 99.99 $\pm$ 0.01 \\
+IoTID20 & repaired PGD & IW-consensus 10\% & random & 3.86 $\pm$ 0.98 & 0.22 $\pm$ 0.11 & 9.40 $\pm$ 6.32 & 0.79 $\pm$ 0.51 & 99.09 $\pm$ 0.70 & 99.94 $\pm$ 0.04 \\
+IoTID20 & repaired PGD & IW-consensus 10\% & uncertain & 0.48 $\pm$ 0.17 & 0.17 $\pm$ 0.07 & 1.81 $\pm$ 3.17 & 0.05 $\pm$ 0.07 & 99.90 $\pm$ 0.07 & 99.98 $\pm$ 0.02 \\
+CICIoT2023 & clean & vanilla & -- & 5.77 $\pm$ 2.24 & 0.10 $\pm$ 0.04 & 7.55 $\pm$ 5.01 & 0.04 $\pm$ 0.11 & 99.78 $\pm$ 0.06 & 99.96 $\pm$ 0.07 \\
+CICIoT2023 & clean & IW-strict 10\% & random & 10.25 $\pm$ 4.74 & 0.07 $\pm$ 0.03 & 8.65 $\pm$ 8.15 & 0.20 $\pm$ 0.33 & 99.64 $\pm$ 0.41 & 99.92 $\pm$ 0.10 \\
+CICIoT2023 & clean & IW-strict 10\% & uncertain & 1.28 $\pm$ 0.55 & 0.20 $\pm$ 0.05 & 5.81 $\pm$ 4.25 & 0.00 $\pm$ 0.00 & 99.79 $\pm$ 0.07 & 99.98 $\pm$ 0.01 \\
+CICIoT2023 & clean & IW-consensus 10\% & random & 9.13 $\pm$ 4.21 & 0.09 $\pm$ 0.04 & 8.69 $\pm$ 6.38 & 0.22 $\pm$ 0.38 & 99.67 $\pm$ 0.27 & 99.95 $\pm$ 0.07 \\
+CICIoT2023 & clean & IW-consensus 10\% & uncertain & 1.22 $\pm$ 0.78 & 0.20 $\pm$ 0.06 & 6.11 $\pm$ 5.88 & 0.02 $\pm$ 0.08 & 99.79 $\pm$ 0.12 & 99.98 $\pm$ 0.02 \\
+CICIoT2023 & repaired PGD & vanilla & -- & 3.52 $\pm$ 2.01 & 0.08 $\pm$ 0.03 & 2.38 $\pm$ 2.03 & 0.02 $\pm$ 0.08 & 99.86 $\pm$ 0.05 & 99.99 $\pm$ 0.01 \\
+CICIoT2023 & repaired PGD & IW-strict 10\% & random & 6.95 $\pm$ 3.17 & 0.07 $\pm$ 0.03 & 5.87 $\pm$ 5.26 & 0.12 $\pm$ 0.32 & 99.70 $\pm$ 0.29 & 99.97 $\pm$ 0.01 \\
+CICIoT2023 & repaired PGD & IW-strict 10\% & uncertain & 0.64 $\pm$ 0.44 & 0.08 $\pm$ 0.04 & 0.64 $\pm$ 0.41 & 0.02 $\pm$ 0.08 & 99.94 $\pm$ 0.03 & 100.00 $\pm$ 0.00 \\
+CICIoT2023 & repaired PGD & IW-consensus 10\% & random & 7.25 $\pm$ 3.79 & 0.15 $\pm$ 0.10 & 10.91 $\pm$ 9.04 & 0.06 $\pm$ 0.12 & 99.71 $\pm$ 0.14 & 99.96 $\pm$ 0.03 \\
+CICIoT2023 & repaired PGD & IW-consensus 10\% & uncertain & 0.84 $\pm$ 0.52 & 0.14 $\pm$ 0.11 & 1.58 $\pm$ 1.29 & 0.02 $\pm$ 0.08 & 99.88 $\pm$ 0.11 & 99.99 $\pm$ 0.01 \\
+CIC-IDS2017 & clean & vanilla & -- & 0.12 $\pm$ 0.08 & 0.05 $\pm$ 0.01 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 & 99.96 $\pm$ 0.01 & 99.99 $\pm$ 0.01 \\
+CIC-IDS2017 & clean & IW-strict 10\% & random & 0.27 $\pm$ 0.21 & 0.04 $\pm$ 0.01 & 0.01 $\pm$ 0.03 & 0.00 $\pm$ 0.00 & 99.96 $\pm$ 0.01 & 99.99 $\pm$ 0.01 \\
+CIC-IDS2017 & clean & IW-strict 10\% & uncertain & 0.07 $\pm$ 0.04 & 0.04 $\pm$ 0.01 & 0.01 $\pm$ 0.01 & 0.00 $\pm$ 0.00 & 99.97 $\pm$ 0.02 & 99.99 $\pm$ 0.01 \\
+CIC-IDS2017 & clean & IW-consensus 10\% & random & 0.21 $\pm$ 0.19 & 0.05 $\pm$ 0.00 & 0.01 $\pm$ 0.03 & 0.00 $\pm$ 0.00 & 99.95 $\pm$ 0.01 & 99.99 $\pm$ 0.01 \\
+CIC-IDS2017 & clean & IW-consensus 10\% & uncertain & 0.05 $\pm$ 0.04 & 0.05 $\pm$ 0.01 & 0.00 $\pm$ 0.01 & 0.00 $\pm$ 0.00 & 99.96 $\pm$ 0.02 & 99.99 $\pm$ 0.01 \\
+CIC-IDS2017 & repaired PGD & vanilla & -- & 0.11 $\pm$ 0.05 & 0.02 $\pm$ 0.01 & 0.01 $\pm$ 0.02 & 0.00 $\pm$ 0.00 & 100.00 $\pm$ 0.01 & 100.00 $\pm$ 0.00 \\
+CIC-IDS2017 & repaired PGD & IW-strict 10\% & random & 0.25 $\pm$ 0.18 & 0.01 $\pm$ 0.01 & 0.02 $\pm$ 0.03 & 0.00 $\pm$ 0.00 & 100.00 $\pm$ 0.01 & 100.00 $\pm$ 0.00 \\
+CIC-IDS2017 & repaired PGD & IW-strict 10\% & uncertain & 0.02 $\pm$ 0.03 & 0.01 $\pm$ 0.01 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 & 100.00 $\pm$ 0.00 & 100.00 $\pm$ 0.00 \\
+CIC-IDS2017 & repaired PGD & IW-consensus 10\% & random & 0.24 $\pm$ 0.17 & 0.04 $\pm$ 0.04 & 0.02 $\pm$ 0.03 & 0.00 $\pm$ 0.00 & 99.98 $\pm$ 0.03 & 100.00 $\pm$ 0.00 \\
+CIC-IDS2017 & repaired PGD & IW-consensus 10\% & uncertain & 0.02 $\pm$ 0.03 & 0.03 $\pm$ 0.05 & 0.00 $\pm$ 0.00 & 0.00 $\pm$ 0.00 & 100.00 $\pm$ 0.01 & 100.00 $\pm$ 0.00 \\
+\bottomrule
+\end{tabular}
+\end{table*}

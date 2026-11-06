@@ -279,6 +279,12 @@ Reconstructed from the result files and the project notes; times are when the ru
   - `results`: grid_runs.jsonl (changed)
   - `results/loop_grid`: 45 new CSV; 45 new JSON; 45 new log; summary_loop_opunc.csv (new)
 
+### 2026-11-06 07:21 (UTC+05:30) - Matched operating points and combined-attack statistics
+
+- **Code version:** e53e4b5
+- **Results:**
+  - `results/paper`: fig_advtrain.pdf (changed), fig_attack_asr.pdf (changed), fig_audit_tradeoff.pdf (changed), fig_cascade.pdf (changed), fig_framing.pdf (changed), fig_framing_audits.pdf (changed), fig_hsj.pdf (changed), fig_label_delay.pdf (changed), fig_loop_poison.pdf (changed), fig_loop_time.pdf (changed), fig_radp_detect.pdf (changed), fig_radp_e2e.pdf (changed) and 6 more
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->

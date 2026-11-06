@@ -1,0 +1,85 @@
+\begin{table*}[t]
+\centering
+\caption{Paired statistics over seeds (oppoint): mean with 95\% bootstrap CI, the median per-seed difference to the baseline, two-sided Wilcoxon signed-rank test (Holm-corrected within each comparison) and the matched-pairs rank-biserial correlation $r$.}}
+\label{tab:stats_oppoint}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{lllcccccc}
+\toprule
+Comparison & Dataset & Condition & $n$ & Mean [95\% CI] & Baseline mean & Median $\Delta$ & $p_\mathrm{Holm}$ & $r$ \\
+\midrule
+Matched detection: FPR (\%) at 99.9\% of DDoS caught, uncertainty vs random audits & CIC-IDS2017 & uncertain (iwconsensus:0.1, clean) & 15 & 0.00 [0.00, 0.01] & 0.01 & +0.00 & 1.0000 & -0.50 \\
+ & CIC-IDS2017 & uncertain (iwconsensus:0.1, repaired PGD) & 15 & 0.00 [0.00, 0.00] & 0.02 & +0.00 & 0.0509 & -1.00 \\
+ & CIC-IDS2017 & uncertain (iwstrict:0.1, clean) & 15 & 0.01 [0.00, 0.01] & 0.01 & +0.00 & 1.0000 & -0.20 \\
+ & CIC-IDS2017 & uncertain (iwstrict:0.1, repaired PGD) & 15 & 0.00 [0.00, 0.00] & 0.02 & +0.00 & 0.0509 & -1.00 \\
+ & CICIoT2023 & uncertain (iwconsensus:0.1, clean) & 15 & 6.11 [3.46, 9.23] & 8.69 & -0.60 & 0.1871 & -0.58 \\
+ & CICIoT2023 & uncertain (iwconsensus:0.1, repaired PGD) & 15 & 1.58 [0.94, 2.22] & 10.91 & -7.51 & 0.0011 & -0.98 \\
+ & CICIoT2023 & uncertain (iwstrict:0.1, clean) & 15 & 5.81 [3.80, 7.93] & 8.65 & -2.10 & 0.5451 & -0.43 \\
+ & CICIoT2023 & uncertain (iwstrict:0.1, repaired PGD) & 15 & 0.64 [0.44, 0.82] & 5.87 & -3.60 & 0.0056 & -0.98 \\
+ & IoTID20 & uncertain (iwconsensus:0.1, clean) & 15 & 11.18 [9.31, 13.16] & 3.53 & +7.25 & 0.0052 & +1.00 \\
+ & IoTID20 & uncertain (iwconsensus:0.1, repaired PGD) & 15 & 1.81 [0.72, 3.56] & 9.40 & -5.62 & 0.0007 & -1.00 \\
+ & IoTID20 & uncertain (iwstrict:0.1, clean) & 15 & 10.39 [8.86, 12.02] & 3.46 & +6.85 & 0.0007 & +1.00 \\
+ & IoTID20 & uncertain (iwstrict:0.1, repaired PGD) & 15 & 0.71 [0.47, 1.01] & 3.92 & -3.34 & 0.0007 & -1.00 \\
+Matched detection: FPR (\%) at 99\% of DDoS caught, uncertainty vs random audits & CIC-IDS2017 & uncertain (iwconsensus:0.1, clean) & 15 & 0.00 [0.00, 0.00] & 0.00 & +0.00 & 1.0000 & +0.00 \\
+ & CIC-IDS2017 & uncertain (iwconsensus:0.1, repaired PGD) & 15 & 0.00 [0.00, 0.00] & 0.00 & +0.00 & 1.0000 & +0.00 \\
+ & CIC-IDS2017 & uncertain (iwstrict:0.1, clean) & 15 & 0.00 [0.00, 0.00] & 0.00 & +0.00 & 1.0000 & +0.00 \\
+ & CIC-IDS2017 & uncertain (iwstrict:0.1, repaired PGD) & 15 & 0.00 [0.00, 0.00] & 0.00 & +0.00 & 1.0000 & +0.00 \\
+ & CICIoT2023 & uncertain (iwconsensus:0.1, clean) & 15 & 0.02 [0.00, 0.06] & 0.22 & +0.00 & 0.1832 & -1.00 \\
+ & CICIoT2023 & uncertain (iwconsensus:0.1, repaired PGD) & 15 & 0.02 [0.00, 0.06] & 0.06 & +0.00 & 1.0000 & -0.50 \\
+ & CICIoT2023 & uncertain (iwstrict:0.1, clean) & 15 & 0.00 [0.00, 0.00] & 0.20 & +0.00 & 0.1197 & -1.00 \\
+ & CICIoT2023 & uncertain (iwstrict:0.1, repaired PGD) & 15 & 0.02 [0.00, 0.06] & 0.12 & +0.00 & 1.0000 & -0.60 \\
+ & IoTID20 & uncertain (iwconsensus:0.1, clean) & 15 & 3.30 [2.90, 3.71] & 1.57 & +2.12 & 0.0077 & +1.00 \\
+ & IoTID20 & uncertain (iwconsensus:0.1, repaired PGD) & 15 & 0.05 [0.02, 0.08] & 0.79 & -0.73 & 0.0077 & -1.00 \\
+ & IoTID20 & uncertain (iwstrict:0.1, clean) & 15 & 3.11 [2.79, 3.47] & 1.55 & +1.30 & 0.0077 & +1.00 \\
+ & IoTID20 & uncertain (iwstrict:0.1, repaired PGD) & 15 & 0.04 [0.02, 0.06] & 0.73 & -0.57 & 0.0077 & -1.00 \\
+Matched false alarms: detection (\%) at 1\% FPR, uncertainty vs random audits & CIC-IDS2017 & uncertain (iwconsensus:0.1, clean) & 15 & 99.96 [99.95, 99.97] & 99.95 & +0.00 & 0.2275 & +0.56 \\
+ & CIC-IDS2017 & uncertain (iwconsensus:0.1, repaired PGD) & 15 & 100.00 [99.99, 100.00] & 99.98 & +0.01 & 0.0268 & +1.00 \\
+ & CIC-IDS2017 & uncertain (iwstrict:0.1, clean) & 15 & 99.97 [99.96, 99.98] & 99.96 & +0.01 & 0.2275 & +0.58 \\
+ & CIC-IDS2017 & uncertain (iwstrict:0.1, repaired PGD) & 15 & 100.00 [100.00, 100.00] & 100.00 & +0.00 & 0.2275 & +1.00 \\
+ & CICIoT2023 & uncertain (iwconsensus:0.1, clean) & 15 & 99.79 [99.73, 99.84] & 99.68 & +0.08 & 0.2275 & +0.58 \\
+ & CICIoT2023 & uncertain (iwconsensus:0.1, repaired PGD) & 15 & 99.88 [99.82, 99.93] & 99.71 & +0.17 & 0.0104 & +0.88 \\
+ & CICIoT2023 & uncertain (iwstrict:0.1, clean) & 15 & 99.79 [99.76, 99.83] & 99.64 & +0.04 & 0.2275 & +0.51 \\
+ & CICIoT2023 & uncertain (iwstrict:0.1, repaired PGD) & 15 & 99.94 [99.93, 99.96] & 99.70 & +0.22 & 0.0007 & +1.00 \\
+ & IoTID20 & uncertain (iwconsensus:0.1, clean) & 15 & 94.38 [93.69, 95.06] & 96.31 & -2.47 & 0.1084 & -0.68 \\
+ & IoTID20 & uncertain (iwconsensus:0.1, repaired PGD) & 15 & 99.90 [99.86, 99.93] & 99.09 & +0.70 & 0.0007 & +1.00 \\
+ & IoTID20 & uncertain (iwstrict:0.1, clean) & 15 & 94.78 [94.00, 95.49] & 96.64 & -2.32 & 0.0376 & -0.78 \\
+ & IoTID20 & uncertain (iwstrict:0.1, repaired PGD) & 15 & 99.94 [99.92, 99.96] & 99.25 & +0.58 & 0.0065 & +1.00 \\
+ROC AUC (\%), uncertainty vs random audits & CIC-IDS2017 & uncertain (iwconsensus:0.1, clean) & 15 & 99.99 [99.98, 100.00] & 99.99 & +0.00 & 1.0000 & -0.07 \\
+ & CIC-IDS2017 & uncertain (iwconsensus:0.1, repaired PGD) & 15 & 100.00 [100.00, 100.00] & 100.00 & +0.00 & 0.0524 & +1.00 \\
+ & CIC-IDS2017 & uncertain (iwstrict:0.1, clean) & 15 & 99.99 [99.99, 100.00] & 99.99 & +0.00 & 1.0000 & +0.09 \\
+ & CIC-IDS2017 & uncertain (iwstrict:0.1, repaired PGD) & 15 & 100.00 [100.00, 100.00] & 100.00 & +0.00 & 0.2498 & +1.00 \\
+ & CICIoT2023 & uncertain (iwconsensus:0.1, clean) & 15 & 99.98 [99.97, 99.99] & 99.95 & +0.01 & 0.0620 & +0.73 \\
+ & CICIoT2023 & uncertain (iwconsensus:0.1, repaired PGD) & 15 & 99.99 [99.99, 100.00] & 99.96 & +0.02 & 0.0071 & +1.00 \\
+ & CICIoT2023 & uncertain (iwstrict:0.1, clean) & 15 & 99.98 [99.97, 99.99] & 99.93 & +0.01 & 0.0631 & +0.71 \\
+ & CICIoT2023 & uncertain (iwstrict:0.1, repaired PGD) & 15 & 100.00 [100.00, 100.00] & 99.98 & +0.02 & 0.0071 & +1.00 \\
+ & IoTID20 & uncertain (iwconsensus:0.1, clean) & 15 & 99.75 [99.72, 99.79] & 99.82 & -0.04 & 0.0301 & -0.85 \\
+ & IoTID20 & uncertain (iwconsensus:0.1, repaired PGD) & 15 & 99.98 [99.97, 99.99] & 99.94 & +0.04 & 0.0071 & +1.00 \\
+ & IoTID20 & uncertain (iwstrict:0.1, clean) & 15 & 99.75 [99.70, 99.79] & 99.84 & -0.07 & 0.0376 & -0.78 \\
+ & IoTID20 & uncertain (iwstrict:0.1, repaired PGD) & 15 & 99.99 [99.99, 99.99] & 99.95 & +0.04 & 0.0007 & +1.00 \\
+Matched detection: FPR (\%) at 99.9\% of DDoS caught, uncertainty audits vs vanilla & CIC-IDS2017 & iwconsensus:0.1, uncertain (clean) & 15 & 0.00 [0.00, 0.01] & 0.00 & +0.00 & 0.7865 & +1.00 \\
+ & CIC-IDS2017 & iwstrict:0.1, uncertain (clean) & 15 & 0.01 [0.00, 0.01] & 0.00 & +0.00 & 0.7865 & +1.00 \\
+ & CIC-IDS2017 & iwconsensus:0.1, uncertain (repaired PGD) & 15 & 0.00 [0.00, 0.00] & 0.01 & +0.00 & 0.3640 & -1.00 \\
+ & CIC-IDS2017 & iwstrict:0.1, uncertain (repaired PGD) & 15 & 0.00 [0.00, 0.00] & 0.01 & +0.00 & 0.3640 & -1.00 \\
+ & CICIoT2023 & iwconsensus:0.1, uncertain (clean) & 15 & 6.11 [3.46, 9.23] & 7.55 & -0.90 & 0.7865 & -0.33 \\
+ & CICIoT2023 & iwstrict:0.1, uncertain (clean) & 15 & 5.81 [3.80, 7.93] & 7.55 & -0.90 & 0.7865 & -0.43 \\
+ & CICIoT2023 & iwconsensus:0.1, uncertain (repaired PGD) & 15 & 1.58 [0.94, 2.22] & 2.38 & -0.60 & 0.7865 & -0.32 \\
+ & CICIoT2023 & iwstrict:0.1, uncertain (repaired PGD) & 15 & 0.64 [0.44, 0.82] & 2.38 & -1.50 & 0.0482 & -0.82 \\
+ & IoTID20 & iwconsensus:0.1, uncertain (clean) & 15 & 11.18 [9.31, 13.16] & 2.90 & +8.07 & 0.0007 & +1.00 \\
+ & IoTID20 & iwstrict:0.1, uncertain (clean) & 15 & 10.39 [8.86, 12.02] & 2.90 & +7.01 & 0.0007 & +1.00 \\
+ & IoTID20 & iwconsensus:0.1, uncertain (repaired PGD) & 15 & 1.81 [0.72, 3.56] & 2.18 & -0.98 & 0.3640 & -0.58 \\
+ & IoTID20 & iwstrict:0.1, uncertain (repaired PGD) & 15 & 0.71 [0.47, 1.01] & 2.18 & -1.30 & 0.0065 & -1.00 \\
+ROC AUC (\%), uncertainty audits vs vanilla & CIC-IDS2017 & iwconsensus:0.1, uncertain (clean) & 15 & 99.99 [99.98, 100.00] & 99.99 & -0.00 & 1.0000 & -0.03 \\
+ & CIC-IDS2017 & iwstrict:0.1, uncertain (clean) & 15 & 99.99 [99.99, 100.00] & 99.99 & +0.00 & 1.0000 & +0.36 \\
+ & CIC-IDS2017 & iwconsensus:0.1, uncertain (repaired PGD) & 15 & 100.00 [100.00, 100.00] & 100.00 & +0.00 & 1.0000 & +0.00 \\
+ & CIC-IDS2017 & iwstrict:0.1, uncertain (repaired PGD) & 15 & 100.00 [100.00, 100.00] & 100.00 & +0.00 & 1.0000 & +1.00 \\
+ & CICIoT2023 & iwconsensus:0.1, uncertain (clean) & 15 & 99.98 [99.97, 99.99] & 99.96 & +0.01 & 0.7773 & +0.42 \\
+ & CICIoT2023 & iwstrict:0.1, uncertain (clean) & 15 & 99.98 [99.97, 99.99] & 99.96 & +0.00 & 0.2653 & +0.64 \\
+ & CICIoT2023 & iwconsensus:0.1, uncertain (repaired PGD) & 15 & 99.99 [99.99, 100.00] & 99.99 & +0.01 & 0.0390 & +0.82 \\
+ & CICIoT2023 & iwstrict:0.1, uncertain (repaired PGD) & 15 & 100.00 [100.00, 100.00] & 99.99 & +0.01 & 0.0065 & +1.00 \\
+ & IoTID20 & iwconsensus:0.1, uncertain (clean) & 15 & 99.75 [99.72, 99.79] & 99.92 & -0.15 & 0.0007 & -1.00 \\
+ & IoTID20 & iwstrict:0.1, uncertain (clean) & 15 & 99.75 [99.70, 99.79] & 99.92 & -0.15 & 0.0065 & -1.00 \\
+ & IoTID20 & iwconsensus:0.1, uncertain (repaired PGD) & 15 & 99.98 [99.97, 99.99] & 99.98 & +0.01 & 0.6306 & +0.47 \\
+ & IoTID20 & iwstrict:0.1, uncertain (repaired PGD) & 15 & 99.99 [99.99, 99.99] & 99.98 & +0.01 & 0.0007 & +1.00 \\
+\bottomrule
+\end{tabular}
+\end{table*}
