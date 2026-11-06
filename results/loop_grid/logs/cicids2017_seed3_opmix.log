@@ -1,0 +1,13 @@
+[loaders] time window 2017-07-07 20:31:00 -> 2017-07-07 21:26:00: keeping 129,401 of 386,556 rows
+[loaders] time order: 129,401 rows pass the filter, sorted by Timestamp (2017-07-07 -> 2017-07-07); replaying 30,000 evenly spaced
+[loaders] skipping non-numeric or NaN/inf values in 6 column(s), e.g. ['Flow Bytes/s', 'Flow IAT Max', 'Flow IAT Mean', 'Flow IAT Min', 'Flow IAT Std', 'Flow Packets/s']
+[loop] cicids2017: 30,000 rows x 79 features; train 20,100 / test 9,900 (test DDoS share 75.4%), seed 3
+[attack] pgd/attack_only: surrogate fooled on 100.0% of perturbed rows; infeasible 100.0%
+[loop] clean                      frozen      frozen     acc  99.96  fpr   0.00  asr   0.05  KNN sel    0.0  skipped     0  (19.7s)
+[loop] clean                      true        iwstrict:0.1 acc  99.96  fpr   0.04  asr   0.04  KNN sel    0.0  skipped  2181  (60.3s)
+[loop] clean                      true        iwconsensus:0.1 acc  99.96  fpr   0.04  asr   0.04  KNN sel    0.0  skipped  2181  (59.6s)
+[loop] pgd/attack_only/feasible   frozen      frozen     acc  24.58  fpr   0.00  asr  99.99  KNN sel    0.0  skipped     0  (21.6s)
+[loop] pgd/attack_only/feasible   true        iwstrict:0.1 acc  99.98  fpr   0.00  asr   0.03  KNN sel    0.0  skipped  2103  (82.0s)
+[loop] pgd/attack_only/feasible   true        iwconsensus:0.1 acc  99.95  fpr   0.00  asr   0.07  KNN sel    0.0  skipped  2147  (355.4s)
+
+[loop] done in 12.1 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\loop_grid\cicids2017_seed3_opmix.json and cicids2017_seed3_opmix.csv

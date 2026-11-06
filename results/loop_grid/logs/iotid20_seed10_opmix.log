@@ -1,0 +1,12 @@
+[loaders] file order, stride sampling: 334,569 rows pass the filter; taking 30,000 evenly spaced (about 1 in 11.2)
+[loaders] skipping non-numeric or NaN/inf values in 2 column(s), e.g. ['Flow_Byts/s', 'Flow_Pkts/s']
+[loop] iotid20: 30,000 rows x 79 features; train 20,100 / test 9,900 (test DDoS share 87.6%), seed 10
+[attack] pgd/attack_only: surrogate fooled on 45.88% of perturbed rows; infeasible 100.0%
+[loop] clean                      frozen      frozen     acc  99.36  fpr   4.48  asr   0.09  KNN sel    0.0  skipped     0  (131.6s)
+[loop] clean                      true        iwstrict:0.1 acc  98.92  fpr   5.22  asr    0.5  KNN sel    0.0  skipped   957  (448.1s)
+[loop] clean                      true        iwconsensus:0.1 acc  98.94  fpr   5.22  asr   0.47  KNN sel    0.0  skipped   963  (445.4s)
+[loop] pgd/attack_only/feasible   frozen      frozen     acc  84.56  fpr   4.48  asr   17.0  KNN sel    0.0  skipped     0  (138.5s)
+[loop] pgd/attack_only/feasible   true        iwstrict:0.1 acc  99.79  fpr   0.65  asr   0.15  KNN sel    0.0  skipped   992  (417.1s)
+[loop] pgd/attack_only/feasible   true        iwconsensus:0.1 acc  99.71  fpr   1.30  asr   0.15  KNN sel    0.0  skipped   987  (432.2s)
+
+[loop] done in 47.7 min; wrote C:\Users\shiri\Projects\CNS-Project\msaad-robustness\results\loop_grid\iotid20_seed10_opmix.json and iotid20_seed10_opmix.csv
