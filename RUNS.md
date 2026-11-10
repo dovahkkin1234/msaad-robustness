@@ -300,6 +300,10 @@ Reconstructed from the result files and the project notes; times are when the ru
 - **Results:**
   - `results/paper`: fig_advtrain.pdf (changed), fig_attack_asr.pdf (changed), fig_audit_tradeoff.pdf (changed), fig_cascade.pdf (changed), fig_framing.pdf (changed), fig_framing_audits.pdf (changed), fig_hsj.pdf (changed), fig_label_delay.pdf (changed), fig_loop_poison.pdf (changed), fig_loop_time.pdf (changed), fig_radp_detect.pdf (changed), fig_radp_e2e.pdf (changed) and 5 more
 
+### 2026-11-10 22:24 (UTC+05:30) - Final course paper (10 Nov 2026): sources, PDF, build scripts, review
+
+- **Code version:** ab9e8c9; this commit also changes 14 code/document file(s): `docs/MSAAD_Honest_Review.pdf`, `paper/.gitignore`, `paper/CS23B2041_MSAAD_Paper.pdf`, `paper/README.md`, `paper/build/build_tables.py`, `paper/build/fig_system.tex`, `paper/build/make_paper_poison_fig.py`, `paper/build/values.json` ...
+
 ## Run history (rebuilt from the result files on every push)
 
 <!-- history:start -->

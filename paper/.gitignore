@@ -1,0 +1,14 @@
+# LaTeX build files (the final paper is CS23B2041_MSAAD_Paper.pdf)
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+main.pdf
+build/fig_system.pdf
+# regenerated outputs of the build scripts
+build/tables/
+build/figs/
